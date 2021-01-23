@@ -1,11 +1,14 @@
 import Elm1 from './elm-1.vue';
-import { Schema } from './render';
+import { Schema } from '../components/schema-render/core/render';
 
 export default {
   name: 'div',
   children: [
     {
       name: Elm1,
+      props: {
+        name: 'Elm',
+      },
       slots: {
         default: {
           name: 'span',
@@ -22,7 +25,13 @@ export default {
       name: 'div',
       children: [
         {
-          name: Elm1
+          name: Elm1,
+          props: {
+            name: 'what'
+          },
+          attrs: {
+            style: 'color: red'
+          }
         }
       ]
     }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    Elm-1 count: {{count}}
+    {{name}} count: {{count}}
     <slot></slot>
   </div>
 </template>
@@ -10,6 +10,12 @@ import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
   name: 'Elm-1',
+  props: {
+    name: {
+      type: String,
+      default: 'Elm'
+    }
+  },
   setup () {
     const count = ref(0);
 
