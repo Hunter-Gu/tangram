@@ -9,6 +9,9 @@ export default {
       props: {
         name: 'Elm',
       },
+      events: {
+        onClick: ['logger', 'logger']
+      },
       slots: {
         default: {
           name: 'span',
@@ -31,6 +34,9 @@ export default {
           },
           attrs: {
             style: 'color: red'
+          },
+          events: {
+            onClick: 'logger'
           }
         }
       ]

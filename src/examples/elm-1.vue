@@ -16,7 +16,7 @@ export default defineComponent({
       default: 'Elm'
     }
   },
-  setup () {
+  setup (props) {
     const count = ref(0);
 
     const interval = setInterval(() => {
@@ -27,8 +27,13 @@ export default defineComponent({
       count.value += 1;
     }, 1000);
 
+    const logger = () => {
+      console.log('click ', props.name)
+    }
+
     return {
-      count
+      count,
+      logger
     }
   }
 })
