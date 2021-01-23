@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import SchemaRender from './components/schema-render'
+import SchemaRender from './components/schema-render/schema-render'
 import schema from './examples/schema'
 
 export default defineComponent({
