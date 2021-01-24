@@ -3,14 +3,16 @@ import { Schema } from '../components/schema-render/core/render';
 
 export default {
   name: 'div',
+  __uuid: 0,
   children: [
     {
       name: Elm1,
+      __uuid: 1,
       props: {
         name: 'Elm',
       },
       events: {
-        onClick: ['logger hello world', 'logger']
+        onClick: ['$4.logger hello world', '$.logger']
       },
       slots: {
         default: {
@@ -22,13 +24,16 @@ export default {
       }
     },
     {
-      name: Elm1
+      name: Elm1,
+      __uuid: 2
     },
     {
       name: 'div',
+      __uuid: 3,
       children: [
         {
           name: Elm1,
+          __uuid: 4,
           props: {
             name: 'what'
           },
