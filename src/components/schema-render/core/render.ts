@@ -5,6 +5,8 @@ type Events = Record<string, string | string[]>;
 export interface Schema {
   name: DefineComponent | string;
 
+  __uuid: number;
+
   props?: Record<string, any>;
   attrs?: Record<string, string>;
   events?: Events;
@@ -13,6 +15,29 @@ export interface Schema {
     [name: string]: Schema;
   },
   children?: Schema[]
+}
+
+// store all refs
+const refs: Record<number, Ref<any>> = {};
+function setRef(name: number, ref: Ref<any>) {
+  refs[name] = ref;
+}
+function getRef(name: number) {
+  return refs[name];
+}
+function checkUnique(name: number) {
+  return !(name in refs);
+}
+function initRef(schema: Schema) {
+  const idRef = ref(null)
+  const { __uuid: name } = schema;
+  if (checkUnique(name)) {
+    setRef(name, idRef);
+  } else {
+    // TODO it will rerender all when state change trigger reactive
+    // console.error('Conflict uuid:', name);
+  }
+  return idRef;
 }
 
 /**
@@ -38,7 +63,7 @@ export default function render (schema: Schema): VNode {
     }, {} as any);
   }
 
-  const idRef = ref(null)
+  const idRef = initRef(schema);
 
   const others = {
     ref: idRef,
@@ -64,16 +89,13 @@ function parseEvents(events: Events, ref: Ref<any>) {
 
     // TODO think a bette way to handle it
     // TODO exec order: make this to be a function chain ( what about promise chain? )
-    // TODO it can only call itself functions now, support call other refs' functions
     eventHandlers[event] = () => {
-      const instance = ref.value
-
       // TODO make funcs
       handlers.map((handler: string) => {
         // TODO better type infer
         // @ts-ignore
         const [name, ...params] = handler.split(/\s+/)
-        const func = instance[name];
+        const func = parseRef2Func(name, ref);
 
         if (typeof func === 'function') {
           return func(...params)
@@ -85,6 +107,14 @@ function parseEvents(events: Events, ref: Ref<any>) {
   }
 
   return eventHandlers
+}
+
+function parseRef2Func(str: string, defaultRef: Ref<any>) {
+  // get ref id and function name
+  // `$` represnt reference
+  const [, , refId, name] = /^(\$(\d+)?\.)?(.+)$/i.exec(str) || [];
+
+  return (refId ? getRef(+refId) : defaultRef).value[name];
 }
 
 function logger(...msg: any) {
