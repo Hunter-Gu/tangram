@@ -11,6 +11,7 @@ Schmea 的每一项都称为 Options，分别为：
 
 ## TODO
 
-- support pass parameters to call function
-- support call other refs' function
-- refactor render
+- [x] support pass parameters to call function
+- [ ] support call other refs' function
+- [ ] refactor render
+- [ ] Parameters support pass other type, just support string type now

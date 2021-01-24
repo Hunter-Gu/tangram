@@ -10,7 +10,7 @@ export default {
         name: 'Elm',
       },
       events: {
-        onClick: ['logger', 'logger']
+        onClick: ['logger hello world', 'logger']
       },
       slots: {
         default: {

@@ -27,8 +27,8 @@ export default defineComponent({
       count.value += 1;
     }, 1000);
 
-    const logger = () => {
-      console.log('click ', props.name)
+    const logger = (...params: any[]) => {
+      console.log(`Clicked ${props.name}! Paramteres`, ...params)
     }
 
     return {

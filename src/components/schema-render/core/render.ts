@@ -59,12 +59,12 @@ function parseEvents(events: Events, ref: Ref<any>) {
 
   for (let event in events) {
     // @ts-ignore
+    // ['handler1', 'handler2']
     const handlers: string[] = [].concat(events[event]);
 
     // TODO think a bette way to handle it
     // TODO exec order: make this to be a function chain ( what about promise chain? )
     // TODO it can only call itself functions now, support call other refs' functions
-    // TODO support pass parameters by schema
     eventHandlers[event] = () => {
       const instance = ref.value
 
@@ -72,10 +72,11 @@ function parseEvents(events: Events, ref: Ref<any>) {
       handlers.map((handler: string) => {
         // TODO better type infer
         // @ts-ignore
-        const func = instance[handler];
+        const [name, ...params] = handler.split(/\s+/)
+        const func = instance[name];
 
         if (typeof func === 'function') {
-          return func()
+          return func(...params)
         } else {
           logger(`${handler} is not a funciton!`)
         }
