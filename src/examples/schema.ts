@@ -1,5 +1,5 @@
+import { Schema } from '../components/schema-render/core/schema';
 import Elm1 from './elm-1.vue';
-import { Schema } from '../components/schema-render/core/render';
 
 export default {
   name: 'div',
@@ -9,22 +9,33 @@ export default {
       name: Elm1,
       __uuid: 1,
       props: {
-        name: 'Elm',
+        name: 'First wrapper element',
       },
       events: {
-        onClick: ['$4.logger hello world', '$.logger']
+        onClick: ['$4.logger hello world', '$1.logger']
       },
       slots: {
         default: {
           name: 'span',
           children: [
-            'Hello World'
+            {
+              name: 'div',
+              attrs: {
+                style: 'font-weight: bold; color: green;'
+              },
+              children: [
+                'child'
+              ]
+            }
           ]
         }
       }
     },
     {
       name: Elm1,
+      props: {
+        name: 'Second wrapper element'
+      },
       __uuid: 2
     },
     {
@@ -35,13 +46,13 @@ export default {
           name: Elm1,
           __uuid: 4,
           props: {
-            name: 'what'
+            name: 'Child of thrid'
           },
           attrs: {
             style: 'color: red'
           },
           events: {
-            onClick: 'logger'
+            onClick: '$4.logger'
           }
         }
       ]
