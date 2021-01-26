@@ -1,5 +1,6 @@
 import { defineComponent, h, PropType } from 'vue'
-import render, { Schema } from './core/render';
+import render from './core/render';
+import { Schema } from './core/schema';
 
 export default defineComponent({
   name: 'SchemaRender',
@@ -10,7 +11,7 @@ export default defineComponent({
     }
   },
   setup: (props) => {
-
-    return () => render(props.schema);
+    // @ts-ignore
+    return () => window.schema = render(props.schema);
   }
 })
