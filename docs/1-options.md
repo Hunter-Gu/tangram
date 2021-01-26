@@ -13,5 +13,7 @@ Schmea 的每一项都称为 Options，分别为：
 
 - [x] support pass parameters to call function
 - [x] support call other refs' function
-- [ ] refactor render
+- [x] refactor render
+- [ ] add prettier and git hooks, typescirpt don't allow any type
+- [ ] add unit test
 - [ ] Parameters support pass other type, just support string type now
