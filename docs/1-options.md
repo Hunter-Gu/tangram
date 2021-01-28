@@ -17,3 +17,29 @@ Schmea 的每一项都称为 Options，分别为：
 - [x] add prettier and git hooks, typescirpt don't allow any type
 - [ ] add unit test
 - [ ] Parameters support pass other type, just support string type now
+
+## parameter types
+
+- number: `$ref.method --number param`
+- string: `$ref.method --string param`
+- boolean: `$ref.method --boolean param`
+- object: `$ref.method --object [key1][key11]: --number value`
+- array: `$ref.method --array [0]: --number value1 [1]: --string value2`
+- null: `$ref.method --null`
+- undefined: `$ref.method --undefined`
+
+### default type
+
+The default type of parameters is string:
+
+`$ref.method param1 param2` is equal to `$ref.method --string param1 --string param2`.
+
+### shorthand
+
+- `-n`: `--number`
+- `-s`: `--string`
+- `-b`: `--boolean`
+- `-o`: `--object`
+- `-a`: `--array`
+- `-nu`: `--null`
+- `-u`: `--undefined`
