@@ -1,5 +1,11 @@
-import { DefineComponent, h, Ref, ref, VNode } from 'vue'
-import { parseAttrs, parseChildren, parseEvents, parseProps, parseSlots } from './parsers';
+import { DefineComponent, h, Ref, ref, VNode } from "vue";
+import {
+  parseAttrs,
+  parseChildren,
+  parseEvents,
+  parseProps,
+  parseSlots,
+} from "./parsers";
 
 export type Props = Record<string, unknown>;
 

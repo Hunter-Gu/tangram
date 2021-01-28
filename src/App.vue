@@ -3,21 +3,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import SchemaRender from './components/schema-render/schema-render'
-import schema from './examples/schema'
+import { defineComponent } from "vue";
+import SchemaRender from "./components/schema-render/schema-render";
+import schema from "./examples/schema";
 
 export default defineComponent({
-  name: 'App',
+  name: "App",
   components: {
-    SchemaRender
+    SchemaRender,
   },
   setup() {
     return {
-      schema
-    }
-  }
-})
+      schema,
+    };
+  },
+});
 </script>
 
 <style>

@@ -1,22 +1,22 @@
 <template>
   <div>
-    {{name}} count: {{count}}
+    {{ name }} count: {{ count }}
     <slot></slot>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref } from "vue";
 
 export default defineComponent({
-  name: 'Elm-1',
+  name: "Elm-1",
   props: {
     name: {
       type: String,
-      default: 'Elm'
-    }
+      default: "Elm",
+    },
   },
-  setup (props) {
+  setup(props) {
     const count = ref(0);
 
     const interval = setInterval(() => {
@@ -28,17 +28,15 @@ export default defineComponent({
     }, 1000);
 
     const logger = (...params: any[]) => {
-      console.log(`Clicked ${props.name}! Paramteres`, ...params)
-    }
+      console.log(`Clicked ${props.name}! Paramteres`, ...params);
+    };
 
     return {
       count,
-      logger
-    }
-  }
-})
+      logger,
+    };
+  },
+});
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

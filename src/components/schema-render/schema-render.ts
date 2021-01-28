@@ -1,17 +1,17 @@
-import { defineComponent, h, PropType } from 'vue'
-import render from './core/render';
-import { Schema } from './core/schema';
+import { defineComponent, h, PropType } from "vue";
+import render from "./core/render";
+import { Schema } from "./core/schema";
 
 export default defineComponent({
-  name: 'SchemaRender',
+  name: "SchemaRender",
   props: {
     schema: {
       type: Object as PropType<Schema>,
-      required: true
-    }
+      required: true,
+    },
   },
   setup: (props) => {
     // @ts-ignore
-    return () => window.schema = render(props.schema);
-  }
-})
+    return () => (window.schema = render(props.schema));
+  },
+});
