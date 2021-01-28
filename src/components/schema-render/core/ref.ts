@@ -13,7 +13,7 @@ export function getRef(name: number) {
 
 function checkUnique(name: number) {
   return !(name in refs);
-}
+   }
 
 export function initRef(name: number) {
   const idRef = ref(null)
