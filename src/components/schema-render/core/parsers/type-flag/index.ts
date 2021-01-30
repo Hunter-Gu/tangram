@@ -1,5 +1,5 @@
 import { extractTypeFromFlag, isTypeFlag } from "./flag";
-import { DEFAULT_TRANSFORMER, getTransformer } from "./types";
+import { DEFAULT_TRANSFORMER, getTransformer, TYPE_TRANSFORMER } from "./types";
 
 const DEFAULT_TYPE_PARAMS = `-s`;
 
@@ -34,7 +34,7 @@ export function transform2TypedValues(str: string) {
  * @desc get transform function from flag type
  * @param flag eg `'--boolean'` -> `Boolean()`
  */
-function getTransformerByFlagType(flag: string) {
+export function getTransformerByFlagType(flag: string) {
   const type = extractTypeFromFlag(flag);
 
   // it will never run into this case if call `isTypeFlag()` function before.
