@@ -6,15 +6,13 @@ describe("transform to typed values", () => {
     expect(transform2TypedValues(str)).toEqual([1, false]);
   });
 
-  test("hello world --number 12 --boolean true HELLO WORLD", () => {
-    const str = "hello world --number 12 --boolean true HELLO WORLD";
+  test(`--string "hello  world " --number 12 --boolean true --string "HELLO WORLD"`, () => {
+    const str = `--string "hello  world " --number 12 --boolean true --string "HELLO WORLD"`;
     expect(transform2TypedValues(str)).toEqual([
-      "hello",
-      "world",
+      "hello  world ",
       12,
       true,
-      "HELLO",
-      "WORLD",
+      "HELLO WORLD",
     ]);
   });
 });

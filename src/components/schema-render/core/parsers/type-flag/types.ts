@@ -18,8 +18,6 @@ export const TYPE_TRANSFORMER = {
   undefined: toUndefined,
 };
 
-export const DEFAULT_TRANSFORMER = TYPE_TRANSFORMER.string;
-
 /**
  * @desc 获取将值转换为特定类型的函数
  */

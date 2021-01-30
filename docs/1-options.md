@@ -20,6 +20,8 @@ Schmea 的每一项都称为 Options，分别为：
 
 ## parameter types
 
+### type flag
+
 - number: `$ref.method --number param`
 - string: `$ref.method --string param`
 - boolean: `$ref.method --boolean param`
@@ -27,12 +29,6 @@ Schmea 的每一项都称为 Options，分别为：
 - array: `$ref.method --array [0]: --number value1 [1]: --string value2`
 - null: `$ref.method --null`
 - undefined: `$ref.method --undefined`
-
-### default type
-
-The default type of parameters is string:
-
-`$ref.method param1 param2` is equal to `$ref.method --string param1 --string param2`.
 
 ### shorthand
 
