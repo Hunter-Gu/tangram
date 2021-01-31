@@ -15,4 +15,20 @@ describe("transform to typed values", () => {
       "HELLO WORLD",
     ]);
   });
+
+  test('--object [key1][key11]: --number 12 [key1][key12]: --boolean true [key2][key21]: --string "hello world"', () => {
+    const str =
+      '--object [key1][key11]: --number 12 [key1][key12]: --boolean true [key2][key21]: --string "hello world"';
+    expect(transform2TypedValues(str)).toEqual([
+      {
+        key1: {
+          key11: 12,
+          key12: true,
+        },
+        key2: {
+          key21: "hello world",
+        },
+      },
+    ]);
+  });
 });
