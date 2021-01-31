@@ -17,6 +17,7 @@ Schmea 的每一项都称为 Options，分别为：
 - [x] add prettier and git hooks, typescirpt don't allow any type
 - [ ] add unit test
 - [ ] Parameters support pass other type, just support string type now
+- [ ] refactor flag type parser
 
 ## parameter types
 
