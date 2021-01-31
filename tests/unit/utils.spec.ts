@@ -1,9 +1,19 @@
-import { isUndefined } from "@/components/schema-render/core/utils";
+import { isUndefined, set } from "@/components/schema-render/core/utils";
 
 describe("schema-render utils", () => {
   test("isUndefined", () => {
     const undef = undefined;
 
     expect(isUndefined(undef)).toBe(true);
+  });
+
+  test("set", () => {
+    const obj = {};
+    set(obj, ["key1", "key2"], "Hello World");
+    expect(obj).toEqual({
+      key1: {
+        key2: "Hello World",
+      },
+    });
   });
 });
