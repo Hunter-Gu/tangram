@@ -72,12 +72,7 @@ export function transform2TypedValues(str: string) {
 export function getTransformerByFlagType(flag: string) {
   const type = extractTypeFromFlag(flag);
 
-  // it will never run into this case if call `isTypeFlag()` function before.
-  if (!type) {
-    throw new Error(`Invalid type flag ${flag}`);
-  }
-
-  const transformer = getTransformer(type[1]);
+  const transformer = getTransformer(type);
 
   if (!transformer) {
     throw new Error(`Can't find a transformer for type flag ${type}`);

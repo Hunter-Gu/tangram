@@ -13,5 +13,12 @@ export function isTypeFlag(str: string) {
  * @param str e.g --boolean -> boolean
  */
 export function extractTypeFromFlag(str: string) {
-  return new RegExp(`^${FLAG_PREFIX}(\\w+)$`).exec(str);
+  const type = new RegExp(`^${FLAG_PREFIX}(\\w+)$`).exec(str);
+
+  // it will never run into this case if call `isTypeFlag()` function before.
+  if (!type) {
+    throw new Error(`Invalid type flag ${str}`);
+  }
+
+  return type[1];
 }
