@@ -6,6 +6,16 @@ import {
 import { isTypeFlag } from "./flag";
 import { set } from "../../utils";
 
+export const TYPES = {
+  STRING: "string",
+  NUMBER: "number",
+  BOOLEAN: "boolean",
+  OBJECT: "object",
+  ARRAY: "array",
+  NULL: "null",
+  UNDEFINED: "undefined",
+};
+
 export const SHORTHAND = {
   s: "string",
   n: "number",
