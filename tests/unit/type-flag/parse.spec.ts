@@ -1,4 +1,4 @@
-import { parse } from "@/components/schema-render/core/parsers/type-flag/parse";
+import { parse } from "@/components/schema-render/core/type-flag/parse";
 
 describe("type flag / parse", () => {
   it('--string "hello world"', () => {

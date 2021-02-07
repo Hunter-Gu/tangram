@@ -1,7 +1,7 @@
 import {
   isFullObjectMode,
   isInObjectMode,
-} from "@/components/schema-render/core/parsers/type-flag";
+} from "@/components/schema-render/core/type-flag/utils";
 
 describe("type flag / object mode", () => {
   test("`[key1][key11]:` is in object mode", () => {

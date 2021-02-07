@@ -1,10 +1,10 @@
 import {
   getTransformerByFlagType,
   isInObjectMode,
-  isInStringMode,
-} from "./index";
-import { isTypeFlag } from "./flag";
-import { set } from "../../utils";
+  isInPureStringMode,
+  isTypeFlag,
+} from "./utils";
+import { set } from "../utils";
 
 export const TYPES = {
   STRING: "string",
@@ -101,7 +101,7 @@ function toObject(str: string) {
       transformer = getTransformerByFlagType(value);
     } else if (
       transformer === TYPE_TRANSFORMER.string &&
-      isInStringMode(value)
+      isInPureStringMode(value)
     ) {
       value += char;
       continue;

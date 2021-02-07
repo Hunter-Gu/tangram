@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## 0.0.0 - 2021.02.10
+
+Redesign type flag parser for better code reuse.
+
+### SAX-style parser
+
+The new parser is a SAX-style parser, inspired by [Pure JavaScript HTML Parser](https://johnresig.com/blog/pure-javascript-html-parser/).
+
+e.g:
+
+```js
+const str = `--object --string "key1.key11" --number 12 --string "key1.key12" --string "hello world"`;
+
+parse(str, {
+  char(char) {},
+  type(type) {},
+  value(value) {
+    // every chunk which is not type flag. Such as key of object, e.g [key1][key2]:
+  },
+});
+```
+
 ## 0.0.0 - 2021.02.02
 
 ### Refactor type-flags parser
@@ -14,7 +36,10 @@ Split parser into 2 part:
 - transformer: transform parsed value into expect value
 
 e.g:
-`--string "hello world" --number 12 --object [key1][key11]: --string "hello world --string \"hello world\"" [key1][key12]: --number 12 --array [0]: --object [key1][key11]: --string "hello world" [key1][key12]: --number 12 [1]: --number 12 [2]: --string "hello world"`
+
+```
+--string "hello world" --number 12 --object [key1][key11]: --string "hello world --string \"hello world\"" [key1][key12]: --number 12 --array [0]: --object [key1][key11]: --string "hello world" [key1][key12]: --number 12 [1]: --number 12 [2]: --string "hello world"
+```
 
 - after parsing
 

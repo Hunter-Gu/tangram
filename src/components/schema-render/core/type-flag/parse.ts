@@ -1,6 +1,5 @@
-import { isInStringMode } from ".";
-import { isTypeFlag, extractTypeFromFlag } from "./flag";
-import { TYPES, TYPE_TRANSFORMER } from "./types";
+import { isTypeFlag, extractTypeFromFlag, isInPureStringMode } from "./utils";
+import { TYPES } from "./types";
 
 export function parse(str: string) {
   const res = [];
@@ -55,7 +54,7 @@ export function parse(str: string) {
 function inPending(type: string, value: string) {
   switch (type) {
     case TYPES.STRING:
-      return isInStringMode(value);
+      return isInPureStringMode(value);
     case TYPES.NUMBER:
     case TYPES.BOOLEAN:
       return false;
