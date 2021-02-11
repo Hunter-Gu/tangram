@@ -1,17 +1,23 @@
-import { isTypeFlag, extractTypeFromFlag, isInPureStringMode } from "./utils";
+import { isTypeFlag, extractTypeFromFlag, validString } from "./utils";
 import { TYPES } from "./types";
 
-export function parse(str: string) {
-  const res = [];
+interface IHandler {
+  type: (type: string) => void;
+  value: (value: string) => void;
+  char: (char: string) => void;
+}
+export function parse(str: string, handler: IHandler) {
   let value = "";
-  let raw = "";
   let type = "";
+
   while (str.length || value) {
     const char = str.substr(0, 1);
+
+    handler.char(char);
+
     // 后移一位
     str = str.substr(1);
 
-    raw += char;
     if (char.trim()) {
       value += char;
       continue;
@@ -25,42 +31,22 @@ export function parse(str: string) {
       if (matchType) {
         type = matchType;
         value = "";
+        handler.type(matchType);
       } else {
         throw new Error(`Unknow type flag: ${value}`);
       }
       continue;
     } else if (type) {
       // 处理 value 时，一定会有 type 了
-      if (inPending(type, value)) {
+      if (!validString(value)) {
         value += char;
         continue;
       }
+      handler.value(value);
     } else {
       throw new Error("Format Error. Value must declared by a type flag!");
     }
 
-    res.push({
-      type,
-      raw: raw.trim(),
-      value,
-    });
-    raw = "";
     value = "";
-  }
-
-  return res;
-}
-
-function inPending(type: string, value: string) {
-  switch (type) {
-    case TYPES.STRING:
-      return isInPureStringMode(value);
-    case TYPES.NUMBER:
-    case TYPES.BOOLEAN:
-      return false;
-    default:
-      throw new Error(
-        `Unknow type for pending. type: ${type}, value: ${value}`
-      );
   }
 }
