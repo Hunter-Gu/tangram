@@ -39,7 +39,43 @@ export function isInPureStringMode(value: string) {
 
   const len = value.length;
   // 字符串未结束
-  return !(value[len - 1] === '"' && value[len - 2] !== "\\");
+  return value[len - 1] === '"' && value[len - 2] !== "\\";
+}
+
+/**
+ * @desc check if the string is valid, such as parenthese valid
+ */
+const QUOTE = '"';
+const ESCAPE_MARK = "\\";
+export function validString(str: string) {
+  const stack: string[] = [];
+
+  while (str) {
+    const top = stack.slice(-1)[0];
+    let char = str.slice(0, 1);
+    str = str.slice(1);
+
+    // TODO
+    // @ts-ignore
+    if (char !== QUOTE && char !== ESCAPE_MARK) {
+      continue;
+    }
+
+    // TODO
+    // @ts-ignore
+    if (char === ESCAPE_MARK && str[0] === QUOTE) {
+      str = str.slice(1);
+      char = ESCAPE_MARK + QUOTE;
+    }
+
+    if (top === char) {
+      stack.pop();
+    } else {
+      stack.push(char);
+    }
+  }
+
+  return !stack.length;
 }
 
 /**
