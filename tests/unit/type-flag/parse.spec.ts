@@ -1,10 +1,13 @@
-import { simpleTypeHandler, typesHandler } from "./utils";
+import {
+  parse,
+  simpleParse,
+} from "@/components/schema-render/core/type-flag/parse";
 
 describe("type flag / parse", () => {
   it('--string "hello world"', () => {
     const str = '--string "hello world"';
 
-    expect(simpleTypeHandler(str)).toEqual({
+    expect(simpleParse(str)).toEqual({
       type: "string",
       value: '"hello world"',
       raw: str,
@@ -13,7 +16,7 @@ describe("type flag / parse", () => {
 
   it("--number 12", () => {
     const str = "--number 12";
-    expect(simpleTypeHandler(str)).toEqual({
+    expect(simpleParse(str)).toEqual({
       type: "number",
       value: "12",
       raw: str,
@@ -22,7 +25,7 @@ describe("type flag / parse", () => {
 
   it("--boolean true", () => {
     const str = "--boolean true";
-    expect(simpleTypeHandler(str)).toEqual({
+    expect(simpleParse(str)).toEqual({
       type: "boolean",
       value: "true",
       raw: str,
@@ -34,7 +37,7 @@ describe("type flag / parse", () => {
     const str2 = "--number 12";
     const str3 = "--boolean true";
     const str = `${str1} ${str2} ${str3}`;
-    expect(typesHandler(str)).toEqual([
+    expect(parse(str)).toEqual([
       {
         type: "string",
         value: '"hello world"',
@@ -60,7 +63,7 @@ describe("type flag / parse", () => {
     const str2 = "--boolean true";
     const str = `--object ${key1} ${str1} ${key2} ${str2}`;
 
-    expect(typesHandler(str)).toEqual([
+    expect(parse(str)).toEqual([
       {
         type: "object",
         raw: str,
@@ -90,7 +93,7 @@ describe("type flag / parse", () => {
     const seg3 = "--number 12";
     const str = `${seg1} ${seg2} ${seg3}`;
 
-    expect(typesHandler(str)).toEqual([
+    expect(parse(str)).toEqual([
       {
         raw: seg1,
         type: "string",

@@ -1,12 +1,12 @@
-import { TYPES } from "@/components/schema-render/core/type-flag/types";
-import { parse } from "../../../src/components/schema-render/core/type-flag/parse";
+import { handle } from "./parse";
+import { TYPES } from "./types";
 
-export function simpleTypeHandler(str: string) {
+export function simpleParse(str: string) {
   let handlingType = "";
   let handlingValue = "";
   let handlingChar = "";
 
-  parse(str, {
+  handle(str, {
     char(char: string) {
       handlingChar += char;
     },
@@ -25,7 +25,7 @@ export function simpleTypeHandler(str: string) {
   };
 }
 
-export function typesHandler(str: string) {
+export function parse(str: string) {
   const res: object[] = [];
   let handlingType = "";
   let handlingValue: string | object = "";
@@ -52,7 +52,7 @@ export function typesHandler(str: string) {
     restAll();
   };
 
-  parse(str, {
+  handle(str, {
     char(char: string) {
       handlingChar += char;
       handlingObjectRaw += char;
