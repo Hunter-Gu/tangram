@@ -1,6 +1,9 @@
 import { getRef } from "../ref";
 import { Events } from "../schema";
+import { typeFlag } from "../type-flag";
 import { isUndefined, logger } from "../utils";
+
+const REF_REG = /^\$[a-z0-9]+\.[^\s]+/i;
 
 export function parseEvents(events: Events) {
   const eventHandlers: Record<string, Function> = {};
@@ -15,10 +18,19 @@ export function parseEvents(events: Events) {
     eventHandlers[event] = () => {
       // TODO make funcs
       handlers.forEach((handler: string) => {
-        const [name, ...params] = handler.split(/\s+/);
-        const func = ref2Fn(name);
+        const name = REF_REG.exec(handler);
 
-        func(...params);
+        if (!name) {
+          throw new Error(
+            `[Format Error]: handler format error because of missing ref! ${name}`
+          );
+        }
+
+        const paramStr = handler.replace(REF_REG, "").trim();
+        const func = ref2Fn(name[0]);
+        const funcParams = typeFlag(paramStr);
+
+        func(...funcParams);
       });
     };
   }
