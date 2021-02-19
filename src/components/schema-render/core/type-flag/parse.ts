@@ -6,6 +6,26 @@ interface IHandler {
   value: (value: string) => void;
   char: (char: string) => void;
 }
+
+interface ParsedSimpleTypeFlag {
+  type: string;
+  raw: string;
+  value: string;
+}
+
+export type ParsedObjectTypeFlagValue = Record<
+  string,
+  ParsedSimpleTypeFlag | ParsedObjectTypeFlag
+>;
+
+interface ParsedObjectTypeFlag {
+  type: "object";
+  raw: string;
+  value: ParsedObjectTypeFlagValue;
+}
+
+export type ParsedTypeFlag = ParsedSimpleTypeFlag | ParsedObjectTypeFlag;
+
 export function handle(str: string, handler: IHandler) {
   let value = "";
   let type = "";
@@ -76,9 +96,9 @@ export function simpleParse(str: string) {
 }
 
 export function parse(str: string) {
-  const res: object[] = [];
+  const res: ParsedTypeFlag[] = [];
   let handlingType = "";
-  let handlingValue: string | object = "";
+  let handlingValue: string | ParsedTypeFlag = "";
   let handlingChar = "";
 
   let handlingObjectRaw = "";
@@ -97,7 +117,7 @@ export function parse(str: string) {
       raw: handlingChar.trim(),
       type: handlingType,
       value: handlingValue,
-    });
+    } as ParsedTypeFlag);
 
     restAll();
   };
@@ -132,11 +152,13 @@ export function parse(str: string) {
         collectAndRest();
       } else {
         // object type
-        handlingValue = handlingValue || {
-          type: handlingType,
-          raw: handlingChar.trim(),
-          value: {},
-        };
+        handlingValue =
+          handlingValue ||
+          ({
+            type: handlingType,
+            raw: handlingChar.trim(),
+            value: {},
+          } as ParsedTypeFlag);
         if (!handlingObjectKey) {
           handlingObjectKey = value;
           handlingObjectRaw = "";
