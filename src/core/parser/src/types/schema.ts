@@ -1,27 +1,14 @@
-import { DefineComponent, h, Ref, ref, VNode } from "vue";
-import {
-  parseAttrs,
-  parseChildren,
-  parseEvents,
-  parseProps,
-  parseSlots
-} from "..";
-
-export type Props = Record<string, unknown>;
-
-export type Attrs = Record<string, string>;
-
-export type Events = Record<string, string | string[]>;
-
-export type Slots = Record<string, Schema>;
-
-export interface Schema {
-  name: DefineComponent | string;
+export type Schema = {
+  name: string;
 
   __uuid: number;
 
-  props?: Props;
+  alias?: string;
+
+  props?: Record<string, unknown>;
+
   attrs?: Attrs;
+
   events?: Events;
 
   slots?: Slots;
@@ -29,17 +16,14 @@ export interface Schema {
   children?: Schema[];
 }
 
-const id = (id: unknown) => id;
+export type Props = Record<string, unknown>;
 
-type SchemaParsers = Record<keyof Schema, Function>;
+export type Attrs = Record<string, string>;
 
-export const Parsers: SchemaParsers = {
-  name: id,
-  __uuid: id,
-  props: parseProps,
-  attrs: parseAttrs,
-  events: parseEvents,
-  slots: parseSlots,
+export type Handler = string | string[];
 
-  children: parseChildren,
-};
+export type Events = Record<string, Array<string>>;
+
+export type Slots = Record<string, Schema>;
+
+export type Children = Schema[];

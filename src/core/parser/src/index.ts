@@ -1,5 +1,6 @@
-export { parseProps } from "./props";
-export { parseAttrs } from "./attrs";
-export { parseEvents } from "./events";
-export { parseSlots } from "./slots";
-export { parseChildren } from "./children";
+import { handler } from "./handlers";
+import { Schema } from "./types/schema";
+
+export function parse(schema: Schema) {
+  return handler.invoke(schema);
+}
