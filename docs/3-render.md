@@ -28,8 +28,11 @@ function handleProps(schemaItem: ISchemaItem) {
 
 ## TODO
 
-- [ ] traversal
-- [ ] handleName
-- [ ] handleProps
-- [ ] handleAttrs
+- [x] traversal
+- [x] handleName
+- [x] handleProps
+- [x] handleAttrs
 - [ ] handleEvents
+- [x] handleChildren
+- [ ] handleSlots
+- [ ] unit test
