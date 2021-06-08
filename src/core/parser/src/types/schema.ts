@@ -4,8 +4,8 @@ import {
   parseChildren,
   parseEvents,
   parseProps,
-  parseSlots,
-} from "./parsers";
+  parseSlots
+} from "..";
 
 export type Props = Record<string, unknown>;
 

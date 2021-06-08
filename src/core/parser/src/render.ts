@@ -1,6 +1,6 @@
 import { h, VNode } from "vue";
 import { initRef } from "./ref";
-import { Parsers, Schema } from "./schema";
+import { Parsers, Schema } from "./types/schema";
 
 type Options = Record<string, unknown>;
 

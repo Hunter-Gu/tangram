@@ -1,6 +1,6 @@
 import { defineComponent, PropType } from "vue";
-import render from "../../core/render";
-import { Schema } from "../../core/schema";
+import render from "../../core/parser/src/render";
+import { Schema } from "../../core/parser/src/types/schema";
 
 export default defineComponent({
   name: "SchemaRender",
