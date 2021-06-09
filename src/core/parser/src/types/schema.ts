@@ -27,3 +27,7 @@ export type Events = Record<string, Array<string>>;
 export type Slots = Record<string, Schema>;
 
 export type Child = (Schema | string);
+
+export type ParsedSchema = Omit<Schema, 'slots'> & {
+  slots?: Child[];
+}
