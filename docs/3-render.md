@@ -26,6 +26,20 @@ function handleProps(schemaItem: ISchemaItem) {
 // ...
 ```
 
+## lifecycle
+
+the component's lifecycle must be:
+
+- create 	parent
+- create 	children
+- mount  	children
+- mount  	parent
+- unmount children
+- unmount parent
+
+- update	children
+- update 	parent
+
 ## TODO
 
 - [x] traversal
