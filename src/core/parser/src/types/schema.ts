@@ -13,7 +13,7 @@ export type Schema = {
 
   slots?: Slots;
 
-  children?: Schema[];
+  children?: Child[];
 }
 
 export type Props = Record<string, unknown>;
@@ -26,4 +26,4 @@ export type Events = Record<string, Array<string>>;
 
 export type Slots = Record<string, Schema>;
 
-export type Children = Schema[];
+export type Child = (Schema | string);

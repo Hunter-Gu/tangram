@@ -1,6 +1,10 @@
 import { parse } from "..";
-import { Schema } from "../types/schema";
+import { Child } from "../types/schema";
 
-export function handleChildren(schemas?: Schema[]) {
-  return (schemas || []).map(schema => parse(schema));
+export function handleChildren(children?: Child[]) {
+  return (children || []).map(child => {
+    return typeof child === 'string'
+      ? child
+      : parse(child)
+  });
 }
