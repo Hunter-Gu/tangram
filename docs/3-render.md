@@ -48,5 +48,5 @@ the component's lifecycle must be:
 - [x] handleAttrs
 - [ ] handleEvents
 - [x] handleChildren
-- [ ] handleSlots
+- [x] handleSlots
 - [ ] unit test
