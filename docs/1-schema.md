@@ -25,7 +25,16 @@ Schema 的结构大致如下：
     alias: '',
   },
   events: {
-    onclick: ['1.2.restart()', '1.hide()'],
+    onclick: [
+      {
+        ref: 1,
+        name: 'restart',
+      },
+      {
+        ref: 1,
+        name: 'hide'
+      }
+    ],
   },
   children: [
     {
@@ -46,8 +55,16 @@ Schema 的结构大致如下：
         onchange: [
           // 数组包裹表示并行项（相当于前面添加 `await`
           // 数组项数大于 1 表示，形成一个 async IFFI 块
-          ['1.shake()', '1.move()', '1.hide'],
-          '1.2.restart()'
+          [
+            {
+              ref: 1,
+              name: 'shake'
+            },
+            {
+              ref: 1,
+              name: 'move'
+            }
+          ],
         ]
       }
     },
@@ -100,6 +117,8 @@ await (async () => {
   bb()
 })()
 await c()
+d()
+e()
 
 [
   ['a'],
@@ -108,6 +127,78 @@ await c()
     ['B'],
     'bb'
   ],
+  ['c'],
+  'd',
+  'e'
+]
+```
+
+### Chain mechanism
+
+```js
+class Chain {
+  addSync() {
+
+  }
+
+  addAsync() {
+
+  }
+
+  invoke() {
+
+  }
+}
+
+const chain = new Chain()
+
+['a', 'b', 'c']
+
+chain
+  .addSync('a')
+  .addSync('b')
+  .addSync('c')
+
+[
+  ['a'],
+  ['b'],
   ['c']
 ]
+chain
+  .addAsync('a')
+  .addAsync('b')
+  .addAsync('c')
+
+[
+  ['a', 'A'],
+  ['b'],
+  ['c']
+]
+chain
+  .addSync('a')
+  .addSync('A')
+  .addAsync('b')
+  .addAsync('c')
+
+
+[
+  ['a'],
+  [
+    'b',
+    ['B'],
+    'bb'
+  ],
+  ['c'],
+  'd',
+  'e'
+]
+
+chain
+  .addAsync('a')
+  .addSync('b')
+  .addAsync('B')
+  .addSync('bb')
+  .addAsync('c')
+  .addSync('d')
+  .addSync('e')
 ```
