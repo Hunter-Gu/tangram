@@ -10,6 +10,7 @@
 - [x] handleChildren
 - [x] handleSlots
 - [ ] unit test
+- [ ] scalable
 
 ## Editor
 

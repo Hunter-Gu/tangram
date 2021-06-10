@@ -26,6 +26,19 @@ function handleProps(schemaItem: ISchemaItem) {
 // ...
 ```
 
+### scalable
+
+允许开发注册自定义的 handler：
+
+- schema handler
+- field handler
+
+支持注册到 handler 的不同阶段，比如：
+
+- before: 最先触发的 handler
+- running: 处理 key 过程中的 handler, 只支持 field handler 的形式
+- after: 处理完整个 schema 后触发的
+
 ## lifecycle
 
 the component's lifecycle must be:
