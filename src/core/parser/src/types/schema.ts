@@ -1,3 +1,5 @@
+import { GetRef } from "./render";
+
 export type Schema = {
   name: string;
 
@@ -32,6 +34,10 @@ export type Slots = Record<string, Schema>;
 
 export type Child = (Schema | string);
 
-export type ParsedSchema = Omit<Schema, 'slots'> & {
+export type ParsedSchema = Omit<Schema, 'slots' | 'events'> & {
   slots?: Child[];
+
+  events?: ParsedEvents;
 };
+
+export type ParsedEvents = Record<string, (getRef: GetRef) => any>;
