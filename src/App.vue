@@ -2,22 +2,9 @@
   <SchemaRender :schema="schema" />
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import SchemaRender from "./components/schema-render/schema-render";
+<script lang="ts" setup>
+import SchemaRender from "./components/schema-render";
 import schema from "./examples/schema";
-
-export default defineComponent({
-  name: "App",
-  components: {
-    SchemaRender,
-  },
-  setup() {
-    return {
-      schema,
-    };
-  },
-});
 </script>
 
 <style>
