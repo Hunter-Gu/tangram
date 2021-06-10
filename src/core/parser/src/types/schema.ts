@@ -20,9 +20,13 @@ export type Props = Record<string, unknown>;
 
 export type Attrs = Record<string, string>;
 
-export type Handler = string | string[];
+export type Handler = {
+  ref: string;
+  name: string;
+  args?: string;
+};
 
-export type Events = Record<string, Array<string>>;
+export type Events = Record<string, Array<Handler | Handler[]>>;
 
 export type Slots = Record<string, Schema>;
 
@@ -30,4 +34,4 @@ export type Child = (Schema | string);
 
 export type ParsedSchema = Omit<Schema, 'slots'> & {
   slots?: Child[];
-}
+};
