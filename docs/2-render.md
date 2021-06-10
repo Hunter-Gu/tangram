@@ -39,14 +39,3 @@ the component's lifecycle must be:
 
 - update	children
 - update 	parent
-
-## TODO
-
-- [x] traversal
-- [x] handleName
-- [x] handleProps
-- [x] handleAttrs
-- [ ] handleEvents
-- [x] handleChildren
-- [x] handleSlots
-- [ ] unit test
