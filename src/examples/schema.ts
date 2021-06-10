@@ -1,7 +1,18 @@
-import { Schema } from "../components/schema-render/core/schema";
+import { Schema } from "@/core/parser/src/types/schema";
 import Elm1 from "./elm-1.vue";
 
-export default {
+// div
+//   Elm1(div)
+//     - Text
+//     span
+//       div
+//         ...
+//   Elm1(div)
+//     - Text
+//   div
+//     Elm1(div)
+
+export default <Schema>{
   name: "div",
   __uuid: 0,
   children: [
@@ -12,7 +23,10 @@ export default {
         name: "First wrapper element",
       },
       events: {
-        onClick: ["$4.logger hello world", "$1.logger"],
+        onClick: [
+          { ref: '1', name: 'logger' },
+          { ref: '4', name: 'logger' }
+        ],
       },
       slots: {
         default: {
@@ -25,6 +39,9 @@ export default {
               },
               children: ["child"],
             },
+            {
+              name: Elm1
+            }
           ],
         },
       },
@@ -50,10 +67,12 @@ export default {
             style: "color: red",
           },
           events: {
-            onClick: "$4.logger",
+            onClick: [
+              { ref: '4', name: 'logger' }
+            ],
           },
         },
       ],
     },
   ],
-} as Schema;
+};
