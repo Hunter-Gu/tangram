@@ -84,121 +84,74 @@ Schema 的结构大致如下：
 
 ```js
 // 串行
-a()
-b()
-c()
-['a', 'b', 'c']
+a();
+b();
+c();
+
+[("a", "b", "c")];
 
 // 并行
-await a()
-await b()
-await c()
-[
-  ['a'],
-  ['b'],
-  ['c']
-]
+await a();
+await b();
+await c();
+
+[(["a"], ["b"], ["c"])];
 
 // 串行 + 并行
-await (async () => { a(); A() })()
-await b()
-await c()
-[
-  ['a', 'A'],
-  ['b'],
-  ['c']
-]
+await (async () => {
+  a();
+  A();
+})();
+await b();
+await c();
+
+[(["a", "A"], ["b"], ["c"])];
 
 // 更复杂一点的
-await a()
+await a();
 await (async () => {
-  b()
-  await B()
-  bb()
-})()
-await c()
-d()
-e()
+  b();
+  await B();
+  bb();
+})();
+await c();
+d();
+e();
 
-[
-  ['a'],
-  [
-    'b',
-    ['B'],
-    'bb'
-  ],
-  ['c'],
-  'd',
-  'e'
-]
+[(["a"], ["b", ["B"], "bb"], ["c"], "d", "e")];
 ```
 
 ### Chain mechanism
 
 ```js
 class Chain {
-  addSync() {
+  addSync() {}
 
-  }
+  addAsync() {}
 
-  addAsync() {
-
-  }
-
-  invoke() {
-
-  }
+  invoke() {}
 }
 
-const chain = new Chain()
+const chain = new Chain()[("a", "b", "c")];
 
-['a', 'b', 'c']
+chain.addSync("a").addSync("b").addSync("c");
 
-chain
-  .addSync('a')
-  .addSync('b')
-  .addSync('c')
+[(["a"], ["b"], ["c"])];
 
-[
-  ['a'],
-  ['b'],
-  ['c']
-]
-chain
-  .addAsync('a')
-  .addAsync('b')
-  .addAsync('c')
+chain.addAsync("a").addAsync("b").addAsync("c");
 
-[
-  ['a', 'A'],
-  ['b'],
-  ['c']
-]
-chain
-  .addSync('a')
-  .addSync('A')
-  .addAsync('b')
-  .addAsync('c')
+[(["a", "A"], ["b"], ["c"])];
 
+chain.addSync("a").addSync("A").addAsync("b").addAsync("c");
 
-[
-  ['a'],
-  [
-    'b',
-    ['B'],
-    'bb'
-  ],
-  ['c'],
-  'd',
-  'e'
-]
+[(["a"], ["b", ["B"], "bb"], ["c"], "d", "e")];
 
 chain
-  .addAsync('a')
-  .addSync('b')
-  .addAsync('B')
-  .addSync('bb')
-  .addAsync('c')
-  .addSync('d')
-  .addSync('e')
+  .addAsync("a")
+  .addSync("b")
+  .addAsync("B")
+  .addSync("bb")
+  .addAsync("c")
+  .addSync("d")
+  .addSync("e");
 ```

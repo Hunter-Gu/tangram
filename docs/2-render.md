@@ -9,18 +9,18 @@ Render 本质上就是 Schema 的 Parser(递归解析 Schema 的每个字段)，
 ## pluginable
 
 ```js
-handler.use(handleName)
-handler.use(handleProps)
-handler.use(handleEvents)
+handler.use(handleName);
+handler.use(handleProps);
+handler.use(handleEvents);
 // ...
 
 function handleName(schemaItem: ISchemaItem) {
-	// 处理 name 属性，并透传其他属性
-	return { ...schemaItem, name: schemaItem.toLowerCase() };
+  // 处理 name 属性，并透传其他属性
+  return { ...schemaItem, name: schemaItem.toLowerCase() };
 }
 
 function handleProps(schemaItem: ISchemaItem) {
-	// 处理 props 属性，并透传其他属性
+  // 处理 props 属性，并透传其他属性
 }
 
 // ...
@@ -43,12 +43,12 @@ function handleProps(schemaItem: ISchemaItem) {
 
 the component's lifecycle must be:
 
-- create 	parent
-- create 	children
-- mount  	children
-- mount  	parent
+- create parent
+- create children
+- mount children
+- mount parent
 - unmount children
 - unmount parent
 
-- update	children
-- update 	parent
+- update children
+- update parent

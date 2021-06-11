@@ -1,11 +1,10 @@
 import { Data, Chainable } from "../types/chain";
 
 export class Chain {
-
   private list: Partial<Chainable> = {};
 
   private pointer: Chainable = {
-    next: {}
+    next: {},
   };
 
   constructor() {
@@ -16,7 +15,7 @@ export class Chain {
     return {
       name,
       ref,
-      async
+      async,
     };
   }
 
@@ -30,7 +29,8 @@ export class Chain {
     let node: Partial<Chainable> | undefined = this.list;
     let current: Data | void;
 
-    while (current = node?.data) {
+    /* eslint-disable no-cond-assign */
+    while ((current = node?.data)) {
       const { name, async, ref } = current;
       const instance = getRef(ref);
       const func = instance[name].bind(instance);

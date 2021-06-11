@@ -15,18 +15,18 @@ export function render(schema: Schema, h: Render, getRef: GetRef) {
     let slots: Node[] | void;
     let children: Node[] | void;
 
-    if (typeof node === 'string') {
+    if (typeof node === "string") {
       return node;
     }
 
     if (node.children && node.children.length) {
-      children = node.children.map(lifecycle)
+      children = node.children.map(lifecycle);
     }
 
     if (node.slots) {
       // TODO: FIX warnings
       // [Non-function value encountered for default slot. Prefer function slots for better performance.]
-      slots = (node.slots as unknown as Schema[]).map(lifecycle)
+      slots = (node.slots as unknown as Schema[]).map(lifecycle);
     }
 
     const ret = h(
@@ -35,7 +35,7 @@ export function render(schema: Schema, h: Render, getRef: GetRef) {
       {
         ...node.attrs,
         ...node.props,
-        ...formatEvents(node.events as ParsedEvents, getRef)
+        ...formatEvents(node.events as ParsedEvents, getRef),
       },
       slots || children
     );

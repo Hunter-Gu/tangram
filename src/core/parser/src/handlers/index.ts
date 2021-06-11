@@ -7,11 +7,12 @@ import { handleEvents } from "./events";
 
 export const handler = new Plugin<Schema, ParsedSchema>();
 
-handler.register('name', id)
-    .register('__uuid', id)
-    .register('alias', id)
-    .register('attrs', id)
-    .register('props', id)
-    .register('events', handleEvents)
-    .register('slots', handleSlots)
-    .register('children', handleChildren);
+handler
+  .register("name", id)
+  .register("__uuid", id)
+  .register("alias", id)
+  .register("attrs", id)
+  .register("props", id)
+  .register("events", handleEvents)
+  .register("slots", handleSlots)
+  .register("children", handleChildren);

@@ -24,8 +24,8 @@ export default <Schema>{
       },
       events: {
         onClick: [
-          { ref: '1', name: 'logger' },
-          { ref: '4', name: 'logger' }
+          { ref: "1", name: "logger" },
+          { ref: "4", name: "logger" },
         ],
       },
       slots: {
@@ -40,8 +40,8 @@ export default <Schema>{
               children: ["child"],
             },
             {
-              name: Elm1
-            }
+              name: Elm1,
+            },
           ],
         },
       },
@@ -67,9 +67,7 @@ export default <Schema>{
             style: "color: red",
           },
           events: {
-            onClick: [
-              { ref: '4', name: 'logger' }
-            ],
+            onClick: [{ ref: "4", name: "logger" }],
           },
         },
       ],

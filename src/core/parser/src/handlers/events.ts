@@ -6,23 +6,23 @@ export function handleEvents(events: Events) {
     const handlers = events[key as keyof Events];
     const chain = new Chain();
 
-    handlers.forEach(handler => {
+    handlers.forEach((handler) => {
       const add = (handler: Handler | Handler[]) => {
         if (Array.isArray(handler)) {
-          ;handler.length > 1 ?
-            add(handler) :
-            chain.add(handler[0].ref, handler[0].name, true)
+          handler.length > 1
+            ? add(handler)
+            : chain.add(handler[0].ref, handler[0].name, true);
         } else {
           chain.add(handler.ref, handler.name);
         }
-      }
+      };
 
       add(handler);
-    })
+    });
 
     return {
       ...acc,
-      [key]: chain.invoke.bind(chain)
+      [key]: chain.invoke.bind(chain),
     };
   }, {});
 }

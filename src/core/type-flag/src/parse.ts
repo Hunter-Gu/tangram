@@ -15,6 +15,7 @@ interface ParsedSimpleTypeFlag {
 
 export type ParsedObjectTypeFlagValue = Record<
   string,
+  /* eslint-disable no-use-before-define */
   ParsedSimpleTypeFlag | ParsedObjectTypeFlag
 >;
 
@@ -43,7 +44,7 @@ export function handle(str: string, handler: IHandler) {
       continue;
     }
 
-    /******** 处理完整的块 *********/
+    /** ****** 处理完整的块 *********/
 
     // 处理 --type flag
     if (isTypeFlag(value)) {

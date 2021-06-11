@@ -19,4 +19,3 @@
 - `-a`: `--array`
 - `-nu`: `--null`
 - `-u`: `--undefined`
-

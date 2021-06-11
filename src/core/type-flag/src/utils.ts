@@ -83,8 +83,8 @@ export function validString(str: string) {
  * @example `[key1][key2]:`
  * @param value
  */
-const OBJECT_KEY = `(\\[\\w+\\])+:`;
-const OBJECT_VALUE = `(\\s+--\\w+\\s+(\\w+|".+")\\s+)`;
+const OBJECT_KEY = "(\\[\\w+\\])+:";
+const OBJECT_VALUE = '(\\s+--\\w+\\s+(\\w+|".+")\\s+)';
 export function isInObjectMode(value: string) {
   return new RegExp(`(^${OBJECT_KEY}${OBJECT_VALUE})*${OBJECT_KEY}$`).test(
     value

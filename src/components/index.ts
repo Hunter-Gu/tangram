@@ -1,5 +1,3 @@
-import SchemaRender from './schema-render';
+import SchemaRender from "./schema-render";
 
-export {
-  SchemaRender
-};
+export { SchemaRender };

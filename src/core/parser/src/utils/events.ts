@@ -6,9 +6,9 @@ export function formatEvents(events: ParsedEvents | void, getRef: GetRef) {
     return;
   }
 
-  Object.keys(events || {}).forEach(name => {
+  Object.keys(events || {}).forEach((name) => {
     events[name as keyof Events] = events[name].bind(null, getRef);
-  })
+  });
 
   return events;
 }

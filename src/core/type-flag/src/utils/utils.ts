@@ -13,7 +13,6 @@ export function set(
 ) {
   const _keys = [...keys];
   let temp: Record<string, unknown> = obj;
-  let key: string = "";
 
   while (true) {
     const key = _keys.shift();
