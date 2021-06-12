@@ -18,5 +18,3 @@ export class Ref {
     }
   }
 }
-
-export const refs = new Ref();
