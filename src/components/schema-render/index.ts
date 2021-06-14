@@ -1,3 +1,1 @@
-import SchemaRender from "./schema-render";
-
-export default SchemaRender;
+export { default } from "./schema-render";
