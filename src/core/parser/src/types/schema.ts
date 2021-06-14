@@ -15,12 +15,19 @@ export type Events = Record<string, Array<Handler | Handler[]>>;
 export type ParsedEvents = Record<string, (getRef: GetRef) => any>;
 
 /* eslint-disable no-use-before-define */
-export type Slots = Record<string, Schema>;
+export type Slots = Record<string, SchemaData>;
 
 /* eslint-disable no-use-before-define */
-export type Child = Schema | string;
+export type Child = SchemaData | string;
 
 export type Schema = {
+  name: string;
+  version: string;
+  data: SchemaData;
+  [key: string]: unknown;
+};
+
+export type SchemaData = {
   name: string;
 
   __uuid: number;
@@ -38,7 +45,7 @@ export type Schema = {
   children?: Child[];
 };
 
-export type ParsedSchema = Omit<Schema, "slots" | "events"> & {
+export type ParsedSchema = Omit<SchemaData, "slots" | "events"> & {
   slots?: Child[];
 
   events?: ParsedEvents;

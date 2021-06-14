@@ -1,4 +1,4 @@
-import { Schema } from "@/core/parser/src/types/schema";
+import { SchemaData } from "@/core/parser/src/types/schema";
 import Elm1 from "./elm-1.vue";
 
 // div
@@ -12,7 +12,7 @@ import Elm1 from "./elm-1.vue";
 //   div
 //     Elm1(div)
 
-export default <Schema>{
+export default <SchemaData>{
   name: "div",
   __uuid: 0,
   children: [

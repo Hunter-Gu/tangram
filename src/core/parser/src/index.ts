@@ -1,13 +1,13 @@
 import { handler } from "./handlers";
 import { Render, Node, GetRef } from "./types/render";
-import { Child, ParsedEvents, ParsedSchema, Schema } from "./types/schema";
+import { Child, ParsedEvents, ParsedSchema, SchemaData } from "./types/schema";
 import { formatEvents } from "./utils/events";
 
-export function parse(schema: Schema): ParsedSchema {
+export function parse(schema: SchemaData): ParsedSchema {
   return handler.invoke(schema);
 }
 
-export function render(schema: Schema, h: Render, getRef: GetRef) {
+export function render(schema: SchemaData, h: Render, getRef: GetRef) {
   const schemaTree = parse(schema);
 
   // dfs
@@ -26,7 +26,7 @@ export function render(schema: Schema, h: Render, getRef: GetRef) {
     if (node.slots) {
       // TODO: FIX warnings
       // [Non-function value encountered for default slot. Prefer function slots for better performance.]
-      slots = (node.slots as unknown as Schema[]).map(lifecycle);
+      slots = (node.slots as unknown as SchemaData[]).map(lifecycle);
     }
 
     const ret = h(

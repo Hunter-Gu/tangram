@@ -1,10 +1,10 @@
 import { render as baseRender } from "../../../parser/src";
 import { Render } from "../../../parser/src/types/render";
-import { Schema } from "../../../parser/src/types/schema";
+import { SchemaData } from "../../../parser/src/types/schema";
 import { h } from "@vue/runtime-core";
 import { Ref } from "./ref";
 
-export function render(schema: Schema) {
+export function render(schema: SchemaData) {
   const refs = new Ref();
 
   const enhance: Render = (
