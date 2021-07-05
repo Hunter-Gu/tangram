@@ -7,10 +7,10 @@
 </template>
 
 <script lang="ts" setup>
-import SchemaRender from "../../components/schema-render";
-import schema from "../../examples/schema";
-import optionsAPILfecycle from "../../examples/options-api-lifecycle";
-import setupAPILifecycle from "../../examples/setup-api-lifecycle";
+import SchemaRender from "../../../components/schema-render";
+import schema from "../../../examples/schema";
+import optionsAPILfecycle from "../../../examples/options-api-lifecycle";
+import setupAPILifecycle from "../../../examples/setup-api-lifecycle";
 </script>
 
 <style scoped>

@@ -1,23 +1,26 @@
-import { RouteRecordRaw } from "vue-router";
-import Home from "./pages/home";
-import Examples from "./pages/examples";
-import Editor from "./pages/editor";
+import { RouteRecordRaw, RouterView } from "vue-router";
+import { homeRoutes } from "./pages/home/home.route";
+import { editorRoutes } from "./pages/editor/editor.route";
+import { examplesRoutes } from "./pages/examples/examples.route";
 
-export const routes: RouteRecordRaw[] = [
+export const routes = [
   {
     path: "/",
-    component: Home,
+    children: homeRoutes,
   },
   {
     path: "/examples",
-    component: Examples,
+    children: examplesRoutes,
   },
   {
     path: "/editor",
-    component: Editor,
+    children: editorRoutes,
   },
   {
     path: "/:pathMatch(.*)*",
     redirect: "/",
   },
-];
+].map((route) => ({
+  ...route,
+  component: route.children?.length ? RouterView : null,
+})) as RouteRecordRaw[];
