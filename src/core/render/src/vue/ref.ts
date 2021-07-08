@@ -1,4 +1,7 @@
+import { createLogger } from "../../../../utils/logger";
 import { ref, ToRefs } from "@vue/reactivity";
+
+const logger = createLogger("[Ref]");
 
 export class Ref {
   private store: Record<string | number, ToRefs<any>> = {};
@@ -14,7 +17,7 @@ export class Ref {
     if (key in this.store) {
       return this.store[key].value;
     } else {
-      console.warn(`Ref [${key}] is not found!`);
+      logger.warn(`Ref [${key}] is not found!`);
     }
   }
 }
