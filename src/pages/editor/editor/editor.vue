@@ -1,24 +1,21 @@
 <template>
-  <v-container :fluid="true" class="no-padding">
-    <v-row no-gutters class="height-100">
-      <v-col cols="2"> 1 </v-col>
-
-      <v-col cols="32">
-        <v-card class="height-100">auto</v-card>
-      </v-col>
-
-      <v-col cols="2"> 2 </v-col>
-    </v-row>
-  </v-container>
+  <el-container class="height-100">
+    <el-aside width="200px">Aside</el-aside>
+    <el-container class="main-border">
+      <el-main></el-main>
+    </el-container>
+    <el-aside width="200px">Aside</el-aside>
+  </el-container>
 </template>
 
 <script lang="ts" setup></script>
 
 <style scoped>
-.no-padding {
-  padding: 0;
-}
 .height-100 {
   height: 100vh;
+}
+.main-border {
+  border: 1px solid #ccc;
+  border-width: 0 1px;
 }
 </style>

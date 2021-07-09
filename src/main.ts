@@ -1,8 +1,9 @@
 import { createApp } from "vue";
 import { createRouter, createWebHashHistory } from "vue-router";
+import "normalize.css";
 import App from "./App.vue";
 import { routes } from "./routes";
-import vuetify from "./plugins/vuetify";
+import install from "./plugins";
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -11,4 +12,6 @@ const router = createRouter({
 
 const app = createApp(App);
 
-app.use(vuetify).use(router).mount("#app");
+install(app);
+
+app.use(router).mount("#app");
