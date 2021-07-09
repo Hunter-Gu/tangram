@@ -11,9 +11,15 @@ import { isDescritporPropType } from "../utils/utils";
 const logger = createLogger("[DescritporTransformer]");
 
 class DescritporTransformer {
+  private _root: Component = "div";
+
   private mapping: TransformMapping = {};
 
   private globalMapping: GlobalTransformMapping = {};
+
+  public get root() {
+    return this._root;
+  }
 
   private getTarget(name: Descriptor["name"], descriptorProp: DescriptorProp) {
     let component: Component | undefined;
@@ -79,6 +85,11 @@ class DescritporTransformer {
 
   configGlobal(type: DescriptorPropTypes, component: Component) {
     this.globalMapping[type] = component;
+    return this;
+  }
+
+  configRoot(component: Component) {
+    this._root = component;
     return this;
   }
 }
