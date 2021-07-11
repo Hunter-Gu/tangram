@@ -23,9 +23,13 @@ type Union<T> = T extends DescriptorPropTypes
   ? DescriptorPropTypeAndValue<T>
   : null;
 
-export type DescriptorProp = {
+export type DescriptorPropName = {
   name: string;
-} & Union<DescriptorPropTypes>;
+
+  label?: string;
+};
+
+export type DescriptorProp = DescriptorPropName & Union<DescriptorPropTypes>;
 
 export type Descriptor = {
   name: string;

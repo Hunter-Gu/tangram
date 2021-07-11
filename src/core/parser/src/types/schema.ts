@@ -28,7 +28,7 @@ export type Schema = {
 };
 
 export type SchemaData = {
-  name: string;
+  name: Component;
 
   __uuid: number;
 
@@ -51,4 +51,4 @@ export type ParsedSchema = Omit<SchemaData, "slots" | "events"> & {
   events?: ParsedEvents;
 };
 
-export type Component = Schema["name"];
+export type Component = Schema["name"] | any;

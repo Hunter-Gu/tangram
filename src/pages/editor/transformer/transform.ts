@@ -5,8 +5,11 @@ import { transformer } from "./transformer";
 export function descritpor2Schema(descriptor: Descriptor): SchemaData {
   const schema: SchemaData = {
     name: transformer.root,
+    props: {
+      name: descriptor.name,
+    },
     __uuid: new Date().getTime(),
-    children: [descriptor.name],
+    children: [],
   };
 
   descriptor.props.forEach((prop) => {

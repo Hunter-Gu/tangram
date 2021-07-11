@@ -1,5 +1,7 @@
 import { Component, SchemaData } from "@/core/parser/src/types/schema";
+import { render } from "../../../core/render/src/vue";
 import { createLogger } from "../../../utils/logger";
+import type { ComponentProp } from "../types/component";
 import {
   Descriptor,
   DescriptorProp,
@@ -7,6 +9,7 @@ import {
 } from "../types/descriptor";
 import { GlobalTransformMapping, TransformMapping } from "../types/transform";
 import { isDescritporPropType } from "../utils/utils";
+import { IPropEnhance, PropEnhance } from "./prop-enhance";
 
 const logger = createLogger("[DescritporTransformer]");
 
@@ -41,12 +44,20 @@ class DescritporTransformer {
     return component!;
   }
 
+  constructor(private propEnhance: IPropEnhance) {}
+
   transform = (
     name: Descriptor["name"],
     descriptorProp: DescriptorProp
   ): Omit<SchemaData, "__uuid"> => {
     return {
-      name: this.getTarget(name, descriptorProp),
+      name: this.propEnhance.enhance(this.getTarget(name, descriptorProp)),
+      // pass props value to functional component
+      // which is created by `propEnhance.enhance()`
+      props: {
+        name: descriptorProp.name,
+        label: descriptorProp.label,
+      } as ComponentProp,
     };
   };
 
@@ -94,4 +105,5 @@ class DescritporTransformer {
   }
 }
 
-export const transformer = new DescritporTransformer();
+const propEnhance = new PropEnhance(render);
+export const transformer = new DescritporTransformer(propEnhance);
