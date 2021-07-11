@@ -14,12 +14,28 @@
 
 ## Editor
 
-## type flag
+- [ ] support other framework
+- [ ] support import component libraries & generate descriptors
+- [ ] code generator
+- [ ] logic editor - type flag
+- [ ] logic integration
+- [ ] support publish pages
+  - [ ] version control
+  - [ ] enviroment
+  - [ ] revert
+  - [ ] authority
+  - [ ] grayscale
+  - [ ] cli for code generator
+  - [ ] monitor & data track
+- [ ] electron & vscode extension
+- [ ] real-time collaboration?
+
+### type flag
 
 - [x] support pass parameters to call function
 - [x] support call other refs' function
 - [x] refactor render
 - [x] add prettier and git hooks, typescirpt don't allow any type
 - [ ] add unit test
-- [ ] Parameters support pass other type, just support string type now
+- [ ] parameters support pass other type, just support string type now
 - [ ] refactor flag type parser
