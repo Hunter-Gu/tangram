@@ -7,14 +7,18 @@ import {
   DescriptorProp,
   DescriptorPropTypes,
 } from "../types/descriptor";
-import { GlobalTransformMapping, TransformMapping } from "../types/transform";
+import {
+  ComponentInfo,
+  GlobalTransformMapping,
+  TransformMapping,
+} from "../types/transform";
 import { isDescritporPropType } from "../utils/utils";
 import { IPropEnhance, PropEnhance } from "./prop-enhance";
 
 const logger = createLogger("[DescritporTransformer]");
 
 class DescritporTransformer {
-  private _root: Component = "div";
+  private _root: ComponentInfo = { component: "div" };
 
   private mapping: TransformMapping = {};
 
@@ -24,24 +28,27 @@ class DescritporTransformer {
     return this._root;
   }
 
-  private getTarget(name: Descriptor["name"], descriptorProp: DescriptorProp) {
-    let component: Component | undefined;
+  private getTarget(
+    name: Descriptor["name"],
+    descriptorProp: DescriptorProp
+  ): ComponentInfo {
+    let componentInfo: ComponentInfo | undefined;
     if (!(name in this.mapping)) {
-      component = this.globalMapping[descriptorProp.type];
+      componentInfo = this.globalMapping[descriptorProp.type];
     } else {
       const currentMapping = this.mapping[name];
-      component =
+      componentInfo =
         currentMapping.props?.[descriptorProp.name] ||
         currentMapping.types?.[descriptorProp.type];
     }
 
-    if (!component) {
+    if (!componentInfo) {
       logger.error(
         `you have not config target component for descriptor: ${name}, prop: ${descriptorProp.name}, type: ${descriptorProp.type}`
       );
     }
 
-    return component!;
+    return componentInfo!;
   }
 
   constructor(private propEnhance: IPropEnhance) {}
@@ -57,6 +64,7 @@ class DescritporTransformer {
       props: {
         name: descriptorProp.name,
         label: descriptorProp.label,
+        defaultValue: descriptorProp.defaultValue
       } as ComponentProp,
     };
   };
@@ -67,40 +75,55 @@ class DescritporTransformer {
   config(
     descirptorName: Descriptor["name"],
     PropName: DescriptorProp["name"],
-    component: Component
+    component: Component,
+    staticProps?: ComponentInfo["staticProps"]
   ): this;
   config(
     descirptorName: Descriptor["name"],
     type: DescriptorPropTypes,
-    component: Component
+    component: Component,
+    staticProps?: ComponentInfo["staticProps"]
   ): this;
   config(
     descirptorName: Descriptor["name"],
     typeOrName: DescriptorPropTypes | DescriptorProp["name"],
-    component: Component
+    component: Component,
+    staticProps?: ComponentInfo["staticProps"]
   ): this {
     if (isDescritporPropType(typeOrName)) {
+      const before = this.mapping[descirptorName].types;
       this.mapping[descirptorName].types = {
-        ...this.mapping[descirptorName].types!,
-        [typeOrName]: component,
+        ...before!,
+        [typeOrName]: {
+          component,
+          staticProps,
+        },
       };
     } else {
+      const before = this.mapping[descirptorName].props;
       this.mapping[descirptorName].props = {
-        ...this.mapping[descirptorName].props!,
-        [typeOrName]: component,
+        ...before!,
+        [typeOrName]: {
+          component,
+          staticProps,
+        },
       };
     }
 
     return this;
   }
 
-  configGlobal(type: DescriptorPropTypes, component: Component) {
-    this.globalMapping[type] = component;
+  configGlobal(
+    type: DescriptorPropTypes,
+    component: Component,
+    staticProps?: ComponentInfo["staticProps"]
+  ) {
+    this.globalMapping[type] = { component, staticProps };
     return this;
   }
 
-  configRoot(component: Component) {
-    this._root = component;
+  configRoot(component: Component, staticProps?: ComponentInfo["staticProps"]) {
+    this._root = { component, staticProps };
     return this;
   }
 }

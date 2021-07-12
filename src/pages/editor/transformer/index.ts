@@ -6,8 +6,9 @@ import { ElInput, ElSwitch } from "element-plus";
 export * from "./transform";
 export * from "./transformer";
 
+// TODO better type definition for static props
 transformer
   .configRoot(Wrapper)
   .configGlobal(DescriptorPropTypes.Boolean, ElSwitch)
   .configGlobal(DescriptorPropTypes.String, ElInput)
-  .configGlobal(DescriptorPropTypes.Number, ElInput);
+  .configGlobal(DescriptorPropTypes.Number, ElInput, { type: "number" });

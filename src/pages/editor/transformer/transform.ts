@@ -3,10 +3,12 @@ import { Descriptor } from "../types/descriptor";
 import { transformer } from "./transformer";
 
 export function descritpor2Schema(descriptor: Descriptor): SchemaData {
+  const rootInfo = transformer.root;
   const schema: SchemaData = {
-    name: transformer.root,
+    name: rootInfo.component,
     props: {
       name: descriptor.name,
+      ...rootInfo.staticProps,
     },
     __uuid: new Date().getTime(),
     children: [],
