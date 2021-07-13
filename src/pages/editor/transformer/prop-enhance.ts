@@ -1,7 +1,6 @@
 import { render } from "../../../core/render/src/vue";
 import { SchemaData } from "../../../core/parser/src/types/schema";
 import EnhanceProp from "./components/enhance-prop";
-import { ComponentProp } from "../types/component";
 import { ComponentInfo } from "../types/transform";
 import { DescriptorProp } from "../types/descriptor";
 
@@ -22,17 +21,8 @@ export class PropEnhance extends IPropEnhance {
         name: EnhanceProp,
         __uuid: new Date().getTime(),
         props: {
-          name: props.name,
-          label: props.label,
-        } as ComponentProp,
-        slots: {
-          default: {
-            name: componentInfo.component,
-            __uuid: new Date().getTime(),
-            props: {
-              ...componentInfo.staticProps,
-            },
-          },
+          ...props,
+          ...componentInfo,
         },
       });
     };

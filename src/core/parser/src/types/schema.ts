@@ -51,4 +51,5 @@ export type ParsedSchema = Omit<SchemaData, "slots" | "events"> & {
   events?: ParsedEvents;
 };
 
+// TODO fix `any` type problem
 export type Component = Schema["name"] | any;

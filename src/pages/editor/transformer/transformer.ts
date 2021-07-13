@@ -64,7 +64,7 @@ class DescritporTransformer {
       props: {
         name: descriptorProp.name,
         label: descriptorProp.label,
-        defaultValue: descriptorProp.defaultValue
+        defaultValue: descriptorProp.defaultValue,
       } as ComponentProp,
     };
   };

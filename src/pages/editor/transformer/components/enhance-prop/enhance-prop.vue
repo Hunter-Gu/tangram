@@ -1,7 +1,17 @@
 <template>
-  <el-space :class="wrap && 'enable-wrap'" size="mini" spacer=":" :wrap="wrap">
+  <el-space
+    :class="wrap ? 'enable-wrap' : ''"
+    size="mini"
+    spacer=":"
+    :wrap="wrap"
+  >
     <span ref="labelRef">{{ label || name }}</span>
-    <slot></slot>
+
+    <component
+      :is="component"
+      v-bind="staticProps"
+      v-model="defaultValue"
+    ></component>
   </el-space>
 </template>
 
@@ -9,15 +19,24 @@
 import { defineProps, onMounted, ref } from "@vue/runtime-core";
 import type { PropType, Ref } from "@vue/runtime-core";
 import type { ComponentProp } from "../../../types/component";
+import type { ComponentInfo } from "../../../types/transform";
 
-const props: ComponentProp = defineProps({
+const props: ComponentProp | ComponentInfo = defineProps({
   name: {
     type: String as PropType<string>,
   },
   label: {
     type: String as PropType<string>,
   },
-}); // TODO why props missing when add `as ComponentProp` at tail
+  component: {
+    type: [String, Object] as PropType<ComponentInfo["component"]>,
+    required: true,
+  },
+  staticProps: {
+    type: Object as PropType<ComponentInfo["staticProps"]>,
+  },
+  defaultValue: {},
+}); // TODO why props missing when add `as ComponentProp & ComponentInfo` at tail
 
 const useWrap = (ref: Ref) => {
   const elm = ref.value;
