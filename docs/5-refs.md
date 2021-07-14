@@ -24,3 +24,5 @@
 - [https://github.com/crcn/paperclip](https://github.com/crcn/paperclip)
 - [https://interconnected.blog/low-code-no-code-part-ii-how-to-ride-this-wave/](https://interconnected.blog/low-code-no-code-part-ii-how-to-ride-this-wave/)
 - [https://grapesjs.com/](https://grapesjs.com/)
+- [https://github.com/sparrow-js/sparrow](https://github.com/sparrow-js/sparrow)
+- [https://github.com/steedos/steedos-platform](https://github.com/steedos/steedos-platform)
