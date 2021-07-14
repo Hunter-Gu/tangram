@@ -38,19 +38,21 @@ const props: ComponentProp | ComponentInfo = defineProps({
   defaultValue: {},
 }); // TODO why props missing when add `as ComponentProp & ComponentInfo` at tail
 
-const useWrap = (ref: Ref) => {
-  const elm = ref.value;
+const useWrap = (elm: HTMLElement) => {
   const lineHeight = parseInt(getComputedStyle(elm).lineHeight);
-  const height = parseInt(elm.getBoundingClientRect().height);
+  const height = parseInt(String(elm.getBoundingClientRect().height));
 
   return height > 1.5 * lineHeight;
 };
 
-const labelRef = ref();
+const labelRef = ref<HTMLElement>();
 let wrap = ref(false);
 
 onMounted(() => {
-  wrap.value = useWrap(labelRef);
+  const elm = labelRef.value;
+  if (elm) {
+    wrap.value = useWrap(elm);
+  }
 });
 </script>
 
