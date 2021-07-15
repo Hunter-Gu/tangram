@@ -1,6 +1,7 @@
 import { App } from "@vue/runtime-core";
-import { installElementPlus } from "./element-plus";
+import ElementPlus from "./element-plus";
+import { router } from "./routes";
 
 export default function install(app: App) {
-  installElementPlus(app);
+  app.use(router).use(ElementPlus);
 }
