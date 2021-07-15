@@ -26,3 +26,5 @@
 - [https://grapesjs.com/](https://grapesjs.com/)
 - [https://github.com/sparrow-js/sparrow](https://github.com/sparrow-js/sparrow)
 - [https://github.com/steedos/steedos-platform](https://github.com/steedos/steedos-platform)
+- [https://github.com/buqiyuan/vite-vue3-lowcode](https://github.com/buqiyuan/vite-vue3-lowcode)
+- [https://github.com/taowen/awesome-lowcode](https://github.com/taowen/awesome-lowcode)
