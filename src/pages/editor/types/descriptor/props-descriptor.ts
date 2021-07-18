@@ -31,7 +31,7 @@ export type DescriptorPropName = {
 
 export type DescriptorProp = DescriptorPropName & Union<DescriptorPropTypes>;
 
-export type Descriptor = {
+export type PropsDescriptor = {
   name: string;
 
   props: DescriptorProp[];

@@ -1,4 +1,4 @@
-import { DescriptorPropTypes } from "../types/descriptor";
+import { DescriptorPropTypes } from "../types/descriptor/props-descriptor";
 import { transformer } from "./transformer";
 import Wrapper from "./components/wrapper";
 import { ElInput, ElSwitch } from "element-plus";

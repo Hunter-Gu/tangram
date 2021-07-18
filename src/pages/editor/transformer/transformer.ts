@@ -3,10 +3,10 @@ import { render } from "../../../core/render/src/vue";
 import { createLogger } from "../../../utils/logger";
 import type { ComponentProp } from "../types/component";
 import {
-  Descriptor,
+  PropsDescriptor,
   DescriptorProp,
   DescriptorPropTypes,
-} from "../types/descriptor";
+} from "../types/descriptor/props-descriptor";
 import {
   ComponentInfo,
   GlobalTransformMapping,
@@ -29,7 +29,7 @@ class DescritporTransformer {
   }
 
   private getTarget(
-    name: Descriptor["name"],
+    name: PropsDescriptor["name"],
     descriptorProp: DescriptorProp
   ): ComponentInfo {
     let componentInfo: ComponentInfo | undefined;
@@ -54,7 +54,7 @@ class DescritporTransformer {
   constructor(private propEnhance: IPropEnhance) {}
 
   transform = (
-    name: Descriptor["name"],
+    name: PropsDescriptor["name"],
     descriptorProp: DescriptorProp
   ): Omit<SchemaData, "__uuid"> => {
     return {
@@ -73,19 +73,19 @@ class DescritporTransformer {
    * @description config the target component of specify prop, recognize by prop name or prop type or both union
    */
   config(
-    descirptorName: Descriptor["name"],
+    descirptorName: PropsDescriptor["name"],
     PropName: DescriptorProp["name"],
     component: Component,
     staticProps?: ComponentInfo["staticProps"]
   ): this;
   config(
-    descirptorName: Descriptor["name"],
+    descirptorName: PropsDescriptor["name"],
     type: DescriptorPropTypes,
     component: Component,
     staticProps?: ComponentInfo["staticProps"]
   ): this;
   config(
-    descirptorName: Descriptor["name"],
+    descirptorName: PropsDescriptor["name"],
     typeOrName: DescriptorPropTypes | DescriptorProp["name"],
     component: Component,
     staticProps?: ComponentInfo["staticProps"]

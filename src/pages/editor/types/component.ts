@@ -1,5 +1,4 @@
-import type { DescriptorPropName } from "./descriptor";
-import { ComponentInfo } from "./transform";
+import type { DescriptorPropName } from "./descriptor/props-descriptor";
 
 export type ComponentProp = Readonly<
   DescriptorPropName & {

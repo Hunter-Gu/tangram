@@ -7,14 +7,14 @@ import { defineProps } from "@vue/runtime-core";
 import type { PropType } from "@vue/runtime-core";
 import { SchemaRender } from "../../../components";
 import { descritpor2Schema } from "../transformer";
-import type { Descriptor } from "../types/descriptor";
+import type { PropsDescriptor } from "../types/descriptor";
 
 const props = defineProps({
   descriptor: {
-    type: Object as PropType<Descriptor>,
+    type: [Object, null] as PropType<PropsDescriptor | null>,
     required: true,
   },
 });
 
-const schema = descritpor2Schema(props.descriptor);
+const schema = props.descriptor || descritpor2Schema(props.descriptor!);
 </script>

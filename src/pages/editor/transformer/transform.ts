@@ -1,8 +1,8 @@
 import { SchemaData } from "@/core/parser/src/types/schema";
-import { Descriptor } from "../types/descriptor";
+import { PropsDescriptor } from "../types/descriptor/props-descriptor";
 import { transformer } from "./transformer";
 
-export function descritpor2Schema(descriptor: Descriptor): SchemaData {
+export function descritpor2Schema(descriptor: PropsDescriptor): SchemaData {
   const rootInfo = transformer.root;
   const schema: SchemaData = {
     name: rootInfo.component,

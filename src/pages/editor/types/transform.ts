@@ -1,12 +1,16 @@
 import { Component } from "@/core/parser/src/types/schema";
-import { Descriptor, DescriptorProp, DescriptorPropTypes } from "./descriptor";
+import {
+  PropsDescriptor,
+  DescriptorProp,
+  DescriptorPropTypes,
+} from "./descriptor/props-descriptor";
 
 export type GlobalTransformMapping = Partial<
   Record<DescriptorPropTypes, ComponentInfo>
 >;
 
 export type TransformMapping = Record<
-  Descriptor["name"],
+  PropsDescriptor["name"],
   {
     props?: Record<DescriptorProp["name"], ComponentInfo>;
 

@@ -2,7 +2,7 @@ import { render } from "../../../core/render/src/vue";
 import { SchemaData } from "../../../core/parser/src/types/schema";
 import EnhanceProp from "./components/enhance-prop";
 import { ComponentInfo } from "../types/transform";
-import { DescriptorProp } from "../types/descriptor";
+import { DescriptorProp } from "../types/descriptor/props-descriptor";
 
 export abstract class IPropEnhance {
   // TODO _render need support customize
