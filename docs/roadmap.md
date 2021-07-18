@@ -27,6 +27,7 @@
   - [ ] grayscale
   - [ ] cli for code generator
   - [ ] monitor & data track
+- [ ] PWA
 - [ ] electron & vscode extension
 - [ ] real-time collaboration?
 
