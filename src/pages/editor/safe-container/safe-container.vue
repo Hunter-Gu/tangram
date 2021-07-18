@@ -1,7 +1,11 @@
 <template>
-  <component :is="tag" ref="elm">
+  <component :is="tag" ref="elm" class="container">
     <span v-if="fail">{{ componentName }}</span>
-    <component class="no-pointer-event" v-else :is="component"></component>
+    <template v-else>
+      <component v-bind="componentProps" :is="component"></component>
+      <div class="name">{{ componentName }}</div>
+    </template>
+    <span class="modal"></span>
   </component>
 </template>
 
@@ -34,6 +38,8 @@ const props = defineProps({
     required: true,
   },
 
+  componentProps: {},
+
   tag: {
     type: String as PropType<string>,
     default: "div",
@@ -53,7 +59,18 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.no-pointer-event {
-  pointer-events: none;
+.container {
+  position: relative;
+}
+.name {
+  margin-top: 10px;
+}
+
+.modal {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 </style>
