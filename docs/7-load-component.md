@@ -27,3 +27,7 @@
 	descriptor: props descriptor // detail see 6-props-editor.md
 }
 ```
+
+render descriptor 本质上是给当前组件，在组件列表中展示时添加一些默认属性。
+
+当不提供 `renderView` 属性时，这个 `props` 属性，和右侧的 props descriptor 是有部分重叠的，那么当 props descriptor 未提供 `defaultValue` 时，就可以用这一份默认值。
