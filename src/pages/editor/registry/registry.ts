@@ -22,6 +22,8 @@ class Registry {
         ? descriptorOrGen(name)
         : descriptorOrGen;
 
+    this.combineDefaultValueForProps(descriptor);
+
     names.forEach((name) => {
       this.container.push({
         key: name,
@@ -30,6 +32,21 @@ class Registry {
     });
 
     return this;
+  }
+
+  combineDefaultValueForProps(renderDescriptor: RenderDescriptor) {
+    const { props } = renderDescriptor;
+    const descriptorProps = renderDescriptor.descriptor.props;
+    Object.keys(props || {}).forEach((prop) => {
+      const descriptorProp = descriptorProps.find((item) => item.name === prop);
+
+      // current prop don't provide defaultValue
+      // then use render descriptor value as defautlValue
+      if (descriptorProp && !("defaultValue" in descriptorProp)) {
+        // @ts-ignore-next-line
+        descriptorProp.defaultValue = props[prop];
+      }
+    });
   }
 
   getPropsDescriptor(name: string) {
