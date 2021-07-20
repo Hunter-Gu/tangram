@@ -1,4 +1,4 @@
-import { Component, SchemaData } from "@/core/parser/src/types/schema";
+import { SchemaData } from "@/core/parser/src/types/schema";
 import { render } from "../../../core/render/src/vue";
 import { createLogger } from "../../../utils/logger";
 import type { ComponentProp } from "../types/component";
@@ -8,6 +8,7 @@ import {
   DescriptorPropTypes,
 } from "../types/descriptor/props-descriptor";
 import {
+  TransformedComponent,
   ComponentInfo,
   GlobalTransformMapping,
   TransformMapping,
@@ -75,19 +76,19 @@ class DescritporTransformer {
   config(
     descirptorName: PropsDescriptor["name"],
     PropName: DescriptorProp["name"],
-    component: Component,
+    component: TransformedComponent,
     staticProps?: ComponentInfo["staticProps"]
   ): this;
   config(
     descirptorName: PropsDescriptor["name"],
     type: DescriptorPropTypes,
-    component: Component,
+    component: TransformedComponent,
     staticProps?: ComponentInfo["staticProps"]
   ): this;
   config(
     descirptorName: PropsDescriptor["name"],
     typeOrName: DescriptorPropTypes | DescriptorProp["name"],
-    component: Component,
+    component: TransformedComponent,
     staticProps?: ComponentInfo["staticProps"]
   ): this {
     if (isDescritporPropType(typeOrName)) {
@@ -115,14 +116,17 @@ class DescritporTransformer {
 
   configGlobal(
     type: DescriptorPropTypes,
-    component: Component,
+    component: TransformedComponent,
     staticProps?: ComponentInfo["staticProps"]
   ) {
     this.globalMapping[type] = { component, staticProps };
     return this;
   }
 
-  configRoot(component: Component, staticProps?: ComponentInfo["staticProps"]) {
+  configRoot(
+    component: TransformedComponent,
+    staticProps?: ComponentInfo["staticProps"]
+  ) {
     this._root = { component, staticProps };
     return this;
   }
