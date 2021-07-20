@@ -27,3 +27,20 @@ export function set(
     }
   }
 }
+
+export function get<T extends unknown>(
+  obj: Object,
+  path: string,
+  defaultValue: T
+) {
+  const keys = path.split(".").filter(Boolean);
+  let key = "";
+  while ((key = keys.shift()!)) {
+    if (key in obj) {
+      obj = obj[key];
+    } else {
+      return defaultValue;
+    }
+  }
+  return obj;
+}

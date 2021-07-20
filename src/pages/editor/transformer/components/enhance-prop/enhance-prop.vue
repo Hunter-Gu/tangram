@@ -11,6 +11,8 @@
       :is="component"
       v-bind="staticProps"
       v-model="defaultValue"
+      @input="handleInput"
+      @blur="handleInput"
     ></component>
   </el-space>
 </template>
@@ -20,6 +22,8 @@ import { defineProps, onMounted, ref } from "@vue/runtime-core";
 import type { PropType, Ref } from "@vue/runtime-core";
 import type { ComponentProp } from "../../../types/component";
 import type { ComponentInfo } from "../../../types/transform";
+import { useStore } from "vuex";
+import { Mutations } from "../../../../../plugins/store";
 
 const props: ComponentProp | ComponentInfo = defineProps({
   name: {
@@ -54,6 +58,17 @@ onMounted(() => {
     wrap.value = useWrap(elm);
   }
 });
+
+// TODO need to sync default value to store at the beginning
+
+const store = useStore();
+
+const handleInput = function () {
+  store.commit(Mutations.UPDATE_ELEMENT_PROPS, {
+    path: props.name,
+    value: props.defaultValue,
+  });
+};
 </script>
 
 <style scoped>

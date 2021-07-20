@@ -21,6 +21,6 @@ export function useDrop(dropElm: HTMLElement) {
   dropElm.addEventListener("drop", (evt: DragEvent) => {
     const name = evt.dataTransfer?.getData("text");
 
-    store.commit(Mutations.ADD, name);
+    store.commit(Mutations.ADD_ELEMENT, name);
   });
 }
