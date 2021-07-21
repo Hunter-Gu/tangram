@@ -59,8 +59,6 @@ onMounted(() => {
   }
 });
 
-// TODO need to sync default value to store at the beginning
-
 const store = useStore();
 
 const handleInput = function () {
@@ -69,6 +67,8 @@ const handleInput = function () {
     value: props.defaultValue,
   });
 };
+
+handleInput();
 </script>
 
 <style scoped>
