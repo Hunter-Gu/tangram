@@ -4,6 +4,9 @@ import { RegisterHandler, RegisterName, RegistryItem } from "../types/registry";
 
 const logger = createLogger("Registry");
 
+/**
+ * register component and it's render descritpor
+ */
 class Registry {
   private readonly container: RegistryItem[] = [];
 
@@ -34,7 +37,7 @@ class Registry {
     return this;
   }
 
-  combineDefaultValueForProps(renderDescriptor: RenderDescriptor) {
+  private combineDefaultValueForProps(renderDescriptor: RenderDescriptor) {
     const { props } = renderDescriptor;
     const descriptorProps = renderDescriptor.descriptor.props;
     Object.keys(props || {}).forEach((prop) => {
