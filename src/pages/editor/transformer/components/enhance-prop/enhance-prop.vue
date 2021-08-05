@@ -67,8 +67,6 @@ const handleInput = function () {
     value: props.defaultValue,
   });
 };
-
-handleInput();
 </script>
 
 <style scoped>

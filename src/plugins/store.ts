@@ -64,6 +64,15 @@ export const store = createStore<State>({
 
         state.schema.children?.push(enhanceBlock(component, index))!;
         store.commit(Mutations.SELECT, { name: component?.name, index });
+
+        renderDescriptor?.descriptor.props.forEach((prop) => {
+          if ("defaultValue" in prop) {
+            store.commit(Mutations.UPDATE_ELEMENT_PROPS, {
+              path: prop.name,
+              value: prop.defaultValue,
+            });
+          }
+        });
       } catch (e) {
         logger.error(e.message);
       }
@@ -75,13 +84,19 @@ export const store = createStore<State>({
 
       state.currentPath = `.children.${index}.${blockPath}`;
 
-      state.currentSelect = renderDescriptor?.descriptor;
+      // @ts-ignore-next-line
+      state.currentSelect = getDescritporByRuntime(
+        renderDescriptor?.descriptor,
+        get(state.schema, state.currentPath).props
+      );
 
       state.selectIndexs = [index];
     },
 
     [Mutations.CLEAR_SELECTS](state) {
       state.selectIndexs = [];
+      state.currentPath = ``;
+      state.currentSelect = undefined;
     },
 
     [Mutations.UPDATE_ELEMENT_PROPS](state, { path, value }) {
@@ -111,5 +126,28 @@ function enhanceBlock(name: Component, index: number): Child {
       name: name.name,
       index,
     },
+  };
+}
+
+function getDescritporByRuntime(
+  descriptor: PropsDescriptor,
+  runtimeData?: Record<string, any>
+): PropsDescriptor {
+  if (!runtimeData) {
+    return descriptor;
+  }
+
+  return {
+    ...descriptor,
+    props: descriptor.props.map((prop) => {
+      if (prop.name in runtimeData) {
+        return {
+          ...prop,
+          defaultValue: runtimeData[prop.name],
+        };
+      }
+
+      return prop;
+    }),
   };
 }
