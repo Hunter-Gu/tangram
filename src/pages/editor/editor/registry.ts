@@ -38,6 +38,7 @@ const ElButtonDescriptor: PropsDescriptor = {
       defaultValue: "plain",
     },
   ],
+  descendant: true,
 };
 
 function getAll() {

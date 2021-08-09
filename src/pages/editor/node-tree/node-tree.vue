@@ -3,15 +3,9 @@
     :data="data"
     node-key="id"
     default-expand-all
-    @node-drag-start="handleDragStart"
-    @node-drag-enter="handleDragEnter"
-    @node-drag-leave="handleDragLeave"
-    @node-drag-over="handleDragOver"
-    @node-drag-end="handleDragEnd"
     @node-drop="handleDrop"
     draggable
     :allow-drop="allowDrop"
-    :allow-drag="allowDrag"
   >
   </el-tree>
 </template>
@@ -21,6 +15,11 @@ import { ref } from "@vue/reactivity";
 import { defineProps, watch } from "@vue/runtime-core";
 import type { PropType } from "@vue/runtime-core";
 import type { SchemaData } from "../../../core/parser/src/types/schema";
+import { registry } from "../registry";
+import { useStore } from "vuex";
+import { Mutations } from "../../../plugins/store";
+
+const store = useStore();
 
 const props = defineProps({
   schema: {
@@ -32,36 +31,54 @@ const props = defineProps({
 type Tree = {
   id: number;
   label: string;
+  _meta: {
+    // the name used for seeking in registry
+    name: string;
+    // the path of current node, used for updating layer level
+    path: string;
+  };
   children?: Tree[];
 };
 
 // this function will handle for block path that mentioned in store
 // TODO: so move these together for better handling block path
-function normalize(schema: SchemaData, isRoot = false): Tree {
+function normalize(schema: SchemaData): Tree {
   const _normalize = (schema: SchemaData): Tree => {
     return {
       id: schema.__uuid,
       label: schema.name || "label",
-      children: schema.children?.map(_skipAndNormalize),
+      _meta: {
+        name: schema.name,
+        path: "",
+      },
+      children: schema.children?.map((n, i) =>
+        _skipAndNormalize(n, `children.${i}`)
+      ),
     };
   };
 
-  const _skipAndNormalize = (schema: SchemaData): Tree => {
+  const _skipAndNormalize = (schema: SchemaData, path = ""): Tree => {
     schema = schema.children[0];
     return {
       id: schema.__uuid,
       label: schema.name.name || "label",
-      children: schema.children?.map(_skipAndNormalize),
+      _meta: {
+        name: schema.name,
+        path,
+      },
+      children: schema.children?.map((n, i) =>
+        _skipAndNormalize(n, `${path}.children.${i}`)
+      ),
     };
   };
 
   return [_normalize(schema)];
 }
 
-let data = ref(normalize(props.schema, true));
+let data = ref(normalize(props.schema));
 
 watch(props.schema, (newVal, oldVal) => {
-  data.value = normalize(newVal, true);
+  data.value = normalize(newVal);
 });
 
 const defaultProps = ref({
@@ -69,34 +86,24 @@ const defaultProps = ref({
   label: "label",
 });
 
-function handleDragStart(node, ev) {
-  console.log("drag start", node);
-}
-function handleDragEnter(draggingNode, dropNode, ev) {
-  console.log("tree drag enter: ", dropNode.label);
-}
-function handleDragLeave(draggingNode, dropNode, ev) {
-  console.log("tree drag leave: ", dropNode.label);
-}
-function handleDragOver(draggingNode, dropNode, ev) {
-  console.log("tree drag over: ", dropNode.label);
-}
-function handleDragEnd(draggingNode, dropNode, dropType, ev) {
-  console.log("tree drag end: ", dropNode && dropNode.label, dropType);
-}
-function handleDrop(draggingNode, dropNode, dropType, ev) {
-  console.log("tree drop: ", dropNode.label, dropType);
+type Node = {
+  data: Tree;
+};
+
+function handleDrop(draggingNode: Node, dropNode: Node, dropType, ev) {
+  store.commit(Mutations.MOVE, {
+    from: draggingNode.data._meta.path,
+    to: dropNode.data._meta.path,
+  });
 }
 
-function allowDrop(draggingNode, dropNode, type) {
-  if (dropNode.data.label === "二级 3-1") {
-    return type !== "inner";
-  } else {
+function allowDrop(draggingNode: Node, dropNode: Node, type) {
+  const desc = registry.getPropsDescriptor(dropNode.data._meta.name.name);
+
+  if (desc?.data.descriptor.descendant) {
     return true;
+  } else {
+    return false;
   }
-}
-
-function allowDrag(draggingNode) {
-  return draggingNode.data.label.indexOf("三级 3-2-2") === -1;
 }
 </script>

@@ -37,4 +37,7 @@ export type PropsDescriptor = {
   props: DescriptorProp[];
 
   // TODO methods field definition
+
+  // if true, the component can have children
+  descendant?: boolean;
 };

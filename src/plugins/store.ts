@@ -33,6 +33,9 @@ export enum Mutations {
 
   // eslint-disable-next-line no-unused-vars
   CLEAR_SELECTS = "clear_selects",
+
+  // eslint-disable-next-line no-unused-vars
+  MOVE = "move",
 }
 
 export const store = createStore<State>({
@@ -62,6 +65,9 @@ export const store = createStore<State>({
         const component = renderDescriptor?.component;
         const index = state.schema.children?.length ?? 0;
 
+        // should not wrapper component by Block here
+        // it will cause additional layer everywhere
+        // but acutally we should not realize the exist of Block layer
         state.schema.children?.push(enhanceBlock(component, index))!;
         store.commit(Mutations.SELECT, { name: component?.name, index });
 
@@ -108,6 +114,30 @@ export const store = createStore<State>({
       const props =
         currentSchemaDataNode.props || (currentSchemaDataNode.props = {});
       props[path] = value;
+    },
+
+    [Mutations.MOVE](state, { from, to }) {
+      const getPathAndIndex = (path: string) => {
+        return {
+          parentPath: path.split(".").slice(0, -1).join("."),
+          index: path.split(".").slice(-1).join("."),
+        };
+      };
+      const { parentPath, index } = getPathAndIndex(from);
+      const { parentPath: targetParentPath, index: targetIndex } =
+        getPathAndIndex(to);
+
+      const node = get(state.schema, parentPath).splice(index, 1)[0];
+      const parent = get(
+        state.schema,
+        `${targetParentPath}.${targetIndex - 1}.children.0`
+      );
+
+      if (!parent.children) {
+        parent.children = [];
+      }
+      // TODO: should remove outside Block
+      parent.children.splice(targetIndex, 0, node);
     },
   },
 });
