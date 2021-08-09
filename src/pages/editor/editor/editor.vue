@@ -1,6 +1,8 @@
 <template>
   <el-container class="height-100">
-    <el-aside class="sidebar">Aside tree</el-aside>
+    <el-aside class="sidebar">
+      <NodeTree :schema="schema"></NodeTree>
+    </el-aside>
 
     <el-container class="main-border">
       <el-main ref="dropElm" @click="clickNoop">
@@ -38,6 +40,7 @@ import type { State } from "../../../plugins/store";
 import { Mutations } from "../../../plugins/store";
 import SchemaRender from "../../../components/schema-render";
 import SafeContainer from "../safe-container";
+import NodeTree from "../node-tree";
 import { getAll } from "./registry";
 
 const store: Store<State> = useStore();
