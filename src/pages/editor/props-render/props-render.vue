@@ -12,7 +12,7 @@ import type { PropsDescriptor } from "../types/descriptor";
 const props = defineProps({
   descriptor: {
     type: [Object] as PropType<PropsDescriptor | null | undefined>,
-    required: true,
+    required: false,
   },
 });
 

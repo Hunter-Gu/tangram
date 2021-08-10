@@ -43,31 +43,16 @@ type Tree = {
 // this function will handle for block path that mentioned in store
 // TODO: so move these together for better handling block path
 function normalize(schema: SchemaData): Tree {
-  const _normalize = (schema: SchemaData): Tree => {
+  const _normalize = (schema: SchemaData, path = ""): Tree => {
     return {
-      id: schema.__uuid,
-      label: schema.name || "label",
-      _meta: {
-        name: schema.name,
-        path: "",
-      },
-      children: schema.children?.map((n, i) =>
-        _skipAndNormalize(n, `children.${i}`)
-      ),
-    };
-  };
-
-  const _skipAndNormalize = (schema: SchemaData, path = ""): Tree => {
-    schema = schema.children[0];
-    return {
-      id: schema.__uuid,
+      id: schema.__uuid || new Date().getTime(),
       label: schema.name.name || "label",
       _meta: {
         name: schema.name,
         path,
       },
       children: schema.children?.map((n, i) =>
-        _skipAndNormalize(n, `${path}.children.${i}`)
+        _normalize(n, `${path ? path + "." : ""}children.${i}`)
       ),
     };
   };

@@ -6,7 +6,7 @@
 
     <el-container class="main-border">
       <el-main ref="dropElm" @click="clickNoop">
-        <SchemaRender :schema="schema" />
+        <Stage :schema="schema"></Stage>
       </el-main>
     </el-container>
 
@@ -42,6 +42,7 @@ import SchemaRender from "../../../components/schema-render";
 import SafeContainer from "../safe-container";
 import NodeTree from "../node-tree";
 import { getAll } from "./registry";
+import Stage from "../stage";
 
 const store: Store<State> = useStore();
 

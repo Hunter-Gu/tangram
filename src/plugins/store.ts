@@ -1,10 +1,9 @@
-import { SchemaData, Component, Child } from "../core/parser/src/types/schema";
+import { SchemaData } from "../core/parser/src/types/schema";
 import { createLogger } from "../utils/logger";
 import { createStore } from "vuex";
 import { registry } from "../pages/editor/registry";
 import { PropsDescriptor } from "@/pages/editor/types/descriptor";
 import { get } from "../core/parser/src/utils/utils";
-import Block from "../pages/editor/block";
 
 const logger = createLogger("store");
 
@@ -65,12 +64,13 @@ export const store = createStore<State>({
         const component = renderDescriptor?.component;
         const index = state.schema.children?.length ?? 0;
 
-        // should not wrapper component by Block here
-        // it will cause additional layer everywhere
-        // but acutally we should not realize the exist of Block layer
-        state.schema.children?.push(enhanceBlock(component, index))!;
+        state.schema.children?.push({
+          name: component,
+          __uuid: new Date().getTime(),
+        });
         store.commit(Mutations.SELECT, { name: component?.name, index });
 
+        // init props for instance
         renderDescriptor?.descriptor.props.forEach((prop) => {
           if ("defaultValue" in prop) {
             store.commit(Mutations.UPDATE_ELEMENT_PROPS, {
@@ -85,10 +85,9 @@ export const store = createStore<State>({
     },
 
     [Mutations.SELECT](state, { name, index }) {
-      const blockPath = `children.0`;
       const renderDescriptor = registry.getPropsDescriptor(name)?.data;
 
-      state.currentPath = `.children.${index}.${blockPath}`;
+      state.currentPath = `children.${index}`;
 
       // @ts-ignore-next-line
       state.currentSelect = getDescritporByRuntime(
@@ -117,6 +116,9 @@ export const store = createStore<State>({
     },
 
     [Mutations.MOVE](state, { from, to }) {
+      // example:    children.0.children.1.children.2
+      // parentPath: children.0.children.1.children
+      // index:      2
       const getPathAndIndex = (path: string) => {
         return {
           parentPath: path.split(".").slice(0, -1).join("."),
@@ -130,7 +132,8 @@ export const store = createStore<State>({
       const node = get(state.schema, parentPath).splice(index, 1)[0];
       const parent = get(
         state.schema,
-        `${targetParentPath}.${targetIndex - 1}.children.0`
+        // TODO: the final index should calc by parent and target info
+        `${targetParentPath}.${targetIndex - 1}`
       );
 
       if (!parent.children) {
@@ -141,23 +144,6 @@ export const store = createStore<State>({
     },
   },
 });
-
-function enhanceBlock(name: Component, index: number): Child {
-  return {
-    name: Block,
-    __uuid: 0,
-    children: [
-      {
-        name,
-        __uuid: new Date().getTime(),
-      },
-    ],
-    props: {
-      name: name.name,
-      index,
-    },
-  };
-}
 
 function getDescritporByRuntime(
   descriptor: PropsDescriptor,
