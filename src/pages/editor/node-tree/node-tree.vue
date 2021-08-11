@@ -75,20 +75,37 @@ type Node = {
   data: Tree;
 };
 
-function handleDrop(draggingNode: Node, dropNode: Node, dropType, ev) {
+function handleDrop(draggingNode: Node, dropNode: Node, type: DropType, ev) {
   store.commit(Mutations.MOVE, {
     from: draggingNode.data._meta.path,
     to: dropNode.data._meta.path,
+    type,
   });
 }
 
-function allowDrop(draggingNode: Node, dropNode: Node, type) {
-  const desc = registry.getPropsDescriptor(dropNode.data._meta.name.name);
+enum DropType {
+  Prev = "prev",
+  Next = "next",
+  Inner = "inner",
+}
+
+function allowDrop(draggingNode: Node, dropNode: Node, type: DropType) {
+  if (draggingNode === dropNode) {
+    return false;
+  }
+
+  const name = dropNode.data._meta.name;
+
+  if (name === "div") {
+    return type === DropType.Inner;
+  }
+
+  const desc = registry.getPropsDescriptor(name.name);
 
   if (desc?.data.descriptor.descendant) {
     return true;
   } else {
-    return false;
+    return type !== DropType.Inner;
   }
 }
 </script>

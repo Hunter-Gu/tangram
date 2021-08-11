@@ -115,7 +115,13 @@ export const store = createStore<State>({
       props[path] = value;
     },
 
-    [Mutations.MOVE](state, { from, to }) {
+    [Mutations.MOVE](state, { from, to, type }) {
+      const realIndex = calcRealIndex(from, to);
+
+      if (!realIndex) {
+        return;
+      }
+
       // example:    children.0.children.1.children.2
       // parentPath: children.0.children.1.children
       // index:      2
@@ -125,16 +131,24 @@ export const store = createStore<State>({
           index: path.split(".").slice(-1).join("."),
         };
       };
-      const { parentPath, index } = getPathAndIndex(from);
+      const { parentPath, index } = getPathAndIndex(realIndex.from);
       const { parentPath: targetParentPath, index: targetIndex } =
-        getPathAndIndex(to);
+        getPathAndIndex(realIndex.to);
 
       const node = get(state.schema, parentPath).splice(index, 1)[0];
       const parent = get(
         state.schema,
         // TODO: the final index should calc by parent and target info
-        `${targetParentPath}.${targetIndex - 1}`
+        type !== "inner"
+          ? realIndex.belongToRoot
+            ? ""
+            : targetParentPath.split(".").slice(-1).join(".")
+          : `${targetParentPath}.${targetIndex}`
       );
+
+      // TODO: the current problem is we may crash into equipment operator
+      // insert to parent is the same as insert before sibling
+      // so the type is not enough to describe the operator intention, we need more info
 
       if (!parent.children) {
         parent.children = [];
@@ -165,5 +179,41 @@ function getDescritporByRuntime(
 
       return prop;
     }),
+  };
+}
+
+function calcRealIndex(from: string, to: string) {
+  const fromPath = from.split(".");
+  const toPath = to.split(".");
+  const belongToRoot = toPath.length === 2;
+
+  if (fromPath.length > toPath.length) {
+    return { from, to, belongToRoot };
+  }
+
+  if (to.includes(from, 0)) {
+    logger.warn(
+      `can't calculate real index beacause the node can't be it's children node's children, from: [${from}], to: [${to}]`
+    );
+    return null;
+  }
+
+  if (!to.includes(from.slice(0, -1), 0)) {
+    return { from, to, belongToRoot };
+  }
+
+  const fromIndex = +from.slice(-1);
+  const index = fromPath.length - 1;
+  const toIndex = +toPath[index];
+
+  if (fromIndex > toIndex) {
+    return { from, to, belongToRoot };
+  }
+
+  toPath[index] = String(+toPath[index] - 1);
+  return {
+    from,
+    to: toPath.join("."),
+    belongToRoot,
   };
 }
