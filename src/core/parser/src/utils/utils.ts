@@ -4,10 +4,10 @@ export function isUndefined(value: unknown): value is undefined {
 
 export function set(
   obj: Record<string, unknown>,
-  keys: string[],
+  keys: string,
   value: unknown
 ) {
-  const _keys = [...keys];
+  const _keys = keys.split(".");
   let temp: Record<string, unknown> = obj;
 
   while (true) {
@@ -31,7 +31,7 @@ export function set(
 export function get<T extends unknown>(
   obj: Object,
   path: string,
-  defaultValue: T
+  defaultValue?: T
 ) {
   const keys = path.split(".").filter(Boolean);
   let key = "";

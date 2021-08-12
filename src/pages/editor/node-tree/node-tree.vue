@@ -18,6 +18,7 @@ import type { SchemaData } from "../../../core/parser/src/types/schema";
 import { registry } from "../registry";
 import { useStore } from "vuex";
 import { Mutations } from "../../../plugins/store";
+import { DropType } from "../types/node-tree";
 
 const store = useStore();
 
@@ -81,12 +82,6 @@ function handleDrop(draggingNode: Node, dropNode: Node, type: DropType, ev) {
     to: dropNode.data._meta.path,
     type,
   });
-}
-
-enum DropType {
-  Prev = "prev",
-  Next = "next",
-  Inner = "inner",
 }
 
 function allowDrop(draggingNode: Node, dropNode: Node, type: DropType) {

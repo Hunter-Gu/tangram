@@ -1,9 +1,10 @@
-import { SchemaData } from "../core/parser/src/types/schema";
+import { Child, SchemaData } from "../core/parser/src/types/schema";
 import { createLogger } from "../utils/logger";
 import { createStore } from "vuex";
 import { registry } from "../pages/editor/registry";
 import { PropsDescriptor } from "@/pages/editor/types/descriptor";
-import { get } from "../core/parser/src/utils/utils";
+import { get, set } from "../core/parser/src/utils/utils";
+import { DropType } from "../pages/editor/types/node-tree";
 
 const logger = createLogger("store");
 
@@ -115,46 +116,49 @@ export const store = createStore<State>({
       props[path] = value;
     },
 
-    [Mutations.MOVE](state, { from, to, type }) {
-      const realIndex = calcRealIndex(from, to);
-
-      if (!realIndex) {
+    [Mutations.MOVE](
+      state,
+      { from, to, type }: { from: string; to: string; type: DropType }
+    ) {
+      if (from === to) {
         return;
       }
 
-      // example:    children.0.children.1.children.2
-      // parentPath: children.0.children.1.children
-      // index:      2
-      const getPathAndIndex = (path: string) => {
+      const { parentPath: parentPathOfFrom, index: indexOfFrom } =
+        getParentPathAndIndex(from);
+      const { parentPath: parentPathOfTo, index: indexOfTo } =
+        getParentPathAndIndex(to);
+
+      const getTarget = () => {
+        const isInsertMode = type === DropType.Inner;
+        const path = isInsertMode ? to + ".children" : parentPathOfTo;
+        let parent = get(state.schema, path) as Child[] | undefined;
+        const index = isInsertMode ? parentPathOfTo?.length || 0 : +indexOfTo;
+
+        if (!parent) {
+          set(state.schema, path, []);
+          parent = get(state.schema, path) as Child[];
+        }
+
         return {
-          parentPath: path.split(".").slice(0, -1).join("."),
-          index: path.split(".").slice(-1).join("."),
+          parent,
+          index,
         };
       };
-      const { parentPath, index } = getPathAndIndex(realIndex.from);
-      const { parentPath: targetParentPath, index: targetIndex } =
-        getPathAndIndex(realIndex.to);
 
-      const node = get(state.schema, parentPath).splice(index, 1)[0];
-      const parent = get(
-        state.schema,
-        // TODO: the final index should calc by parent and target info
-        type !== "inner"
-          ? realIndex.belongToRoot
-            ? ""
-            : targetParentPath.split(".").slice(-1).join(".")
-          : `${targetParentPath}.${targetIndex}`
+      const parent = get(state.schema, parentPathOfFrom) as Child[];
+      const { parent: targetParent, index: realIndex } = getTarget();
+
+      move(
+        {
+          array: parent,
+          index: +indexOfFrom,
+        },
+        {
+          array: targetParent,
+          index: realIndex,
+        }
       );
-
-      // TODO: the current problem is we may crash into equipment operator
-      // insert to parent is the same as insert before sibling
-      // so the type is not enough to describe the operator intention, we need more info
-
-      if (!parent.children) {
-        parent.children = [];
-      }
-      // TODO: should remove outside Block
-      parent.children.splice(targetIndex, 0, node);
     },
   },
 });
@@ -182,38 +186,26 @@ function getDescritporByRuntime(
   };
 }
 
-function calcRealIndex(from: string, to: string) {
-  const fromPath = from.split(".");
-  const toPath = to.split(".");
-  const belongToRoot = toPath.length === 2;
+type Node<T> = {
+  array: T[];
+  index: number;
+};
 
-  if (fromPath.length > toPath.length) {
-    return { from, to, belongToRoot };
-  }
+function move<T>(from: Node<T>, to: Node<T>) {
+  const node = from.array.splice(from.index, 1)[0];
 
-  if (to.includes(from, 0)) {
-    logger.warn(
-      `can't calculate real index beacause the node can't be it's children node's children, from: [${from}], to: [${to}]`
-    );
-    return null;
-  }
+  to.array.splice(to.index, 0, node);
+}
 
-  if (!to.includes(from.slice(0, -1), 0)) {
-    return { from, to, belongToRoot };
-  }
+// example:    children.0.children.1.children.2
+// parentPath: children.0.children.1.children
+// index:      2
+function getParentPathAndIndex(path: string) {
+  const Seperator = ".";
+  const lastIndex = path.lastIndexOf(Seperator);
 
-  const fromIndex = +from.slice(-1);
-  const index = fromPath.length - 1;
-  const toIndex = +toPath[index];
-
-  if (fromIndex > toIndex) {
-    return { from, to, belongToRoot };
-  }
-
-  toPath[index] = String(+toPath[index] - 1);
   return {
-    from,
-    to: toPath.join("."),
-    belongToRoot,
+    parentPath: path.slice(0, lastIndex),
+    index: path.slice(lastIndex + 1),
   };
 }
