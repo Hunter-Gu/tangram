@@ -5,6 +5,7 @@ import { registry } from "../pages/editor/registry";
 import { PropsDescriptor } from "@/pages/editor/types/descriptor";
 import { get, set } from "../core/parser/src/utils/utils";
 import { DropType } from "../pages/editor/types/node-tree";
+import { PathManager } from "./utils/path-manager";
 
 const logger = createLogger("store");
 
@@ -15,7 +16,7 @@ export type State = {
 
   currentPath: string;
 
-  selectIndexs: number[];
+  selectPaths: string[];
 };
 
 export enum Mutations {
@@ -53,7 +54,7 @@ export const store = createStore<State>({
 
     // the index of Block which has been selected
     // may can be a number
-    selectIndexs: [],
+    selectPaths: [],
   },
 
   mutations: {
@@ -69,7 +70,10 @@ export const store = createStore<State>({
           name: component,
           __uuid: new Date().getTime(),
         });
-        store.commit(Mutations.SELECT, { name: component?.name, index });
+        store.commit(Mutations.SELECT, {
+          name: component?.name,
+          path: PathManager.concatIndex(index),
+        });
 
         // init props for instance
         renderDescriptor?.descriptor.props.forEach((prop) => {
@@ -85,10 +89,11 @@ export const store = createStore<State>({
       }
     },
 
-    [Mutations.SELECT](state, { name, index }) {
+    // TODO: need to support deep path
+    [Mutations.SELECT](state, { name, path }) {
       const renderDescriptor = registry.getPropsDescriptor(name)?.data;
 
-      state.currentPath = `children.${index}`;
+      state.currentPath = path;
 
       // @ts-ignore-next-line
       state.currentSelect = getDescritporByRuntime(
@@ -96,11 +101,11 @@ export const store = createStore<State>({
         get(state.schema, state.currentPath).props
       );
 
-      state.selectIndexs = [index];
+      state.selectPaths = [path];
     },
 
     [Mutations.CLEAR_SELECTS](state) {
-      state.selectIndexs = [];
+      state.selectPaths = [];
       state.currentPath = ``;
       state.currentSelect = undefined;
     },
@@ -201,8 +206,7 @@ function move<T>(from: Node<T>, to: Node<T>) {
 // parentPath: children.0.children.1.children
 // index:      2
 function getParentPathAndIndex(path: string) {
-  const Seperator = ".";
-  const lastIndex = path.lastIndexOf(Seperator);
+  const lastIndex = path.lastIndexOf(PathManager.Seperator);
 
   return {
     parentPath: path.slice(0, lastIndex),

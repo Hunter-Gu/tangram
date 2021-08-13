@@ -1,6 +1,7 @@
 <template>
   <div class="block" :class="statusClasses" @click.stop="handleSelect">
     <slot></slot>
+    <!-- TODO： need a better way because this will prevent children scenario -->
     <span class="modal"></span>
   </div>
 </template>
@@ -16,7 +17,7 @@ const store: Store<State> = useStore();
 
 const statusClasses = computed(() => ({
   "drag-bound": false,
-  "select-status": store.state.selectIndexs.indexOf(props.index) === 0,
+  "select-status": store.state.selectPaths.indexOf(props.path) === 0,
 }));
 
 const props = defineProps({
@@ -25,8 +26,8 @@ const props = defineProps({
     required: true,
   },
 
-  index: {
-    type: Number as PropType<number>,
+  path: {
+    type: String as PropType<string>,
     required: true,
   },
 });
