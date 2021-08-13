@@ -33,14 +33,19 @@ export function get<T extends unknown>(
   path: string,
   defaultValue?: T
 ) {
+  let value: Object | undefined | T = obj;
   const keys = path.split(".").filter(Boolean);
   let key = "";
   while ((key = keys.shift()!)) {
-    if (key in obj) {
-      obj = obj[key];
+    // TODO fix type definition
+    // @ts-ignore
+    if (key in value) {
+      // TODO fix type definition
+      // @ts-ignore
+      value = value[key];
     } else {
       return defaultValue;
     }
   }
-  return obj;
+  return value;
 }

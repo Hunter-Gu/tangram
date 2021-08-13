@@ -1,5 +1,5 @@
-import { TYPE_TRANSFORMER } from "@/components/schema-render/core/type-flag/types";
-import { getTransformerByFlagType } from "@/components/schema-render/core/type-flag/utils";
+import { TYPE_TRANSFORMER } from "../types";
+import { getTransformerByFlagType } from "../utils";
 
 describe("get transformer by type flags", () => {
   test("getTransformerByFlagType return Boolean", () => {

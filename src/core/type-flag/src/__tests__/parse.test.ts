@@ -1,7 +1,4 @@
-import {
-  parse,
-  simpleParse,
-} from "@/components/schema-render/core/type-flag/parse";
+import { simpleParse, parse } from "../parse";
 
 describe("type flag / parse", () => {
   it('--string "hello world"', () => {

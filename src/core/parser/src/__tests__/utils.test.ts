@@ -1,4 +1,4 @@
-import { isUndefined, set } from "@/components/schema-render/core/utils";
+import { isUndefined, set } from "../utils/utils";
 
 describe("schema-render utils", () => {
   test("isUndefined", () => {
@@ -9,7 +9,7 @@ describe("schema-render utils", () => {
 
   test("set", () => {
     const obj = {};
-    set(obj, ["key1", "key2"], "Hello World");
+    set(obj, "key1.key2", "Hello World");
     expect(obj).toEqual({
       key1: {
         key2: "Hello World",

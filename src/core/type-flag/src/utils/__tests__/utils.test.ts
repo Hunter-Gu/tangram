@@ -1,4 +1,4 @@
-import { validString } from "@/components/schema-render/core/type-flag/utils";
+import { validString } from "../../utils";
 
 describe("type flag / utils", () => {
   it('"the string "Hello World"" is valid string', () => {
