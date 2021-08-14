@@ -79,7 +79,7 @@ describe("Util class Chain", () => {
         name3: traceExecuteOrder(name3),
       },
     };
-    const getRef = (ref: string) => {
+    const getRef = (ref: string | number) => {
       // TODO fix type error
       // @ts-ignore
       return data[ref];

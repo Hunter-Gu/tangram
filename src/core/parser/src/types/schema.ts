@@ -5,8 +5,8 @@ export type Props = Record<string, unknown>;
 export type Attrs = Record<string, string>;
 
 export type Handler = {
-  ref: string;
-  name: string;
+  ref: string | number;
+  name: string | number;
   args?: string;
 };
 

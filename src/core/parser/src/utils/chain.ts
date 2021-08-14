@@ -11,7 +11,7 @@ export class Chain {
     this.list = this.pointer.next;
   }
 
-  private format(ref: string, name: string, async = false): Data {
+  private format(ref: Data["ref"], name: Data["name"], async = false): Data {
     return {
       name,
       ref,
@@ -19,13 +19,13 @@ export class Chain {
     };
   }
 
-  public add(ref: string, name: string, async = false) {
+  public add(ref: Data["ref"], name: Data["name"], async = false) {
     this.pointer.next.data = this.format(ref, name, async);
     this.pointer.next.next = {};
     this.pointer = this.pointer.next as Chainable;
   }
 
-  public async invoke(getRef: (name: string) => any) {
+  public async invoke(getRef: (name: Data["name"]) => any) {
     let node: Partial<Chainable> | undefined = this.list;
     let current: Data | void;
 

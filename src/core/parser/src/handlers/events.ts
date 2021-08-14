@@ -11,8 +11,7 @@ export function handleEvents(events: Events) {
     const add = (handler: Handler | Handler[]) => {
       if (Array.isArray(handler)) {
         handler.length > 1
-          ? // TODO need to support create async block
-            handler.forEach(add)
+          ? handler.forEach(add)
           : chain.add(handler[0].ref, handler[0].name, true);
       } else {
         chain.add(handler.ref, handler.name);

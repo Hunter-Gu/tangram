@@ -1,6 +1,6 @@
-export type Data = {
-  ref: string;
-  name: string;
+import { Handler } from "./schema";
+
+export type Data = Pick<Handler, "name" | "ref"> & {
   async?: boolean;
 };
 
