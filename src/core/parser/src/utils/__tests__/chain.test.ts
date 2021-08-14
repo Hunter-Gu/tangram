@@ -1,4 +1,4 @@
-import { Chain } from "../utils/chain";
+import { Chain } from "../chain";
 
 function getList(chain: Chain) {
   // @ts-ignore

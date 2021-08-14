@@ -1,4 +1,4 @@
-import { get, isUndefined, set } from "../utils/utils";
+import { get, isUndefined, set } from "../utils";
 
 describe("Parser utils functions", () => {
   it("It will return true when `isUndefined()` received undefined value", () => {
