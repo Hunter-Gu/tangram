@@ -1,5 +1,5 @@
 import { render as baseRender } from "../../../parser/src";
-import { Render } from "../../../parser/src/types/render";
+import { RenderNode } from "../../../parser/src/types/render";
 import { SchemaData } from "../../../parser/src/types/schema";
 import { h } from "@vue/runtime-core";
 import { Ref } from "./ref";
@@ -7,7 +7,7 @@ import { Ref } from "./ref";
 export function render(schema: SchemaData) {
   const refs = new Ref();
 
-  const enhance: Render = (
+  const enhance: RenderNode = (
     id: string | number,
     elm: any,
     props?: Record<string, unknown>,

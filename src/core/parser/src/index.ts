@@ -1,35 +1,18 @@
 import { handler } from "./handlers";
-import { Render, Node, GetRef } from "./types/render";
-import { Child, ParsedEvents, ParsedSchema, SchemaData } from "./types/schema";
+import { lifecycle } from "./lifecycle";
+import { RenderNode, GetRef, RenderAndInitRef } from "./types/render";
+import { ParsedEvents, ParsedSchema, SchemaData } from "./types/schema";
 import { formatEvents } from "./utils/events";
 
 export function parse(schema: SchemaData): ParsedSchema {
   return handler.invoke(schema);
 }
 
-export function render(schema: SchemaData, h: Render, getRef: GetRef) {
+export function render(schema: SchemaData, h: RenderNode, getRef: GetRef) {
   const schemaTree = parse(schema);
 
-  // dfs
-  const lifecycle = (node: Child | string | ParsedSchema): string | Node => {
-    let slots: Node[] | void;
-    let children: Node[] | void;
-
-    if (typeof node === "string") {
-      return node;
-    }
-
-    if (node.children && node.children.length) {
-      children = node.children.map(lifecycle);
-    }
-
-    if (node.slots) {
-      // TODO: FIX warnings
-      // [Non-function value encountered for default slot. Prefer function slots for better performance.]
-      slots = (node.slots as unknown as SchemaData[]).map(lifecycle);
-    }
-
-    const ret = h(
+  const _render: RenderAndInitRef = (node, children) =>
+    h(
       node.__uuid,
       node.name,
       {
@@ -37,11 +20,8 @@ export function render(schema: SchemaData, h: Render, getRef: GetRef) {
         ...node.props,
         ...formatEvents(node.events as ParsedEvents, getRef),
       },
-      slots || children
+      children
     );
 
-    return ret;
-  };
-
-  return lifecycle(schemaTree);
+  return lifecycle(schemaTree, _render);
 }
