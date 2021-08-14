@@ -53,8 +53,7 @@ Schema 的结构大致如下：
       },
       events: {
         onchange: [
-          // 数组包裹表示并行项（相当于前面添加 `await`
-          // 数组项数大于 1 表示，形成一个 async IFFI 块
+          // 数组项数等于 1 表示前面添加 `await`
           [
             {
               ref: 1,
@@ -80,24 +79,38 @@ Schema 的结构大致如下：
 
 ## event design
 
-事件处理的设计细节：
+忽略最外层的数组块，一个长度为 1 的数组块表示一个需要被 `await` 的异步操作：
 
 ```js
-// 串行
+// 最外层数组块忽略
+[
+  "a",
+  "b",
+  "c"
+];
+
 a();
 b();
 c();
 
-[("a", "b", "c")];
+// 数组块，表示需要被 `await`：
+[
+  ["a"],
+  ["b"],
+  ["c"]
+];
 
-// 并行
 await a();
 await b();
 await c();
 
-[(["a"], ["b"], ["c"])];
-
 // 串行 + 并行
+[
+  ["a", "A"],
+  ["b"],
+  ["c"]
+];
+
 await (async () => {
   a();
   A();
@@ -105,9 +118,19 @@ await (async () => {
 await b();
 await c();
 
-[(["a", "A"], ["b"], ["c"])];
-
 // 更复杂一点的
+[
+  ["a"],
+  [
+    "b",
+      ["B"],
+    "bb"
+  ],
+  ["c"],
+  "d",
+  "e"
+];
+
 await a();
 await (async () => {
   b();
@@ -117,14 +140,15 @@ await (async () => {
 await c();
 d();
 e();
-
-[(["a"], ["b", ["B"], "bb"], ["c"], "d", "e")];
 ```
 
 ### Chain mechanism
 
 ```js
 class Chain {
+
+  createAsyncBlock() {}
+
   addSync() {}
 
   addAsync() {}
@@ -132,19 +156,62 @@ class Chain {
   invoke() {}
 }
 
-const chain = new Chain()[("a", "b", "c")];
+const chain = new Chain()
+
+["a", "b", "c"];
 
 chain.addSync("a").addSync("b").addSync("c");
 
-[(["a"], ["b"], ["c"])];
+[
+  ["a"],
+  ["b"],
+  ["c"]
+];
 
 chain.addAsync("a").addAsync("b").addAsync("c");
 
-[(["a", "A"], ["b"], ["c"])];
+[
+  ["a", "A"],
+  ["b"],
+  ["c"]
+];
 
-chain.addSync("a").addSync("A").addAsync("b").addAsync("c");
+// equals
 
-[(["a"], ["b", ["B"], "bb"], ["c"], "d", "e")];
+[
+  "a", "A"
+  ["b"]
+  ["c"]
+]
+
+chain.addSync("a")
+     .addSync("A")
+     .addAsync("b")
+     .addAsync("c");
+
+[
+  ["a"],
+  [
+    "b",
+      ["B"],
+    "bb"
+  ],
+  ["c"],
+  "d",
+  "e"
+];
+
+// equals
+[
+  ["a"],
+  "b",
+  ["B"],
+  "bb"
+  ["c"],
+  "d",
+  "e"
+];
+
 
 chain
   .addAsync("a")
