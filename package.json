@@ -4,6 +4,7 @@
   "scripts": {
     "build": "vuedx-typecheck . && vite build",
     "test:unit": "vue-cli-service test:unit",
+    "test:coverage": "npm run test:unit -- --coverage",
     "dev": "vite",
     "lint:fix": "npx eslint --fix",
     "lint": "npx eslint"
