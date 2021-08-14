@@ -1,4 +1,5 @@
 import { Chain } from "../chain";
+import { getOrder, traceExecuteOrder } from "../test-utils";
 
 function getList(chain: Chain) {
   // @ts-ignore
@@ -64,36 +65,18 @@ describe("Util class Chain", () => {
   });
 
   it("When call `invoke()`, it will get instance by ref, and get function from instance by name, and execute by added sequence even marked by async or not", async () => {
-    // mock execute sequence
-    let order = 0;
-    const sequence = {
-      name1: 0,
-      name2: 0,
-      name3: 0,
-    };
+    const name1 = () => {};
+    const name2 = () => {};
+    const name3 = () => {};
     const data = {
       ref1: {
-        name1() {
-          order++;
-          sequence.name1 = order;
-        },
+        name1: traceExecuteOrder(name1),
       },
       ref2: {
-        name2() {
-          return new Promise((resolve) => {
-            setTimeout(() => {
-              order++;
-              sequence.name2 = order;
-              resolve("");
-            });
-          });
-        },
+        name2: traceExecuteOrder(name2),
       },
       ref3: {
-        name3() {
-          order++;
-          sequence.name3 = order;
-        },
+        name3: traceExecuteOrder(name3),
       },
     };
     const getRef = (ref: string) => {
@@ -109,7 +92,7 @@ describe("Util class Chain", () => {
 
     await chain.invoke(getRef);
 
-    expect(sequence.name1).toBeLessThan(sequence.name2);
-    expect(sequence.name2).toBeLessThan(sequence.name3);
+    expect(getOrder(name1)).toBeLessThan(getOrder(name2));
+    expect(getOrder(name2)).toBeLessThan(getOrder(name3));
   });
 });
