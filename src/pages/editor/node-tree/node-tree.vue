@@ -22,7 +22,7 @@ import type {
   Component,
   SchemaData,
 } from "../../../core/parser/src/types/schema";
-import { registry } from "../registry";
+import { registry } from "../utils/registry";
 import { Store, useStore } from "vuex";
 import { Mutations } from "../../../plugins/store";
 import type { State } from "../../../plugins/store";

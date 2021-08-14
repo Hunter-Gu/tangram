@@ -1,7 +1,7 @@
 import { Child, SchemaData } from "../core/parser/src/types/schema";
 import { createLogger } from "../utils/logger";
 import { createStore } from "vuex";
-import { registry } from "../pages/editor/registry";
+import { registry } from "../pages/editor/utils/registry";
 import { PropsDescriptor } from "@/pages/editor/types/descriptor";
 import { get, set } from "../core/parser/src/utils/utils";
 import { DropType } from "../pages/editor/types/node-tree";

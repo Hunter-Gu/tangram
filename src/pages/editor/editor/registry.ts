@@ -1,5 +1,5 @@
 import { getAllElementPlusComponents } from "../../../plugins/element-plus";
-import { registry } from "../registry";
+import { registry } from "../utils/registry";
 import {
   DescriptorPropTypes,
   PropsDescriptor,
