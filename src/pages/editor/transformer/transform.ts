@@ -7,7 +7,7 @@ export function descritpor2Schema(descriptor: PropsDescriptor): SchemaData {
   const schema: SchemaData = {
     name: rootInfo.component,
     props: {
-      name: descriptor.name,
+      wrapperName: descriptor.name,
       ...rootInfo.staticProps,
     },
     __uuid: new Date().getTime(),

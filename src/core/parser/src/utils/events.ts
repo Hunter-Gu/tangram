@@ -11,5 +11,5 @@ export function formatEvents(events: ParsedEvents | void, getRef: GetRef) {
       ...acc,
       [name]: events[name].bind(null, getRef),
     };
-  }, {} as Record<keyof Events, Function>);
+  }, {} as Record<keyof Events, () => unknown>);
 }

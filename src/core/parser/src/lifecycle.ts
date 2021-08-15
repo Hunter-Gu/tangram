@@ -25,5 +25,7 @@ export function lifecycle(
     );
   }
 
+  // TODO: fix type definition
+  // @ts-ignore
   return render(node, slots || children);
 }

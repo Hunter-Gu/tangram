@@ -1,7 +1,7 @@
-import { Child, ParsedSchema, SchemaData } from "./schema";
+import { ParsedSchema, SchemaData } from "./schema";
 
-type Component = any;
-export type Node = any;
+type Component = unknown;
+export type Node = unknown;
 
 export type RenderNode = (
   id: string | number,
@@ -12,7 +12,7 @@ export type RenderNode = (
 
 export type ChildNode = ParsedSchema | SchemaData;
 
-export type GetRef = (key: string | number) => object;
+export type GetRef = (key: string | number) => Record<string, unknown>;
 
 export type RenderAndInitRef = (
   node: ChildNode,

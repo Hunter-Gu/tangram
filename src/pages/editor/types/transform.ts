@@ -1,5 +1,5 @@
 import { Component } from "@/core/parser/src/types/schema";
-import { defineEmit, defineProps } from "@vue/runtime-core";
+import { defineEmits, defineProps } from "@vue/runtime-core";
 import {
   PropsDescriptor,
   DescriptorProp,
@@ -22,14 +22,14 @@ export type TransformMapping = Record<
 export type ComponentInfo = {
   component: TransformedComponent;
 
-  staticProps?: Object;
+  staticProps?: Record<string, unknown>;
 };
 
 /**
  * @description component which is used for transformer should implement this interface
  * @todo better type definition
  **/
-const events = defineEmit(["input", "blur"]);
+const events = defineEmits(["input", "blur"]);
 const props = defineProps({
   value: {},
 });

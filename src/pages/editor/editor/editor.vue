@@ -1,12 +1,12 @@
 <template>
   <el-container class="height-100">
     <el-aside class="sidebar">
-      <NodeTree :schema="schema"></NodeTree>
+      <NodeTree :schema="schema" />
     </el-aside>
 
     <el-container class="main-border">
       <el-main ref="dropElm" @click="clickNoop">
-        <Stage :schema="schema"></Stage>
+        <Stage :schema="schema" />
       </el-main>
     </el-container>
 
@@ -25,7 +25,7 @@
       </ul>
     </el-aside>
     <el-aside class="sidebar">
-      <PropsRender :descriptor="descriptor"></PropsRender>
+      <PropsRender :descriptor="descriptor" />
     </el-aside>
   </el-container>
 </template>
@@ -38,7 +38,6 @@ import { useDrag, useDrop } from "./dnd";
 import { Store, useStore } from "vuex";
 import type { State } from "../../../plugins/store";
 import { Mutations } from "../../../plugins/store";
-import SchemaRender from "../../../components/schema-render";
 import SafeContainer from "../safe-container";
 import NodeTree from "../node-tree";
 import { getAll } from "./registry";

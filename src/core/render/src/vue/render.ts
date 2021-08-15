@@ -7,11 +7,11 @@ import { Ref } from "./ref";
 export function render(schema: SchemaData) {
   const refs = new Ref();
 
-  const enhance: RenderNode = (
+  const enhance = (
     id: string | number,
-    elm: any,
+    elm: Parameters<typeof h>[0],
     props?: Record<string, unknown>,
-    children?: any
+    children?: Parameters<typeof h>[2]
   ) => {
     return h(
       elm,
@@ -23,5 +23,10 @@ export function render(schema: SchemaData) {
     );
   };
 
-  return baseRender(schema, enhance, refs.get.bind(refs));
+  // TODO better type definition
+  return baseRender(
+    schema,
+    enhance as unknown as RenderNode,
+    refs.get.bind(refs)
+  );
 }

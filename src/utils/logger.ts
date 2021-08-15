@@ -1,13 +1,13 @@
 export function createLogger(prefix: string) {
   prefix += ":";
   return {
-    log(...args: any) {
+    log(...args: unknown[]) {
       console.log(prefix, ...args);
     },
-    warn(...args: any) {
+    warn(...args: unknown[]) {
       console.warn(prefix, ...args);
     },
-    error(...args: any) {
+    error(...args: unknown[]) {
       console.error(prefix, ...args);
     },
   };

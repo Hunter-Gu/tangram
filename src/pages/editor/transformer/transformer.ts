@@ -1,4 +1,5 @@
-import { SchemaData } from "@/core/parser/src/types/schema";
+import { SchemaData } from "../../../core/parser/src/types/schema";
+import { isUndefined } from "../../../core/parser/src/utils/utils";
 import { render } from "../../../core/render/src/vue";
 import { createLogger } from "../../../utils/logger";
 import type { ComponentProp } from "../types/component";
@@ -32,7 +33,7 @@ class DescritporTransformer {
   private getTarget(
     name: PropsDescriptor["name"],
     descriptorProp: DescriptorProp
-  ): ComponentInfo {
+  ): ComponentInfo | never {
     let componentInfo: ComponentInfo | undefined;
     if (!(name in this.mapping)) {
       componentInfo = this.globalMapping[descriptorProp.type];
@@ -43,13 +44,14 @@ class DescritporTransformer {
         currentMapping.types?.[descriptorProp.type];
     }
 
-    if (!componentInfo) {
+    if (isUndefined(componentInfo)) {
       logger.error(
         `you have not config target component for descriptor: ${name}, prop: ${descriptorProp.name}, type: ${descriptorProp.type}`
       );
+      throw new Error("getTarget() of DescritporTransformer");
     }
 
-    return componentInfo!;
+    return componentInfo;
   }
 
   constructor(private propEnhance: IPropEnhance) {}
@@ -79,12 +81,14 @@ class DescritporTransformer {
     component: TransformedComponent,
     staticProps?: ComponentInfo["staticProps"]
   ): this;
+
   config(
     descirptorName: PropsDescriptor["name"],
     type: DescriptorPropTypes,
     component: TransformedComponent,
     staticProps?: ComponentInfo["staticProps"]
   ): this;
+
   config(
     descirptorName: PropsDescriptor["name"],
     typeOrName: DescriptorPropTypes | DescriptorProp["name"],
@@ -93,22 +97,26 @@ class DescritporTransformer {
   ): this {
     if (isDescritporPropType(typeOrName)) {
       const before = this.mapping[descirptorName].types;
-      this.mapping[descirptorName].types = {
-        ...before!,
-        [typeOrName]: {
-          component,
-          staticProps,
-        },
-      };
+      if (before) {
+        this.mapping[descirptorName].types = {
+          ...before,
+          [typeOrName]: {
+            component,
+            staticProps,
+          },
+        };
+      }
     } else {
       const before = this.mapping[descirptorName].props;
-      this.mapping[descirptorName].props = {
-        ...before!,
-        [typeOrName]: {
-          component,
-          staticProps,
-        },
-      };
+      if (before) {
+        this.mapping[descirptorName].props = {
+          ...before,
+          [typeOrName]: {
+            component,
+            staticProps,
+          },
+        };
+      }
     }
 
     return this;

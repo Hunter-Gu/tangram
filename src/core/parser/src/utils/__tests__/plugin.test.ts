@@ -1,6 +1,8 @@
 import { Plugin } from "../plugin";
 
-function getHandlers(plugin: Plugin<Object, Object>) {
+function getHandlers(
+  plugin: Plugin<Record<string, unknown>, Record<string, unknown>>
+) {
   // @ts-ignore
   return plugin.handlers;
 }
@@ -20,10 +22,15 @@ describe("Parser util class Plugin", () => {
         handler: () => console.log("c"),
       },
     ];
-    const plugin = new Plugin<Record<string, any>, Object>();
+    const plugin = new Plugin<
+      Record<string, unknown>,
+      Record<string, unknown>
+    >();
 
     plugin
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .register(target[0].key!, target[0].handler)
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .register(target[1].key!, target[1].handler)
       .register(target[2].handler);
 
@@ -42,10 +49,15 @@ describe("Parser util class Plugin", () => {
           handler: () => "b",
         },
       ];
-      const plugin = new Plugin<Record<string, any>, Object>();
+      const plugin = new Plugin<
+        Record<string, unknown>,
+        Record<string, unknown>
+      >();
 
       plugin
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         .register(target[0].key!, target[0].handler)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         .register(target[1].key!, target[1].handler);
 
       expect(plugin.invoke({})).toEqual({
@@ -65,13 +77,19 @@ describe("Parser util class Plugin", () => {
           handler: () => "b",
         },
         {
-          handler: (partialResult?: Object) => ({ ...partialResult, c: "c" }),
+          handler: (partialResult?: Record<string, unknown>) => ({
+            ...partialResult,
+            c: "c",
+          }),
         },
       ];
-      const plugin = new Plugin<Record<string, any>, Object>();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const plugin = new Plugin<Record<string, any>, Record<string, unknown>>();
 
       plugin
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         .register(target[0].key!, target[0].handler)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         .register(target[1].key!, target[1].handler)
         .register(target[2].handler);
 

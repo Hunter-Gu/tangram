@@ -4,7 +4,7 @@
 
 <script lang="ts">
 export default {
-  name: "elm-5",
+  name: "Elm5",
   setup() {
     console.log("elm-5 setup");
 

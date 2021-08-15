@@ -2,7 +2,7 @@ import { App } from "@vue/runtime-core";
 import ElementPlus from "element-plus";
 import "element-plus/lib/theme-chalk/index.css";
 
-let components: any;
+let components: unknown;
 
 export default {
   install(app: App) {

@@ -14,6 +14,7 @@ class Registry {
     names: T,
     descriptorGen: RegisterHandler<T>
   ): this;
+
   register(name: RegisterName, descriptor: RenderDescriptor): this;
   register<T extends RegisterName>(
     name: T,

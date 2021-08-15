@@ -60,7 +60,7 @@ describe("Parser lifecycle", () => {
     const idOrder: string[] = [];
 
     lifecycle(schema, (node) => {
-      idOrder.push(node.name);
+      idOrder.push(node.name as string);
     });
 
     expect(idOrder).toEqual([

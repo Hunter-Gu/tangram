@@ -4,7 +4,7 @@
 
 <script lang="ts">
 export default {
-  name: "elm-3",
+  name: "Elm3",
   beforeCreate() {
     console.log("elm-3 before create");
   },

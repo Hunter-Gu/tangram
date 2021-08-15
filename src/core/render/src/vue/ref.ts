@@ -4,7 +4,9 @@ import { ref, ToRefs } from "@vue/reactivity";
 const logger = createLogger("[Ref]");
 
 export class Ref {
-  private store: Record<string | number, ToRefs<any>> = {};
+  // TODO
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private store: Record<string | number, ToRefs<Record<string, any>>> = {};
 
   init(key: string | number) {
     const instance = ref(null);

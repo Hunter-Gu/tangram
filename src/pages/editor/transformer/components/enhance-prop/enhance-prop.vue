@@ -10,27 +10,30 @@
     <component
       :is="component"
       v-bind="staticProps"
-      v-model="defaultValue"
+      v-model="value"
       @input="handleInput"
       @blur="handleInput"
-    ></component>
+    />
   </el-space>
 </template>
 
 <script lang="ts" setup>
 import { defineProps, onMounted, ref } from "@vue/runtime-core";
-import type { PropType, Ref } from "@vue/runtime-core";
+import type { PropType } from "@vue/runtime-core";
 import type { ComponentProp } from "../../../types/component";
 import type { ComponentInfo } from "../../../types/transform";
 import { useStore } from "vuex";
 import { Mutations } from "../../../../../plugins/store";
 
+// TODO: the type definition should adjust
 const props: ComponentProp | ComponentInfo = defineProps({
   name: {
     type: String as PropType<string>,
+    default: "",
   },
   label: {
     type: String as PropType<string>,
+    default: "",
   },
   component: {
     type: [String, Object] as PropType<ComponentInfo["component"]>,
@@ -38,9 +41,12 @@ const props: ComponentProp | ComponentInfo = defineProps({
   },
   staticProps: {
     type: Object as PropType<ComponentInfo["staticProps"]>,
+    default: () => ({}),
   },
   defaultValue: {},
 }); // TODO why props missing when add `as ComponentProp & ComponentInfo` at tail
+
+const value = ref((props as unknown as ComponentProp).defaultValue);
 
 const useWrap = (elm: HTMLElement) => {
   const lineHeight = parseInt(getComputedStyle(elm).lineHeight);
@@ -50,7 +56,7 @@ const useWrap = (elm: HTMLElement) => {
 };
 
 const labelRef = ref<HTMLElement>();
-let wrap = ref(false);
+const wrap = ref(false);
 
 onMounted(() => {
   const elm = labelRef.value;
@@ -63,8 +69,8 @@ const store = useStore();
 
 const handleInput = function () {
   store.commit(Mutations.UPDATE_ELEMENT_PROPS, {
-    path: props.name,
-    value: props.defaultValue,
+    path: (props as unknown as ComponentProp).name,
+    value: value.value,
   });
 };
 </script>

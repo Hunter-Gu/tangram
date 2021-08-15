@@ -10,8 +10,7 @@
     @current-change="handleChange"
     draggable
     :allow-drop="allowDrop"
-  >
-  </el-tree>
+  />
 </template>
 
 <script lang="ts" setup>
@@ -80,7 +79,7 @@ const currentNodeKey = computed(() => {
   return store.state.currentPath || null;
 });
 
-watch(props.schema, (newVal, oldVal) => {
+watch(props.schema, (newVal) => {
   data.value = normalize(newVal);
 });
 
@@ -88,7 +87,7 @@ type Node = {
   data: Tree;
 };
 
-function handleDrop(draggingNode: Node, dropNode: Node, type: DropType, ev) {
+function handleDrop(draggingNode: Node, dropNode: Node, type: DropType) {
   store.commit(Mutations.MOVE, {
     from: draggingNode.data._meta.path,
     to: dropNode.data._meta.path,

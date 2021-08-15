@@ -3,11 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import type {
-  Child,
-  Component,
-  SchemaData,
-} from "../../../core/parser/src/types/schema";
+import type { Child, SchemaData } from "../../../core/parser/src/types/schema";
 import { computed, defineProps } from "@vue/runtime-core";
 import type { PropType } from "@vue/runtime-core";
 import { SchemaRender } from "../../../components";

@@ -170,7 +170,7 @@ export const store = createStore<State>({
 
 function getDescritporByRuntime(
   descriptor: PropsDescriptor,
-  runtimeData?: Record<string, any>
+  runtimeData?: Record<string, unknown>
 ): PropsDescriptor {
   if (!runtimeData) {
     return descriptor;

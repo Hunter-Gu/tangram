@@ -9,7 +9,9 @@ export class Plugin<O, P> {
     key: T,
     handler: F
   ): this;
+
   public register<F extends Handler<O>>(handler: F): this;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public register(key: any, handler?: any): this {
     if (typeof key === "string") {
       this.handlers.push(this.format(handler, key as keyof O));
@@ -24,7 +26,10 @@ export class Plugin<O, P> {
       const handler = desc.handler;
       // handle specify option
       if ("key" in desc) {
-        const key: keyof O = desc.key!;
+        const key = desc.key;
+        if (!key) {
+          return { ...acc };
+        }
         const value = handler(acc[key]);
 
         return {
@@ -34,6 +39,7 @@ export class Plugin<O, P> {
       } else {
         // handle total object
         return {
+          // @ts-ignore
           ...handler(acc),
         };
       }

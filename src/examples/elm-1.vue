@@ -1,7 +1,7 @@
 <template>
   <div>
     {{ name }} count: {{ count }}
-    <slot></slot>
+    <slot />
   </div>
 </template>
 
@@ -9,7 +9,7 @@
 import { defineComponent, ref } from "vue";
 
 export default defineComponent({
-  name: "Elm-1",
+  name: "Elm1",
   props: {
     name: {
       type: String,
@@ -27,7 +27,7 @@ export default defineComponent({
       count.value += 1;
     }, 1000);
 
-    const logger = (...params: any[]) => {
+    const logger = (...params: unknown[]) => {
       console.log(`Clicked ${props.name}! Paramteres`, ...params);
     };
 

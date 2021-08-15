@@ -1,5 +1,3 @@
-import { ParsedObjectTypeFlagValue } from "./parse";
-
 export const TYPES = {
   STRING: "string",
   NUMBER: "number",
@@ -70,7 +68,7 @@ function toBoolean(str: string): boolean | never {
   }
 }
 
-function toObject(value: ParsedObjectTypeFlagValue) {}
+function toObject() {}
 
 function toArray() {}
 

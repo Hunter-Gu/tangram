@@ -29,14 +29,14 @@ export function set(
 }
 
 export function get<T extends unknown>(
-  obj: Object,
+  obj: Record<string, unknown>,
   path: string,
   defaultValue?: T
 ) {
-  let value: Object | undefined | T = obj;
+  let value: Record<string, unknown> | undefined | T = obj;
   const keys = path.split(".").filter(Boolean);
-  let key = "";
-  while ((key = keys.shift()!)) {
+  let key: string | undefined = "";
+  while ((key = keys.shift())) {
     // TODO fix type definition
     // @ts-ignore
     if (key in value) {

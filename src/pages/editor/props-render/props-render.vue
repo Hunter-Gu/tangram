@@ -1,5 +1,5 @@
 <template>
-  <SchemaRender v-if="schema" :schema="schema"></SchemaRender>
+  <SchemaRender v-if="schema" :schema="schema" />
 </template>
 
 <script lang="ts" setup>
@@ -12,6 +12,7 @@ import type { PropsDescriptor } from "../types/descriptor";
 const props = defineProps({
   descriptor: {
     type: [Object] as PropType<PropsDescriptor | null | undefined>,
+    default: undefined,
     required: false,
   },
 });

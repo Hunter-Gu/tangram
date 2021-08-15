@@ -1,13 +1,13 @@
 <template>
   <div class="block" :class="statusClasses" @click.stop="handleSelect">
-    <slot></slot>
+    <slot />
     <!-- TODO： need a better way because this will prevent children scenario -->
-    <span class="modal"></span>
+    <span class="modal" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineProps, ref, watch } from "@vue/runtime-core";
+import { computed, defineProps } from "@vue/runtime-core";
 import type { PropType } from "@vue/runtime-core";
 import { Store, useStore } from "vuex";
 import type { State } from "../../../plugins/store";

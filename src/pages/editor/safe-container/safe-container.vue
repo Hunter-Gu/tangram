@@ -2,10 +2,12 @@
   <component :is="tag" ref="elm" class="container">
     <span v-if="fail">{{ componentName }}</span>
     <template v-else>
-      <component v-bind="componentProps" :is="component"></component>
-      <div class="name">{{ componentName }}</div>
+      <component v-bind="componentProps" :is="component" />
+      <div class="name">
+        {{ componentName }}
+      </div>
     </template>
-    <span class="modal"></span>
+    <span class="modal" />
   </component>
 </template>
 
@@ -15,12 +17,11 @@ import {
   onErrorCaptured,
   onMounted,
   ref,
-  useContext,
 } from "@vue/runtime-core";
 import type { PropType } from "@vue/runtime-core";
 import type { Component } from "../../../core/parser/src/types/schema";
 
-let fail = ref(false);
+const fail = ref(false);
 
 onErrorCaptured(() => {
   fail.value = true;
@@ -38,7 +39,10 @@ const props = defineProps({
     required: true,
   },
 
-  componentProps: {},
+  componentProps: {
+    type: Object,
+    default: () => ({}),
+  },
 
   tag: {
     type: String as PropType<string>,

@@ -1,13 +1,13 @@
 <template>
   <div>
     <div>Elm 4</div>
-    <slot></slot>
+    <slot />
   </div>
 </template>
 
 <script lang="ts">
 export default {
-  name: "elm-4",
+  name: "Elm4",
   setup() {
     console.log("elm-4 setup");
 

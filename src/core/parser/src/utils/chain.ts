@@ -25,7 +25,9 @@ export class Chain {
     this.pointer = this.pointer.next as Chainable;
   }
 
-  public async invoke(getRef: (name: Data["name"]) => any) {
+  public async invoke(
+    getRef: (name: Data["name"]) => Record<string, () => unknown>
+  ) {
     let node: Partial<Chainable> | undefined = this.list;
     let current: Data | void;
 

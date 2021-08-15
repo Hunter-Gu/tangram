@@ -12,7 +12,7 @@ export type Handler = {
 
 export type Events = Record<string, Array<Handler | Handler[]>>;
 
-export type ParsedEvents = Record<string, (getRef: GetRef) => any>;
+export type ParsedEvents = Record<string, (getRef: GetRef) => unknown>;
 
 /* eslint-disable no-use-before-define */
 export type Slots = Record<string, SchemaData>;
@@ -51,5 +51,4 @@ export type ParsedSchema = Omit<SchemaData, "slots" | "events"> & {
   events?: ParsedEvents;
 };
 
-// TODO fix `any` type problem
-export type Component = Schema["name"] | any | Object;
+export type Component = Schema["name"] | Record<string, unknown>;
