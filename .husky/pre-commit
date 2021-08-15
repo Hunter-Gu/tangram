@@ -1,5 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npx prettier --write .
-npx eslint src/**/*.{ts,vue}
+npx lint-staged
