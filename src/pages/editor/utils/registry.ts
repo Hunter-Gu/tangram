@@ -16,6 +16,7 @@ class Registry {
   ): this;
 
   register(name: RegisterName, descriptor: RenderDescriptor): this;
+
   register<T extends RegisterName>(
     name: T,
     descriptorOrGen: RenderDescriptor | RegisterHandler<T>

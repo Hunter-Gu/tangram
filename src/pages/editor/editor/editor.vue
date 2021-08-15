@@ -5,7 +5,10 @@
     </el-aside>
 
     <el-container class="main-border">
-      <el-main ref="dropElm" @click="clickNoop">
+      <el-main
+        ref="dropElm"
+        @click="clickNoop"
+      >
         <Stage :schema="schema" />
       </el-main>
     </el-container>
@@ -40,7 +43,7 @@ import type { State } from "../../../plugins/store";
 import { Mutations } from "../../../plugins/store";
 import SafeContainer from "../safe-container";
 import NodeTree from "../node-tree";
-import { getAll } from "./registry";
+import { getAll } from "./registery/registry";
 import Stage from "../stage";
 
 const store: Store<State> = useStore();
