@@ -4,7 +4,12 @@ module.exports = {
     es2021: true,
     jest: true,
   },
-  extends: ["plugin:vue/essential", "standard", "prettier"],
+  extends: [
+    "standard",
+    "prettier",
+    "plugin:vue/vue3-essential",
+    "plugin:vue/vue3-strongly-recommended",
+  ],
   parserOptions: {
     ecmaVersion: 12,
     parser: "@typescript-eslint/parser",
