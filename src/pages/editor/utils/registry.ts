@@ -7,34 +7,42 @@ const logger = createLogger("Registry");
 /**
  * register component and it's render descritpor
  */
-class Registry {
+export class Registry {
   private readonly container: RegistryItem[] = [];
 
-  register<T extends RegisterName>(
-    names: T,
-    descriptorGen: RegisterHandler<T>
-  ): this;
+  register(names: RegisterName, descriptorGen: RegisterHandler): this;
 
   register(name: RegisterName, descriptor: RenderDescriptor): this;
 
-  register<T extends RegisterName>(
-    name: T,
-    descriptorOrGen: RenderDescriptor | RegisterHandler<T>
+  register(
+    name: RegisterName,
+    descriptorOrGen: RenderDescriptor | RegisterHandler
   ) {
     const names = typeof name === "string" ? [name] : (name as string[]);
-    const descriptor: RenderDescriptor =
-      typeof descriptorOrGen === "function"
-        ? descriptorOrGen(name)
-        : descriptorOrGen;
 
-    this.combineDefaultValueForProps(descriptor);
+    if (typeof descriptorOrGen === "function") {
+      names.forEach((name) => {
+        const descriptor = descriptorOrGen(name);
 
-    names.forEach((name) => {
-      this.container.push({
-        key: name,
-        data: descriptor,
+        this.combineDefaultValueForProps(descriptor);
+
+        this.container.push({
+          key: name,
+          data: descriptor,
+        });
       });
-    });
+    } else {
+      const descriptor: RenderDescriptor = descriptorOrGen;
+
+      this.combineDefaultValueForProps(descriptor);
+
+      names.forEach((name) => {
+        this.container.push({
+          key: name,
+          data: descriptor,
+        });
+      });
+    }
 
     return this;
   }
@@ -70,6 +78,4 @@ class Registry {
   }
 }
 
-const registry = new Registry();
-
-export { registry };
+export const registry = new Registry();

@@ -2,7 +2,7 @@ import { RenderDescriptor } from "./descriptor";
 
 type RegisterName = string | string[];
 
-type RegisterHandler<T extends RegisterName> = (name: T) => RenderDescriptor;
+type RegisterHandler = (name: string) => RenderDescriptor;
 
 type RegistryItem = {
   key: string;
