@@ -21,6 +21,7 @@ const logger = createLogger("[DescritporTransformer]");
 
 // TODO: refactor this class because the type definitions are confused
 export class DescritporTransformer {
+  // TODO: maybe should move to other place, it is confused here
   // TODO: fix type
   // @ts-ignore
   private _root: ComponentInfo = { component: "div" };
