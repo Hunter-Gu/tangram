@@ -10,6 +10,7 @@ export type GlobalTransformMapping = Partial<
   Record<DescriptorPropTypes, ComponentInfo>
 >;
 
+// TODO: fix this soundless
 export type TransformMapping = Record<
   PropsDescriptor["name"],
   {

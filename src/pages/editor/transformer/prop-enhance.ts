@@ -24,7 +24,7 @@ export class PropEnhance extends IPropEnhance {
           ...props,
           ...componentInfo,
         },
-      });
+      }) as SchemaData;
     };
   }
 }

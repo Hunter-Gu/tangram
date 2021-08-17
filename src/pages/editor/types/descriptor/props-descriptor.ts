@@ -1,7 +1,7 @@
 export enum DescriptorPropTypes {
-  String = "string",
-  Number = "number",
-  Boolean = "boolean",
+  String = "String",
+  Number = "Number",
+  Boolean = "Boolean",
 }
 
 type DescriptorPropValueType<T extends DescriptorPropTypes> =

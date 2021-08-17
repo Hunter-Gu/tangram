@@ -19,7 +19,10 @@ import { IPropEnhance, PropEnhance } from "./prop-enhance";
 
 const logger = createLogger("[DescritporTransformer]");
 
-class DescritporTransformer {
+// TODO: refactor this class because the type definitions are confused
+export class DescritporTransformer {
+  // TODO: fix type
+  // @ts-ignore
   private _root: ComponentInfo = { component: "div" };
 
   private mapping: TransformMapping = {};
@@ -61,6 +64,8 @@ class DescritporTransformer {
     descriptorProp: DescriptorProp
   ): Omit<SchemaData, "__uuid"> => {
     return {
+      // TODO fix
+      // @ts-ignore
       name: this.propEnhance.enhance(this.getTarget(name, descriptorProp)),
       // pass props value to functional component
       // which is created by `propEnhance.enhance()`
@@ -95,28 +100,29 @@ class DescritporTransformer {
     component: TransformedComponent,
     staticProps?: ComponentInfo["staticProps"]
   ): this {
+    this.mapping[descirptorName] = {
+      ...this.mapping[descirptorName],
+    };
+
     if (isDescritporPropType(typeOrName)) {
       const before = this.mapping[descirptorName].types;
-      if (before) {
-        this.mapping[descirptorName].types = {
-          ...before,
-          [typeOrName]: {
-            component,
-            staticProps,
-          },
-        };
-      }
+      // @ts-ignore
+      this.mapping[descirptorName].types = {
+        ...before,
+        [typeOrName]: {
+          component,
+          staticProps,
+        },
+      };
     } else {
       const before = this.mapping[descirptorName].props;
-      if (before) {
-        this.mapping[descirptorName].props = {
-          ...before,
-          [typeOrName]: {
-            component,
-            staticProps,
-          },
-        };
-      }
+      this.mapping[descirptorName].props = {
+        ...before,
+        [typeOrName]: {
+          component,
+          staticProps,
+        },
+      };
     }
 
     return this;
@@ -141,4 +147,5 @@ class DescritporTransformer {
 }
 
 const propEnhance = new PropEnhance(render);
+// @ts-ignore
 export const transformer = new DescritporTransformer(propEnhance);

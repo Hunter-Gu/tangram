@@ -13,6 +13,8 @@ handler
   .register("alias", id)
   .register("attrs", id)
   .register("props", id)
+  // TODO
+  // @ts-ignore
   .register("events", handleEvents)
   .register("slots", handleSlots)
   .register("children", handleChildren);

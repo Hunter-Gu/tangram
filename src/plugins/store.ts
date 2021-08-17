@@ -67,6 +67,7 @@ export const store = createStore<State>({
         const index = state.schema.children?.length ?? 0;
 
         state.schema.children?.push({
+          // @ts-ignore
           name: component,
           __uuid: new Date().getTime(),
         });
@@ -85,6 +86,7 @@ export const store = createStore<State>({
           }
         });
       } catch (e) {
+        // @ts-ignore
         logger.error(e.message);
       }
     },
@@ -97,7 +99,9 @@ export const store = createStore<State>({
 
       // @ts-ignore-next-line
       state.currentSelect = getDescritporByRuntime(
+        // @ts-ignore
         renderDescriptor?.descriptor,
+        // @ts-ignore
         get(state.schema, state.currentPath).props
       );
 
@@ -178,6 +182,7 @@ function getDescritporByRuntime(
 
   return {
     ...descriptor,
+    // @ts-ignore
     props: descriptor.props.map((prop) => {
       if (prop.name in runtimeData) {
         return {
