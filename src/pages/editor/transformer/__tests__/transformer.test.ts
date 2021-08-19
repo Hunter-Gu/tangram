@@ -1,12 +1,12 @@
 import { DescritporTransformer } from "../transformer";
 import { IPropEnhance } from "../prop-enhance";
-import { ElInput, ElSwitch } from "element-plus";
+import { ElInput, ElInputNumber, ElSwitch } from "element-plus";
 import { DescriptorPropTypes } from "../../types/descriptor";
 
 function getPropEnhance(): IPropEnhance {
   return {
     // @ts-ignore
-    enhance() {},
+    enhance: (key: unknown) => key,
   };
 }
 
@@ -149,5 +149,97 @@ describe("DescriptorTransformer of page /editor", () => {
     });
   });
 
-  it("transform()", () => {});
+  it("The transform() will transform by specify name and prop, otherwise it will use global", () => {
+    const transformer = new DescritporTransformer(getPropEnhance());
+
+    // @ts-ignore
+    transformer.config("ElButton", "type", ElInputNumber);
+
+    // @ts-ignore
+    transformer.configGlobal(DescriptorPropTypes.String, ElInput);
+
+    expect(
+      transformer.transform("ElButton", {
+        name: "type",
+        label: "类型",
+        type: DescriptorPropTypes.String,
+      })
+    ).toEqual({
+      name: {
+        component: ElInputNumber,
+        staticProps: undefined,
+      },
+      props: {
+        name: "type",
+        label: "类型",
+        defaultValue: undefined,
+      },
+    });
+
+    expect(
+      transformer.transform("ElInput", {
+        name: "modelValue",
+        label: "内容",
+        type: DescriptorPropTypes.String,
+        defaultValue: "Hello World!",
+      })
+    ).toEqual({
+      name: {
+        component: ElInput,
+        staticProps: undefined,
+      },
+      props: {
+        name: "modelValue",
+        label: "内容",
+        defaultValue: "Hello World!",
+      },
+    });
+  });
+
+  it("The priority of prop config is over type config when transform()", () => {
+    const transformer = new DescritporTransformer(getPropEnhance());
+
+    // @ts-ignore
+    transformer.config("ElButton", "type", ElInputNumber); // prop
+
+    // @ts-ignore
+    transformer.config("ElButton", DescriptorPropTypes.String, ElInput); // type
+
+    expect(
+      transformer.transform("ElButton", {
+        name: "type",
+        label: "类型",
+        type: DescriptorPropTypes.String,
+      })
+    ).toEqual({
+      name: {
+        component: ElInputNumber,
+        staticProps: undefined,
+      },
+      props: {
+        name: "type",
+        label: "类型",
+        defaultValue: undefined,
+      },
+    });
+
+    expect(
+      transformer.transform("ElButton", {
+        name: "text",
+        label: "内容",
+        type: DescriptorPropTypes.String,
+        defaultValue: "Hello World!",
+      })
+    ).toEqual({
+      name: {
+        component: ElInput,
+        staticProps: undefined,
+      },
+      props: {
+        name: "text",
+        label: "内容",
+        defaultValue: "Hello World!",
+      },
+    });
+  });
 });
