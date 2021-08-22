@@ -50,7 +50,7 @@ type Tree = {
 };
 
 // this function will handle for block path that mentioned in store
-// TODO: so move these together for better handling block path
+// TODO: so move these together for better handling block path and for easier test
 function normalize(schema: SchemaData): Tree {
   const _normalize = (schema: SchemaData, path = ""): Tree => {
     return {
