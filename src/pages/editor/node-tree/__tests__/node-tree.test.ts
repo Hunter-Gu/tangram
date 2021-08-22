@@ -1,7 +1,7 @@
 jest.mock("vuex", () => {
   return {
     // TODO
-    // need to check if it is necessary
+    // need to check how to make it necessary
     createStore: jest.fn(),
     useStore() {
       return {
@@ -18,28 +18,32 @@ import "../../../../plugins/__test__/element-plus.mock";
 import nodeTree from "..";
 /* eslint-enable */
 
-describe("Component NodeTree", () => {
-  it("The ElTree of NodeTree will use nomalized props.schema as prop data", async () => {
-    const wrapper = shallowMount(nodeTree, {
-      propsData: {
-        schema: {
-          name: "div",
-          __uuid: 0,
+const propSchema = {
+  props: {
+    schema: {
+      name: "div",
+      __uuid: 0,
+      children: [
+        {
+          name: { name: "ElInput" },
+          __uuid: 1,
+          props: { type: "primary" },
           children: [
             {
-              name: { name: "ElInput" },
-              __uuid: 1,
-              props: { type: "primary" },
-              children: [
-                {
-                  name: { name: "ElButton" },
-                  __uuid: 2,
-                },
-              ],
+              name: { name: "ElButton" },
+              __uuid: 2,
             },
           ],
         },
-      },
+      ],
+    },
+  },
+};
+
+describe("Component NodeTree", () => {
+  it("The ElTree of NodeTree will use nomalized props.schema as prop data", async () => {
+    const wrapper = shallowMount(nodeTree, {
+      props: { schema: propSchema },
     });
     const elTree = wrapper.getComponent(ElTree);
     const delay = () => {
@@ -78,5 +82,14 @@ describe("Component NodeTree", () => {
         ],
       },
     ]);
+  });
+
+  it("The ElTree of NodeTree use 'uuid' as prop node-key", () => {
+    const wrapper = shallowMount(nodeTree, {
+      props: { schema: propSchema },
+    });
+    const elTree = wrapper.findComponent(ElTree);
+
+    expect(elTree.props("node-key")).toBe("uuid");
   });
 });
