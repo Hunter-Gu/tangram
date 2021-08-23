@@ -1,1 +1,1 @@
-export { default } from "./node-tree.vue";
+export { default } from "./node-tree.provider.vue";

@@ -15,84 +15,46 @@
 
 <script lang="ts" setup>
 import { ref } from "@vue/reactivity";
-import { computed, defineProps, watch } from "@vue/runtime-core";
+import { defineEmits, defineProps, watch } from "@vue/runtime-core";
 import type { PropType } from "@vue/runtime-core";
-import type {
-  Component,
-  SchemaData,
-} from "../../../core/parser/src/types/schema";
+import type { SchemaData } from "../../../core/parser/src/types/schema";
 import { registry } from "../utils/registry";
-import { Store, useStore } from "vuex";
-import { Mutations } from "../../../plugins/store";
-import type { State } from "../../../plugins/store";
 import { DropType } from "../types/node-tree";
-import { PathManager } from "../../../plugins/utils/path-manager";
-
-const store: Store<State> = useStore();
+import { DropHandlerParams, Node, SelectHandlerParams, Tree } from "./types";
+import { normalize } from "./normalize";
 
 const props = defineProps({
   schema: {
     type: Object as PropType<SchemaData>,
     required: true,
   },
+
+  currentNodeKey: {
+    type: String as PropType<string | null>,
+    default: "",
+  },
 });
 
-type Tree = {
-  uuid: string;
-  label: string;
-  _meta: {
-    // the name used for seeking in registry
-    name: string | Component;
-    // the path of current node, used for updating layer level
-    path: string;
-  };
-  children?: Tree[];
-};
-
-// this function will handle for block path that mentioned in store
-// TODO: so move these together for better handling block path and for easier test
-function normalize(schema: SchemaData): Tree {
-  const _normalize = (schema: SchemaData, path = ""): Tree => {
-    return {
-      uuid: path || "root",
-      label: schema.name.name || "label",
-      _meta: {
-        name: schema.name,
-        path,
-      },
-      children: schema.children?.map((n, i) =>
-        _normalize(n, PathManager.concat(path, PathManager.ChildrenPropName, i))
-      ),
-    };
-  };
-
-  return [_normalize(schema)];
-}
+const emit = defineEmits({
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  select: (arg: SelectHandlerParams) => true,
+  move: (arg: DropHandlerParams) => true,
+  /* eslint-enable */
+});
 
 const data = ref(normalize(props.schema));
 const test = ref();
-const currentNodeKey = computed(() => {
-  // TODO
-  // actually we should not need it
-  // it was element-ui bug, so remove it after fixed
-  test.value?.setCurrentKey(store.state.currentPath || null);
-  return store.state.currentPath || null;
-});
 
 watch(props.schema, (newVal) => {
   data.value = normalize(newVal);
 });
 
-type Node = {
-  data: Tree;
-};
-
 function handleDrop(draggingNode: Node, dropNode: Node, type: DropType) {
-  store.commit(Mutations.MOVE, {
+  emit("move", {
     from: draggingNode.data._meta.path,
     to: dropNode.data._meta.path,
     type,
-  });
+  } as DropHandlerParams);
 }
 
 function allowDrop(draggingNode: Node, dropNode: Node, type: DropType) {
@@ -124,9 +86,9 @@ function handleChange(data: Tree) {
 
   name = name.name;
 
-  store.commit(Mutations.SELECT, {
+  emit("select", {
     name,
     path,
-  });
+  } as SelectHandlerParams);
 }
 </script>
