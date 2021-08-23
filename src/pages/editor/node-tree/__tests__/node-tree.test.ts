@@ -1,4 +1,4 @@
-import { shallowMount } from "@vue/test-utils";
+import { mount, shallowMount } from "@vue/test-utils";
 import { ElTree } from "element-plus";
 import nodeTree from "../node-tree.vue";
 import "../../../../plugins/__test__/element-plus.mock";
@@ -10,9 +10,10 @@ jest.mock("../normalize", () => ({
 const props = {
   schema: {
     name: { name: "div" },
-    __uuid: 1,
+    uuid: 1,
     props: { type: "primary" },
   },
+  currentNodeKey: 1,
 };
 
 describe("Component NodeTree", () => {
@@ -28,5 +29,15 @@ describe("Component NodeTree", () => {
     const elTree = wrapper.findComponent(ElTree);
 
     expect(elTree.props("nodeKey")).toBe("uuid");
+  });
+
+  it("The currentNodeKey used to highlight the node to mark it as the current selected", () => {
+    const wrapper = mount(nodeTree, { props });
+    const shallowWrapper = shallowMount(nodeTree, { props });
+    const selectedNode = wrapper.find(".is-current");
+    const elTree = shallowWrapper.findComponent(ElTree);
+
+    expect(selectedNode.exists()).toBe(true);
+    expect(elTree.props("currentNodeKey")).toBe(1);
   });
 });
