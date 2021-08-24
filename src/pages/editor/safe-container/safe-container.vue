@@ -1,6 +1,6 @@
 <template>
   <component :is="tag" ref="elm" class="container">
-    <span v-if="fail">{{ componentName }}</span>
+    <span v-if="fail" class="name">{{ componentName }}</span>
     <template v-else>
       <component v-bind="componentProps" :is="component" />
       <div class="name">
