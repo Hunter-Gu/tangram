@@ -26,6 +26,9 @@ export function enhanceBlock(node: Child, path: string): Child {
     __uuid: 0,
     children: [node],
     props: {
+      // TODO
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       name: node.name.name,
       path,
     },
