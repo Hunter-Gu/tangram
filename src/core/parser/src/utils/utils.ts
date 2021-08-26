@@ -32,7 +32,7 @@ export function get<T extends unknown>(
   obj: Record<string, unknown>,
   path: string,
   defaultValue?: T
-) {
+): T {
   let value: Record<string, unknown> | undefined | T = obj;
   const keys = path.split(".").filter(Boolean);
   let key: string | undefined = "";
@@ -44,8 +44,8 @@ export function get<T extends unknown>(
       // @ts-ignore
       value = value[key];
     } else {
-      return defaultValue;
+      return defaultValue as T;
     }
   }
-  return value;
+  return value as T;
 }

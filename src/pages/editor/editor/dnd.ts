@@ -17,15 +17,16 @@ export function useDrag(dragElm: HTMLElement) {
 
 export function useDrop(dropElm: HTMLElement) {
   const store: Store<State> = useStore();
-
   dropElm.addEventListener("dragover", (evt: Event) => {
     evt.preventDefault();
   });
 
-  dropElm.addEventListener("drop", (evt: DragEvent) => {
-    const name = evt.dataTransfer?.getData("text");
+  dropElm.addEventListener("drop", (evt) => handleDrop(store, evt));
+}
 
-    store.commit(Mutations.CLEAR_SELECTS);
-    store.commit(Mutations.ADD_ELEMENT, name);
-  });
+export function handleDrop(store: Store<State>, evt: DragEvent, path = "") {
+  const name = evt.dataTransfer?.getData("text");
+
+  store.commit(Mutations.CLEAR_SELECTS);
+  store.commit(Mutations.ADD_ELEMENT, { componentName: name, path });
 }

@@ -58,22 +58,32 @@ export const store = createStore<State>({
   },
 
   mutations: {
-    [Mutations.ADD_ELEMENT](state, componentName: string) {
+    [Mutations.ADD_ELEMENT](
+      state,
+      { path, componentName }: { path: string; componentName: string }
+    ) {
       try {
         const renderDescriptor =
           registry.getPropsDescriptor(componentName)?.data;
 
         const component = renderDescriptor?.component;
-        const index = state.schema.children?.length ?? 0;
+        const parent = get(state.schema, path) as SchemaData;
+        const index =
+          get<SchemaData | void>(state.schema, path)?.children?.length ?? 0;
 
-        state.schema.children?.push({
+        if (!parent.children) {
+          parent.children = [];
+        }
+
+        parent.children.push({
           // @ts-ignore
           name: component,
           __uuid: new Date().getTime(),
         });
+
         store.commit(Mutations.SELECT, {
           name: component?.name,
-          path: PathManager.concatIndex(index),
+          path: PathManager.concat(path, PathManager.ChildrenPropName, index),
         });
 
         // init props for instance
@@ -102,7 +112,7 @@ export const store = createStore<State>({
         // @ts-ignore
         renderDescriptor?.descriptor,
         // @ts-ignore
-        get(state.schema, state.currentPath).props
+        get(state.schema, state.currentPath)?.props
       );
 
       state.selectPaths = [path];
