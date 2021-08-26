@@ -1,1 +1,1 @@
-export { default } from "./enhance-prop.vue";
+export { default } from "./enhance-prop.provider.vue";

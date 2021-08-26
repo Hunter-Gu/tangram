@@ -18,33 +18,12 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, onMounted, ref } from "@vue/runtime-core";
-import type { PropType } from "@vue/runtime-core";
+import { defineProps, onMounted, ref, defineEmits } from "@vue/runtime-core";
 import type { ComponentProp } from "../../../types/component";
-import type { ComponentInfo } from "../../../types/transform";
-import { useStore } from "vuex";
-import { Mutations } from "../../../../../plugins/store";
+import { UpdateParams } from "./types";
+import { getComponentProps } from "./constants";
 
-// TODO: the type definition should adjust
-const props: ComponentProp | ComponentInfo = defineProps({
-  name: {
-    type: String as PropType<string>,
-    default: "",
-  },
-  label: {
-    type: String as PropType<string>,
-    default: "",
-  },
-  component: {
-    type: [String, Object] as PropType<ComponentInfo["component"]>,
-    required: true,
-  },
-  staticProps: {
-    type: Object as PropType<ComponentInfo["staticProps"]>,
-    default: () => ({}),
-  },
-  defaultValue: {},
-}); // TODO why props missing when add `as ComponentProp & ComponentInfo` at tail
+const props = defineProps(getComponentProps());
 
 const value = ref((props as unknown as ComponentProp).defaultValue);
 
@@ -65,10 +44,14 @@ onMounted(() => {
   }
 });
 
-const store = useStore();
+const emit = defineEmits({
+  // TODO
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  updateProps: (path: UpdateParams) => true,
+});
 
 const handleInput = function () {
-  store.commit(Mutations.UPDATE_ELEMENT_PROPS, {
+  emit("updateProps", {
     path: (props as unknown as ComponentProp).name,
     value: value.value,
   });
