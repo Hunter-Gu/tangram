@@ -21,16 +21,11 @@ import {
   onMounted,
   onUpdated,
   ref,
+  defineEmits,
 } from "@vue/runtime-core";
 import type { PropType } from "@vue/runtime-core";
-import { Store, useStore } from "vuex";
-import type { State } from "../../../plugins/store";
-import { Mutations } from "../../../plugins/store";
-import { Operation } from "./types";
+import { AddParams, Operation, SelectParams } from "./types";
 import { HotZone } from "./hot-zone";
-import { handleDrop } from "../editor/dnd";
-
-const store: Store<State> = useStore();
 
 const dragFocus = ref(Operation.None);
 
@@ -53,15 +48,6 @@ function getBlockElmRect() {
   return elm.getBoundingClientRect();
 }
 
-const statusClasses = computed(() => ({
-  "drag-bound-top": dragFocus.value === Operation.Top,
-  "drag-bound-right": dragFocus.value === Operation.Right,
-  "drag-bound-bottom": dragFocus.value === Operation.Bottom,
-  "drag-bound-left": dragFocus.value === Operation.Left,
-  "drag-bound-inside": dragFocus.value === Operation.Inside,
-  "select-status": store.state.selectPaths.indexOf(props.path) === 0,
-}));
-
 const props = defineProps({
   name: {
     type: String as PropType<string>,
@@ -72,11 +58,34 @@ const props = defineProps({
     type: String as PropType<string>,
     required: true,
   },
+
+  selectPaths: {
+    type: Array as PropType<string[]>,
+    default: () => [],
+  },
+});
+
+const statusClasses = computed(() => ({
+  "drag-bound-top": dragFocus.value === Operation.Top,
+  "drag-bound-right": dragFocus.value === Operation.Right,
+  "drag-bound-bottom": dragFocus.value === Operation.Bottom,
+  "drag-bound-left": dragFocus.value === Operation.Left,
+  "drag-bound-inside": dragFocus.value === Operation.Inside,
+  "select-status": (props.selectPaths as string[]).indexOf(props.path) === 0,
+}));
+
+const emits = defineEmits({
+  clearSelects: () => true,
+  select: (arg: SelectParams) => arg,
+  add: (arg: AddParams) => arg,
 });
 
 function handleSelect() {
-  store.commit(Mutations.CLEAR_SELECTS);
-  store.commit(Mutations.SELECT, props);
+  emits("clearSelects");
+  emits("select", {
+    name: props.name,
+    path: props.path,
+  });
 }
 
 const handleDragover = (e: DragEvent) => {
@@ -86,7 +95,6 @@ const handleDragover = (e: DragEvent) => {
   };
   const operation = hotZone.calc(position);
   dragFocus.value = operation;
-  console.log(props.path, e.target === blockElm.value, e.target);
 };
 
 function handleDragleave() {
@@ -95,7 +103,8 @@ function handleDragleave() {
 
 function handleDropEnhance(evt: DragEvent) {
   dragFocus.value = Operation.None;
-  handleDrop(store, evt, props.path);
+
+  emits("add", { evt, path: props.path } as AddParams);
 }
 </script>
 

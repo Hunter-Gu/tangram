@@ -1,1 +1,1 @@
-export { default } from "./block.vue";
+export { default } from "./block.provider.vue";

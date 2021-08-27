@@ -16,3 +16,13 @@ export enum Operation {
   Left,
   Inside,
 }
+
+export type AddParams = {
+  evt: DragEvent;
+  path: string;
+};
+
+export type SelectParams = {
+  name: string;
+  path: string;
+};
