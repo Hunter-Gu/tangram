@@ -12,6 +12,7 @@
 import { computed, defineProps, defineEmits } from "@vue/runtime-core";
 import type { PropType } from "@vue/runtime-core";
 import { SelectParams } from "../types";
+import { CLASS_SELECT_STATUS } from "./constants";
 
 const props = defineProps({
   name: {
@@ -31,7 +32,8 @@ const props = defineProps({
 });
 
 const statusClasses = computed(() => ({
-  "select-status": (props.selectPaths as string[]).indexOf(props.path) === 0,
+  [CLASS_SELECT_STATUS]:
+    (props.selectPaths as string[]).indexOf(props.path) > -1,
 }));
 
 const emits = defineEmits({
