@@ -39,7 +39,7 @@ export function get<T extends unknown>(
   while ((key = keys.shift())) {
     // TODO fix type definition
     // @ts-ignore
-    if (key in value) {
+    if (value && key in value) {
       // TODO fix type definition
       // @ts-ignore
       value = value[key];
