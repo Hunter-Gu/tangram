@@ -6,6 +6,8 @@ import { PropsDescriptor } from "@/pages/editor/types/descriptor";
 import { get, set } from "../core/parser/src/utils/utils";
 import { DropType } from "../pages/editor/types/node-tree";
 import { PathManager } from "./utils/path-manager";
+import { getParentPathAndIndex, move } from "./utils/move";
+import { getDescritporByRuntime } from "./utils/get-descriptor-by-runtime";
 
 const logger = createLogger("store");
 
@@ -22,9 +24,6 @@ export type State = {
 export enum Mutations {
   // eslint-disable-next-line no-unused-vars
   ADD_ELEMENT = "add",
-
-  // eslint-disable-next-line no-unused-vars
-  SET_CURRENT_SELECT = "set_current_select",
 
   // eslint-disable-next-line no-unused-vars
   SELECT = "select",
@@ -107,7 +106,6 @@ export const store = createStore<State>({
 
       state.currentPath = path;
 
-      // @ts-ignore-next-line
       state.currentSelect = getDescritporByRuntime(
         // @ts-ignore
         renderDescriptor?.descriptor,
@@ -125,7 +123,6 @@ export const store = createStore<State>({
     },
 
     [Mutations.UPDATE_ELEMENT_PROPS](state, { path, value }) {
-      // @ts-ignore-next-line
       const currentSchemaDataNode = get(
         state.schema,
         state.currentPath
@@ -181,50 +178,3 @@ export const store = createStore<State>({
     },
   },
 });
-
-function getDescritporByRuntime(
-  descriptor: PropsDescriptor,
-  runtimeData?: Record<string, unknown>
-): PropsDescriptor {
-  if (!runtimeData) {
-    return descriptor;
-  }
-
-  return {
-    ...descriptor,
-    // @ts-ignore
-    props: descriptor.props.map((prop) => {
-      if (prop.name in runtimeData) {
-        return {
-          ...prop,
-          defaultValue: runtimeData[prop.name],
-        };
-      }
-
-      return prop;
-    }),
-  };
-}
-
-type Node<T> = {
-  array: T[];
-  index: number;
-};
-
-function move<T>(from: Node<T>, to: Node<T>) {
-  const node = from.array.splice(from.index, 1)[0];
-
-  to.array.splice(to.index, 0, node);
-}
-
-// example:    children.0.children.1.children.2
-// parentPath: children.0.children.1.children
-// index:      2
-function getParentPathAndIndex(path: string) {
-  const lastIndex = path.lastIndexOf(PathManager.Seperator);
-
-  return {
-    parentPath: path.slice(0, lastIndex),
-    index: path.slice(lastIndex + 1),
-  };
-}
