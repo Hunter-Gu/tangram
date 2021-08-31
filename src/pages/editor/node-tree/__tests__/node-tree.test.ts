@@ -1,7 +1,7 @@
 import { mount, shallowMount } from "@vue/test-utils";
 import { ElTree } from "element-plus";
 import nodeTree from "../node-tree.vue";
-import "../../../../plugins/__test__/element-plus.mock";
+import "../../../../plugins/__tests__/element-plus.mock";
 
 jest.mock("../normalize", () => ({
   normalize: (arg: unknown) => [arg],
@@ -40,4 +40,7 @@ describe("Component NodeTree", () => {
     expect(selectedNode.exists()).toBe(true);
     expect(elTree.props("currentNodeKey")).toBe(1);
   });
+
+  // TODO
+  it("how to test drag and drop", () => {});
 });
