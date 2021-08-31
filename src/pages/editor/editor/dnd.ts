@@ -1,18 +1,20 @@
 import { Mutations, State } from "../../../plugins/store";
 import { Store, useStore } from "vuex";
 
+export const dragHandler = (evt: DragEvent) => {
+  const name = (evt.target as HTMLElement).dataset.name;
+
+  if (!name) {
+    return;
+  }
+
+  evt.dataTransfer?.setData("text", name);
+};
+
 export function useDrag(dragElm: HTMLElement) {
   dragElm.draggable = true;
 
-  dragElm.addEventListener("dragstart", (evt: DragEvent) => {
-    const name = (evt.target as HTMLElement).dataset.name;
-
-    if (!name) {
-      return;
-    }
-
-    evt.dataTransfer?.setData("text", name);
-  });
+  dragElm.addEventListener("dragstart", dragHandler);
 }
 
 export function useDrop(dropElm: HTMLElement) {
