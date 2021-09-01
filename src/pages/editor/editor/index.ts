@@ -1,1 +1,1 @@
-export { default } from "./editor.vue";
+export { default } from "./editor.provider.vue";

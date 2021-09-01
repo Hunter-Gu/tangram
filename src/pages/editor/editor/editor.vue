@@ -1,12 +1,15 @@
 <template>
   <el-container class="height-100">
     <el-aside class="sidebar">
-      <NodeTree :schema="schema" />
+      <NodeTree :schema="props.schema" />
     </el-aside>
 
     <el-container class="main-border">
-      <el-main ref="dropElm" @click="clickNoop">
-        <Stage :schema="schema" />
+      <el-main
+        ref="dropElm"
+        @click="clickNoop"
+      >
+        <Stage :schema="props.schema" />
       </el-main>
     </el-container>
 
@@ -25,7 +28,7 @@
       </ul>
     </el-aside>
     <el-aside class="sidebar">
-      <PropsRender :descriptor="descriptor" />
+      <PropsRender :descriptor="props.descriptor" />
     </el-aside>
   </el-container>
 </template>
@@ -33,20 +36,31 @@
 <script lang="ts" setup>
 import { ref } from "@vue/reactivity";
 import PropsRender from "../props-render";
-import { computed, onMounted } from "@vue/runtime-core";
+import {
+  onMounted,
+  PropType,
+  defineProps,
+  defineEmits,
+} from "@vue/runtime-core";
 import { useDrag, useDrop } from "./dnd";
-import { Store, useStore } from "vuex";
-import type { State } from "../../../plugins/store";
-import { Mutations } from "../../../plugins/store";
 import SafeContainer from "../safe-container";
 import NodeTree from "../node-tree";
 import { getAll } from "./registery/registry";
 import Stage from "../stage";
+import { SchemaData } from "../../../core/parser/src/types/schema";
+import { PropsDescriptor } from "../types/descriptor";
 
-const store: Store<State> = useStore();
+const props = defineProps({
+  schema: {
+    type: Object as PropType<SchemaData>,
+    required: true,
+  },
+  descriptor: {
+    type: [Object, null] as PropType<PropsDescriptor | null>,
+  },
+});
 
-const schema = store.state.schema;
-const descriptor = computed(() => store.state.currentSelect);
+const emits = defineEmits(["clearSelect"]);
 
 const components = ref(getAll());
 
@@ -65,7 +79,7 @@ onMounted(() => {
 });
 
 function clickNoop() {
-  store.commit(Mutations.CLEAR_SELECTS);
+  emits("clearSelect");
 }
 </script>
 
