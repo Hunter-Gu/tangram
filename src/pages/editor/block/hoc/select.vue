@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="select"
-    :class="statusClasses"
-    @click.stop="handleSelect"
-  >
+  <div class="select" :class="statusClasses" @click.stop="handleSelect">
     <slot />
   </div>
 </template>

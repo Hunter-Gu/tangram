@@ -1,9 +1,5 @@
 <template>
-  <Editor
-    :schema="schema"
-    :descriptor="descriptor"
-    @clear-select="clickNoop"
-  />
+  <Editor :schema="schema" :descriptor="descriptor" @clear-select="clickNoop" />
 </template>
 
 <script lang="ts" setup>

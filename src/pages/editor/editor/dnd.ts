@@ -17,13 +17,15 @@ export function useDrag(dragElm: HTMLElement) {
   dragElm.addEventListener("dragstart", dragHandler);
 }
 
+export const handleDragover = (evt: Event) => {
+  evt.preventDefault();
+};
+
 export function useDrop(dropElm: HTMLElement) {
   const store: Store<State> = useStore();
-  dropElm.addEventListener("dragover", (evt: Event) => {
-    evt.preventDefault();
-  });
+  dropElm.addEventListener("dragover", handleDragover);
 
-  dropElm.addEventListener("drop", (evt) => handleDrop(store, evt));
+  dropElm.addEventListener("drop", (evt: DragEvent) => handleDrop(store, evt));
 }
 
 export function handleDrop(store: Store<State>, evt: DragEvent, path = "") {

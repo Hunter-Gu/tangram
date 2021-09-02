@@ -5,10 +5,7 @@
     </el-aside>
 
     <el-container class="main-border">
-      <el-main
-        ref="dropElm"
-        @click="clickNoop"
-      >
+      <el-main ref="dropElm" @click="clickNoop">
         <Stage :schema="props.schema" />
       </el-main>
     </el-container>
