@@ -1,6 +1,10 @@
 import { mount } from "@vue/test-utils";
 import Drop from "../drop.vue";
 
+jest.mock('lodash', () => ({
+  debounce: (fn: () => void) => fn
+}))
+
 describe("HOC Drop for Block", () => {
   it("It will clear drag focus status and emit add event when drop element", async () => {
     const wrapper = mount(Drop, {
@@ -20,11 +24,14 @@ describe("HOC Drop for Block", () => {
     const wrapper = mount(Drop, {
       props: {
         path: "path",
+        isCurrent: true
       },
     });
     const dropTarget = wrapper.find("div");
 
     await dropTarget.trigger("dragover");
+
+    console.log(dropTarget.classes())
 
     expect(dropTarget.classes().length).toBeTruthy();
   });
@@ -33,6 +40,7 @@ describe("HOC Drop for Block", () => {
     const wrapper = mount(Drop, {
       props: {
         path: "path",
+        isCurrent: true
       },
     });
     const dropTarget = wrapper.find("div");
