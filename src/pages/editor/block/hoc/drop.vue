@@ -23,6 +23,7 @@ import type { PropType } from "@vue/runtime-core";
 import { AddParams, Operation } from "../types";
 import { HotZone } from "../hot-zone";
 import { debounce } from "lodash";
+import { hoverLayerManager } from "./hover-layer-manager";
 
 const dragFocus = ref(Operation.None);
 
@@ -60,25 +61,23 @@ const props = defineProps({
     type: Array as PropType<string[]>,
     default: () => [],
   },
-
-  isCurrent: {
-    type: Boolean as PropType<boolean>,
-    default: false,
-  },
 });
 
-const statusClasses = computed(() => ({
-  "drag-bound-top": props.isCurrent && dragFocus.value === Operation.Top,
-  "drag-bound-right": props.isCurrent && dragFocus.value === Operation.Right,
-  "drag-bound-bottom": props.isCurrent && dragFocus.value === Operation.Bottom,
-  "drag-bound-left": props.isCurrent && dragFocus.value === Operation.Left,
-  "drag-bound-inside": props.isCurrent && dragFocus.value === Operation.Inside,
-}));
+const statusClasses = computed(() => {
+  if (!hoverLayerManager.isCurrentPath(props.path)) {
+    return "";
+  }
+  return {
+    "drag-bound-top": dragFocus.value === Operation.Top,
+    "drag-bound-right": dragFocus.value === Operation.Right,
+    "drag-bound-bottom": dragFocus.value === Operation.Bottom,
+    "drag-bound-left": dragFocus.value === Operation.Left,
+    "drag-bound-inside": dragFocus.value === Operation.Inside,
+  };
+});
 
 const emits = defineEmits({
   add: (arg: AddParams) => arg,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  hover: (arg: string) => true,
 });
 
 const handleDragover = debounce((e: DragEvent) => {
@@ -88,21 +87,28 @@ const handleDragover = debounce((e: DragEvent) => {
   };
   const operation = hotZone.calc(position);
   dragFocus.value = operation;
-  if (props.isCurrent) {
+
+  if (hoverLayerManager.isCurrentPath(props.path)) {
+    e.stopPropagation();
+    e.preventDefault();
     return;
   }
-  emits("hover", props.path);
+
+  hoverLayerManager.updatePath(props.path);
 });
 
 function handleDragleave() {
-  emits("hover", "");
   dragFocus.value = Operation.None;
+  hoverLayerManager.updatePath("");
 }
 
 function handleDropEnhance(evt: DragEvent) {
-  emits("hover", "");
   dragFocus.value = Operation.None;
 
+  // make sure clear hover status after dropping
+  setTimeout(() => {
+    hoverLayerManager.updatePath("");
+  });
   emits("add", { evt, path: props.path } as AddParams);
 }
 </script>

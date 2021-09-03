@@ -7,7 +7,6 @@
     <drop-wrapper
       v-bind="props"
       @add="handleAdd"
-      @hover="handleHover"
     >
       <slot />
     </drop-wrapper>
@@ -36,19 +35,12 @@ const props = defineProps({
     type: Array as PropType<string[]>,
     default: () => [],
   },
-
-  isCurrent: {
-    type: Boolean as PropType<boolean>,
-    default: false,
-  },
 });
 
 const emits = defineEmits({
   clearSelects: () => true,
   select: (arg: SelectParams) => arg,
   add: (arg: AddParams) => arg,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  hover: (arg: string) => true,
 });
 
 function clearSelect() {
@@ -61,10 +53,6 @@ function handleSelect(arg: SelectParams) {
 
 function handleAdd({ evt, path }: AddParams) {
   emits("add", { evt, path });
-}
-
-function handleHover(path: string) {
-  emits("hover", path);
 }
 </script>
 

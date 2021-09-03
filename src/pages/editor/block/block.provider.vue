@@ -3,11 +3,9 @@
     :name="name"
     :path="path"
     :select-paths="store.state.selectPaths"
-    :is-current="store.state.hoverPath === path"
     @add="handleAdd"
     @select="handleSelect"
     @clear-selects="handleClearSelect"
-    @hover="handleHover"
   >
     <slot />
   </Block>
@@ -47,11 +45,5 @@ function handleClearSelect() {
 
 function handleAdd({ evt, path }: AddParams) {
   handleDrop(store, evt, path);
-}
-
-function handleHover(path: string) {
-  if (path === "" || path.startsWith(store.state.hoverPath)) {
-    store.commit(Mutations.HOVER, path);
-  }
 }
 </script>

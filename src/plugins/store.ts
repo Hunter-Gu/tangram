@@ -19,8 +19,6 @@ export type State = {
   currentPath: string;
 
   selectPaths: string[];
-
-  hoverPath: string;
 };
 
 export enum Mutations {
@@ -38,8 +36,6 @@ export enum Mutations {
 
   // eslint-disable-next-line no-unused-vars
   MOVE = "move",
-
-  HOVER = "hover",
 }
 
 export const store = createStore<State>({
@@ -58,9 +54,6 @@ export const store = createStore<State>({
     // the index of Block which has been selected
     // may can be a number
     selectPaths: [],
-
-    // current hover element
-    hoverPath: "",
   },
 
   mutations: {
@@ -182,11 +175,6 @@ export const store = createStore<State>({
           index: realIndex,
         }
       );
-    },
-
-    [Mutations.HOVER](state, path: string) {
-      console.log("set...........", path);
-      state.hoverPath = path;
     },
   },
 });
