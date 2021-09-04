@@ -4,10 +4,7 @@
     @clear-selects="clearSelect"
     @select="handleSelect"
   >
-    <drop-wrapper
-      v-bind="props"
-      @add="handleAdd"
-    >
+    <drop-wrapper v-bind="props" @add="handleAdd">
       <slot />
     </drop-wrapper>
   </select-wrapper>
@@ -51,8 +48,8 @@ function handleSelect(arg: SelectParams) {
   emits("select", arg);
 }
 
-function handleAdd({ evt, path }: AddParams) {
-  emits("add", { evt, path });
+function handleAdd(params: AddParams) {
+  emits("add", params);
 }
 </script>
 

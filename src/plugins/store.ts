@@ -8,6 +8,7 @@ import { DropType } from "../pages/editor/types/node-tree";
 import { PathManager } from "./utils/path-manager";
 import { getParentPathAndIndex, move } from "./utils/move";
 import { getDescritporByRuntime } from "./utils/get-descriptor-by-runtime";
+import { Operation } from "../pages/editor/block/types";
 
 const logger = createLogger("store");
 
@@ -59,30 +60,63 @@ export const store = createStore<State>({
   mutations: {
     [Mutations.ADD_ELEMENT](
       state,
-      { path, componentName }: { path: string; componentName: string }
+      {
+        path,
+        componentName,
+        type,
+      }: { path: string; componentName: string; type: Operation }
     ) {
       try {
         const renderDescriptor =
           registry.getPropsDescriptor(componentName)?.data;
 
         const component = renderDescriptor?.component;
-        const parent = get(state.schema, path) as SchemaData;
-        const index =
-          get<SchemaData | void>(state.schema, path)?.children?.length ?? 0;
+        const operatorTarget = get(state.schema, path) as SchemaData;
+        const { parentPath, index } = getParentPathAndIndex(path);
+        const ancestors = get(state.schema, parentPath) as Child[];
 
-        if (!parent.children) {
-          parent.children = [];
+        if (!operatorTarget.children) {
+          operatorTarget.children = [];
         }
 
-        parent.children.push({
+        const newData: Child = {
           // @ts-ignore
           name: component,
           __uuid: new Date().getTime(),
-        });
+        };
+        let newPath = "";
+        switch (type) {
+          case Operation.Inside: {
+            newPath = PathManager.concat(
+              path,
+              PathManager.ChildrenPropName,
+              operatorTarget.children.push(newData) - 1
+            );
+            break;
+          }
+          case Operation.Top:
+          case Operation.Left:
+            ancestors.splice(index, 0, newData);
+            newPath = path;
+            break;
+          case Operation.Bottom:
+          case Operation.Right:
+            // insert after need plus 1
+            ancestors.splice(index + 1, 0, newData);
+            newPath = PathManager.concat(parentPath, index + 1);
+            break;
+          default:
+            newPath = PathManager.concat(
+              path,
+              PathManager.ChildrenPropName,
+              operatorTarget.children.push(newData) - 1
+            );
+        }
 
+        // TODO the select path
         store.commit(Mutations.SELECT, {
           name: component?.name,
-          path: PathManager.concat(path, PathManager.ChildrenPropName, index),
+          path: newPath,
         });
 
         // init props for instance
@@ -100,7 +134,6 @@ export const store = createStore<State>({
       }
     },
 
-    // TODO: need to support deep path
     [Mutations.SELECT](state, { name, path }) {
       const renderDescriptor = registry.getPropsDescriptor(name)?.data;
 

@@ -163,19 +163,17 @@ describe("Mutations of Store", () => {
       type: DropType.Inner,
     });
 
-    expect(state).toEqual({
-      schema: {
-        children: [
-          {
-            name: "name1",
-            children: [
-              {
-                name: "name2",
-              },
-            ],
-          },
-        ],
-      },
+    expect(state.schema).toEqual({
+      children: [
+        {
+          name: "name1",
+          children: [
+            {
+              name: "name2",
+            },
+          ],
+        },
+      ],
     });
 
     store.commit(Mutations.MOVE, {
@@ -184,18 +182,16 @@ describe("Mutations of Store", () => {
       type: DropType.Prev,
     });
 
-    expect(state).toEqual({
-      schema: {
-        children: [
-          {
-            name: "name2",
-          },
-          {
-            name: "name1",
-            children: [],
-          },
-        ],
-      },
+    expect(state.schema).toEqual({
+      children: [
+        {
+          name: "name2",
+        },
+        {
+          name: "name1",
+          children: [],
+        },
+      ],
     });
 
     store.commit(Mutations.MOVE, {
@@ -204,18 +200,16 @@ describe("Mutations of Store", () => {
       type: DropType.Next,
     });
 
-    expect(state).toEqual({
-      schema: {
-        children: [
-          {
-            name: "name1",
-            children: [],
-          },
-          {
-            name: "name2",
-          },
-        ],
-      },
+    expect(state.schema).toEqual({
+      children: [
+        {
+          name: "name1",
+          children: [],
+        },
+        {
+          name: "name2",
+        },
+      ],
     });
   });
 });

@@ -19,6 +19,6 @@ export function getParentPathAndIndex(path: string) {
 
   return {
     parentPath: path.slice(0, lastIndex),
-    index: path.slice(lastIndex + 1),
+    index: +path.slice(lastIndex + 1),
   };
 }

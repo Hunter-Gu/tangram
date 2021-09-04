@@ -43,7 +43,7 @@ function handleClearSelect() {
   store.commit(Mutations.CLEAR_SELECTS);
 }
 
-function handleAdd({ evt, path }: AddParams) {
-  handleDrop(store, evt, path);
+function handleAdd(params: AddParams) {
+  handleDrop(store, params);
 }
 </script>

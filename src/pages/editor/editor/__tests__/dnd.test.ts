@@ -64,7 +64,7 @@ describe("DnD", () => {
         },
       } as unknown as DragEvent;
 
-      handleDrop(store, evt, "path");
+      handleDrop(store, { evt, path: "path" });
 
       expect(store.commit).toBeCalledTimes(2);
       expect(store.commit).toHaveBeenNthCalledWith(1, Mutations.CLEAR_SELECTS);

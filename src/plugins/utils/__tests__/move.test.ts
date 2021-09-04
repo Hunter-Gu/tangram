@@ -53,7 +53,7 @@ describe("move() and getParentPathAndIndex()", () => {
   it("it will return parent path by getParentPathAndIndex()", () => {
     expect(getParentPathAndIndex("children.0.children.1.children.2")).toEqual({
       parentPath: "children.0.children.1.children",
-      index: "2",
+      index: 2,
     });
   });
 });

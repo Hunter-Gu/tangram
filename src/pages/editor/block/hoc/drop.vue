@@ -103,13 +103,13 @@ function handleDragleave() {
 }
 
 function handleDropEnhance(evt: DragEvent) {
+  emits("add", { evt, path: props.path, type: dragFocus.value } as AddParams);
   dragFocus.value = Operation.None;
 
   // make sure clear hover status after dropping
   setTimeout(() => {
     hoverLayerManager.updatePath("");
   });
-  emits("add", { evt, path: props.path } as AddParams);
 }
 </script>
 

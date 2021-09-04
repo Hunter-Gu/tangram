@@ -20,6 +20,7 @@ export enum Operation {
 export type AddParams = {
   evt: DragEvent;
   path: string;
+  type: Operation;
 };
 
 export type SelectParams = {

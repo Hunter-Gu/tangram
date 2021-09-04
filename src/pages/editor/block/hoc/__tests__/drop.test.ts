@@ -2,9 +2,9 @@ import { mount } from "@vue/test-utils";
 import Drop from "../drop.vue";
 import { hoverLayerManager } from "../hover-layer-manager";
 
-jest.mock('lodash', () => ({
-  debounce: (fn: () => void) => fn
-}))
+jest.mock("lodash", () => ({
+  debounce: (fn: () => void) => fn,
+}));
 
 describe("HOC Drop for Block", () => {
   beforeEach(() => {
@@ -60,7 +60,7 @@ describe("HOC Drop for Block", () => {
     const wrapper = mount(Drop, {
       props: {
         path: "path",
-        isCurrent: true
+        isCurrent: true,
       },
     });
     const dropTarget = wrapper.find("div");
