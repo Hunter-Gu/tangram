@@ -149,7 +149,7 @@ export const store = createStore<State>({
         const isInsertMode = type === DropType.Inner;
         const path = isInsertMode ? to + ".children" : parentPathOfTo;
         let parent = get(state.schema, path) as Child[] | undefined;
-        const index = isInsertMode ? parentPathOfTo?.length || 0 : +indexOfTo;
+        const index = isInsertMode ? parent?.length || 0 : +indexOfTo;
 
         if (!parent) {
           set(state.schema, path, []);
@@ -175,6 +175,8 @@ export const store = createStore<State>({
           index: realIndex,
         }
       );
+
+      store.commit(Mutations.CLEAR_SELECTS);
     },
   },
 });
