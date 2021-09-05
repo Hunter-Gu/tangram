@@ -1,6 +1,6 @@
 jest.mock("../utils/get-descriptor-by-runtime", () => {
   return {
-    getDescritporByRuntime: jest.fn().mockImplementation(() => "currentSelect"),
+    getDescriptorByRuntime: jest.fn().mockImplementation(() => "currentSelect"),
   };
 });
 
@@ -163,17 +163,22 @@ describe("Mutations of Store", () => {
       type: DropType.Inner,
     });
 
-    expect(state.schema).toEqual({
-      children: [
-        {
-          name: "name1",
-          children: [
-            {
-              name: "name2",
-            },
-          ],
-        },
-      ],
+    expect(state).toEqual({
+      schema: {
+        children: [
+          {
+            name: "name1",
+            children: [
+              {
+                name: "name2",
+              },
+            ],
+          },
+        ],
+      },
+      selectPaths: [],
+      currentPath: ``,
+      currentSelect: undefined,
     });
 
     store.commit(Mutations.MOVE, {
@@ -182,16 +187,21 @@ describe("Mutations of Store", () => {
       type: DropType.Prev,
     });
 
-    expect(state.schema).toEqual({
-      children: [
-        {
-          name: "name2",
-        },
-        {
-          name: "name1",
-          children: [],
-        },
-      ],
+    expect(state).toEqual({
+      schema: {
+        children: [
+          {
+            name: "name2",
+          },
+          {
+            name: "name1",
+            children: [],
+          },
+        ],
+      },
+      selectPaths: [],
+      currentPath: ``,
+      currentSelect: undefined,
     });
 
     store.commit(Mutations.MOVE, {
@@ -200,16 +210,21 @@ describe("Mutations of Store", () => {
       type: DropType.Next,
     });
 
-    expect(state.schema).toEqual({
-      children: [
-        {
-          name: "name1",
-          children: [],
-        },
-        {
-          name: "name2",
-        },
-      ],
+    expect(state).toEqual({
+      schema: {
+        children: [
+          {
+            name: "name1",
+            children: [],
+          },
+          {
+            name: "name2",
+          },
+        ],
+      },
+      selectPaths: [],
+      currentPath: ``,
+      currentSelect: undefined,
     });
   });
 });

@@ -3,7 +3,7 @@ import {
   PropsDescriptor,
 } from "@/pages/editor/types/descriptor";
 
-export function getDescritporByRuntime(
+export function getDescriptorByRuntime(
   descriptor: PropsDescriptor,
   runtimeData?: Record<string, unknown>
 ): PropsDescriptor {

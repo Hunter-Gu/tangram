@@ -2,9 +2,9 @@ import {
   DescriptorPropTypes,
   PropsDescriptor,
 } from "../../../pages/editor/types/descriptor";
-import { getDescritporByRuntime } from "../get-descriptor-by-runtime";
+import { getDescriptorByRuntime } from "../get-descriptor-by-runtime";
 
-describe("getDescritporByRuntime()", () => {
+describe("getDescriptorByRuntime()", () => {
   it("should set runtime props field or default props field", () => {
     const descriptor: PropsDescriptor = {
       name: "ElInput",
@@ -27,7 +27,7 @@ describe("getDescritporByRuntime()", () => {
       placeholder: "123",
     };
 
-    expect(getDescritporByRuntime(descriptor, runtimeData)).toEqual({
+    expect(getDescriptorByRuntime(descriptor, runtimeData)).toEqual({
       name: "ElInput",
       props: [
         {

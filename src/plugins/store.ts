@@ -7,7 +7,7 @@ import { get, set } from "../core/parser/src/utils/utils";
 import { DropType } from "../pages/editor/types/node-tree";
 import { PathManager } from "./utils/path-manager";
 import { getParentPathAndIndex, move } from "./utils/move";
-import { getDescritporByRuntime } from "./utils/get-descriptor-by-runtime";
+import { getDescriptorByRuntime } from "./utils/get-descriptor-by-runtime";
 import { Operation } from "../pages/editor/block/types";
 
 const logger = createLogger("store");
@@ -139,7 +139,7 @@ export const store = createStore<State>({
 
       state.currentPath = path;
 
-      state.currentSelect = getDescritporByRuntime(
+      state.currentSelect = getDescriptorByRuntime(
         // @ts-ignore
         renderDescriptor?.descriptor,
         // @ts-ignore
