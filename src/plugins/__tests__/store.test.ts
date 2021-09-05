@@ -21,10 +21,12 @@ jest.mock("../../pages/editor/utils/registry", () => {
   };
 });
 
-// eslint-disable-next-line import/first
-import { Mutations, store } from "../store";
-// eslint-disable-next-line import/first
+/* eslint-disable import/first */
+import { Mutations, State, store } from "../store";
 import { DropType } from "../../pages/editor/types/node-tree";
+import { Operation } from "../../pages/editor/block/types";
+import { get } from "../../core/parser/src/utils/utils";
+/* eslint-enable */
 
 describe("Mutations of Store", () => {
   it("SELECT mutation", () => {
@@ -96,7 +98,13 @@ describe("Mutations of Store", () => {
     });
   });
 
-  it("ADD_ELEMENT mutation", () => {
+  it.each`
+    addPath         | currentPath                | type
+    ${"children.0"} | ${"children.0.children.0"} | ${""}
+    ${"children.0"} | ${"children.0.children.0"} | ${Operation.Inside}
+    ${"children.0"} | ${"children.0"}            | ${Operation.Top}
+    ${"children.0"} | ${"children.1"}            | ${Operation.Bottom}
+  `("ADD_ELEMENT mutation", ({ addPath, currentPath, type }) => {
     window.Date.prototype.getTime = jest.fn().mockReturnValue(1);
     const state = {
       schema: {
@@ -108,36 +116,25 @@ describe("Mutations of Store", () => {
           },
         ],
       },
-    };
+    } as unknown as State;
     // @ts-ignore
     store.replaceState(state);
 
     store.commit(Mutations.ADD_ELEMENT, {
-      path: "children.0",
+      path: addPath,
       componentName: "",
+      type,
     });
 
-    expect(state).toEqual({
-      currentPath: "children.0.children.0",
-      currentSelect: "currentSelect",
-      selectPaths: ["children.0.children.0"],
-      schema: {
-        children: [
-          {
-            props: {
-              name: "value",
-            },
-            children: [
-              {
-                name: {
-                  name: "component",
-                },
-                __uuid: 1,
-              },
-            ],
-          },
-        ],
+    expect(state.currentPath).toBe(currentPath);
+    expect(state.currentSelect).toBe("currentSelect");
+    expect(state.selectPaths).toEqual([currentPath]);
+
+    expect(get(state.schema, currentPath)).toEqual({
+      name: {
+        name: "component",
       },
+      __uuid: 1,
     });
   });
 
