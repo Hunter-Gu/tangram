@@ -9,6 +9,9 @@ export * from "./transformer";
 // TODO better type definition for static props
 transformer
   .configRoot(Wrapper)
+  // @ts-ignore
   .configGlobal(DescriptorPropTypes.Boolean, ElSwitch)
+  // @ts-ignore
   .configGlobal(DescriptorPropTypes.String, ElInput)
+  // @ts-ignore
   .configGlobal(DescriptorPropTypes.Number, ElInput, { type: "number" });

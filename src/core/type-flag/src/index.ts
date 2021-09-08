@@ -15,6 +15,6 @@ export function typeFlag(str: string) {
 
     const transformer = TYPE_TRANSFORMER[type as keyof Transformer];
 
-    return transformer(value);
+    return transformer(value as string);
   });
 }
