@@ -1,14 +1,15 @@
-import { Child, SchemaData } from "../core/parser/src/types/schema";
+import { Child, Component, SchemaData } from "../core/parser/src/types/schema";
 import { createLogger } from "../utils/logger";
 import { createStore } from "vuex";
 import { registry } from "../pages/editor/utils/registry";
 import { PropsDescriptor } from "@/pages/editor/types/descriptor";
 import { get, set } from "../core/parser/src/utils/utils";
 import { DropType } from "../pages/editor/types/node-tree";
-import { PathManager } from "./utils/path-manager";
 import { getParentPathAndIndex, move } from "./utils/move";
 import { getDescriptorByRuntime } from "./utils/get-descriptor-by-runtime";
 import { Operation } from "../pages/editor/block/types";
+import { addNode } from "./utils/add-node";
+import { AddNodeParams } from "./utils/types";
 
 const logger = createLogger("store");
 
@@ -79,41 +80,16 @@ export const store = createStore<State>({
           operatorTarget.children = [];
         }
 
-        const newData: Child = {
-          // @ts-ignore
-          name: component,
-          __uuid: new Date().getTime(),
-        };
-        let newPath = "";
-        switch (type) {
-          case Operation.Inside: {
-            newPath = PathManager.concat(
-              path,
-              PathManager.ChildrenPropName,
-              operatorTarget.children.push(newData) - 1
-            );
-            break;
-          }
-          case Operation.Top:
-          case Operation.Left:
-            ancestors.splice(index, 0, newData);
-            newPath = path;
-            break;
-          case Operation.Bottom:
-          case Operation.Right:
-            // insert after need plus 1
-            ancestors.splice(index + 1, 0, newData);
-            newPath = PathManager.concat(parentPath, index + 1);
-            break;
-          default:
-            newPath = PathManager.concat(
-              path,
-              PathManager.ChildrenPropName,
-              operatorTarget.children.push(newData) - 1
-            );
-        }
+        const newPath = addNode({
+          target: operatorTarget as AddNodeParams["target"],
+          type,
+          path,
+          parentPath,
+          ancestors,
+          index,
+          component: component as Component,
+        });
 
-        // TODO the select path
         store.commit(Mutations.SELECT, {
           name: component?.name,
           path: newPath,
