@@ -1,5 +1,10 @@
 <template>
-  <SchemaRender v-if="schema" :schema="schema" />
+  <!-- stop keyup event so it will not remove node when update the props -->
+  <SchemaRender
+    v-if="schema"
+    :schema="schema"
+    @keyup.stop="handleKeyup"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -20,4 +25,6 @@ const props = defineProps({
 const schema = computed(
   () => props.descriptor && descritpor2Schema(props.descriptor)
 );
+
+const handleKeyup = () => {};
 </script>

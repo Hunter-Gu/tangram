@@ -22,5 +22,7 @@ describe("props-render", () => {
     expect(schemaRender.props("schema")).toEqual({
       test: "test",
     });
+
+    expect(schemaRender.vm.$attrs.onKeyup).toBeTruthy();
   });
 });

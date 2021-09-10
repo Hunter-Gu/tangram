@@ -26,6 +26,7 @@ import { Mutations, State, store } from "../store";
 import { DropType } from "../../pages/editor/types/node-tree";
 import { Operation } from "../../pages/editor/block/types";
 import { get } from "../../core/parser/src/utils/utils";
+import { removeNode } from "../utils/remove-node";
 /* eslint-enable */
 
 describe("Mutations of Store", () => {
@@ -37,17 +38,22 @@ describe("Mutations of Store", () => {
         },
       };
     });
-    const state = {};
+    const state = {
+      schema: {},
+    };
+    const update = jest.spyOn(removeNode, "update");
     // @ts-ignore
     store.replaceState(state);
 
     store.commit(Mutations.SELECT, { path: "path" });
 
     expect(state).toEqual({
+      schema: {},
       currentPath: "path",
       currentSelect: "currentSelect",
       selectPaths: ["path"],
     });
+    expect(update).toBeCalledWith(state.schema, "path");
   });
 
   it("UPDATE_ELEMENT_PROPS mutation", () => {
@@ -87,6 +93,8 @@ describe("Mutations of Store", () => {
 
   it("CLEAR_SELECTS mutations", () => {
     const state = {};
+    const update = jest.spyOn(removeNode, "update");
+
     // @ts-ignore
     store.replaceState(state);
 
@@ -96,6 +104,7 @@ describe("Mutations of Store", () => {
       currentPath: "",
       currentSelect: undefined,
     });
+    expect(update).toBeCalledWith(undefined, "");
   });
 
   it.each`

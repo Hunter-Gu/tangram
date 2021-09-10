@@ -10,6 +10,7 @@ import { getDescriptorByRuntime } from "./utils/get-descriptor-by-runtime";
 import { Operation } from "../pages/editor/block/types";
 import { addNode } from "./utils/add-node";
 import { AddNodeParams } from "./utils/types";
+import { removeNode } from "./utils/remove-node";
 
 const logger = createLogger("store");
 
@@ -123,12 +124,14 @@ export const store = createStore<State>({
       );
 
       state.selectPaths = [path];
+      removeNode.update(state.schema, path);
     },
 
     [Mutations.CLEAR_SELECTS](state) {
       state.selectPaths = [];
       state.currentPath = ``;
       state.currentSelect = undefined;
+      removeNode.update(undefined, "");
     },
 
     [Mutations.UPDATE_ELEMENT_PROPS](state, { path, value }) {
