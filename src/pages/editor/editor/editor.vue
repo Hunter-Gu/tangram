@@ -5,7 +5,10 @@
     </el-aside>
 
     <el-container class="main-border">
-      <el-main ref="dropElm" @click="clickNoop">
+      <el-main
+        ref="dropElm"
+        @click="clickNoop"
+      >
         <Stage :schema="props.schema" />
       </el-main>
     </el-container>
@@ -53,7 +56,8 @@ const props = defineProps({
     required: true,
   },
   descriptor: {
-    type: [Object, null] as PropType<PropsDescriptor | null>,
+    type: [Object] as PropType<PropsDescriptor>,
+    default: null,
   },
 });
 

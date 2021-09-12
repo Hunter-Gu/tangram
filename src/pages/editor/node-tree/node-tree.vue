@@ -14,8 +14,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "@vue/reactivity";
-import { defineEmits, defineProps, watch } from "@vue/runtime-core";
+import { computed, ref } from "@vue/reactivity";
+import { defineEmits, defineProps } from "@vue/runtime-core";
 import type { PropType } from "@vue/runtime-core";
 import type { SchemaData } from "../../../core/parser/src/types/schema";
 import { registry } from "../utils/registry";
@@ -42,12 +42,8 @@ const emit = defineEmits({
   /* eslint-enable */
 });
 
-const data = ref(normalize(props.schema));
+const data = computed(() => normalize(props.schema))
 const test = ref();
-
-watch(props.schema, (newVal) => {
-  data.value = normalize(newVal);
-});
 
 function handleDrop(draggingNode: Node, dropNode: Node, type: DropType) {
   emit("move", {

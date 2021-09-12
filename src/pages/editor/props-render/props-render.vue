@@ -1,10 +1,6 @@
 <template>
   <!-- stop keyup event so it will not remove node when update the props -->
-  <SchemaRender
-    v-if="schema"
-    :schema="schema"
-    @keyup.stop="handleKeyup"
-  />
+  <SchemaRender v-if="schema" :schema="schema" @keyup.stop="handleKeyup" />
 </template>
 
 <script lang="ts" setup>

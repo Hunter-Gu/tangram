@@ -1,5 +1,9 @@
 <template>
-  <Editor :schema="schema" :descriptor="descriptor" @clear-select="clickNoop" />
+  <Editor
+    :schema="schema"
+    :descriptor="descriptor"
+    @clear-select="clickNoop"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -11,7 +15,7 @@ import Editor from "./editor.vue";
 
 const store: Store<State> = useStore();
 
-const schema = store.state.schema;
+const schema = computed(() => store.state.schema);
 const descriptor = computed(() => store.state.currentSelect);
 
 function clickNoop() {
