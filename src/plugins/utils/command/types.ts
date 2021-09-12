@@ -12,3 +12,7 @@ export type AddCommandStatData = {
   path: string;
   type: Operation;
 };
+
+export type RemoveCommandStatData = {
+  path: string;
+};

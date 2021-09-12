@@ -6,6 +6,7 @@ import { get, set } from "../../../core/parser/src/utils/utils";
 import { getParentPathAndIndex } from "../move";
 import { Operation } from "../../../pages/editor/block/types";
 import { PathManager } from "../path-manager";
+import { remove } from "../remove-node";
 
 export class AddCommand extends BaseCommand<Child> {
   constructor(private statData: AddCommandStatData) {
@@ -57,28 +58,30 @@ export class AddCommand extends BaseCommand<Child> {
 
   do(schema: SchemaData) {
     const { path, value } = this.diff;
-    const { parentPath, index } = getParentPathAndIndex(path);
 
-    let parent = get(schema, parentPath) as Child[];
-
-    if (!parent) {
-      set(schema, parentPath, []);
-      parent = get(schema, parentPath) as Child[];
-    }
-
-    parent.splice(index, 0, value);
+    add(schema, path, value);
 
     return schema;
   }
 
   undo(schema: SchemaData) {
     const { path } = this.diff;
-    const { parentPath, index } = getParentPathAndIndex(path);
 
-    const parent = get(schema, parentPath) as Child[];
-
-    parent.splice(index, 1);
+    remove(schema, path);
 
     return schema;
   }
+}
+
+export function add(schema: SchemaData, path: string, value: Child) {
+  const { parentPath, index } = getParentPathAndIndex(path);
+
+  let parent = get(schema, parentPath) as Child[];
+
+  if (!parent) {
+    set(schema, parentPath, []);
+    parent = get(schema, parentPath) as Child[];
+  }
+
+  parent.splice(index, 0, value);
 }
