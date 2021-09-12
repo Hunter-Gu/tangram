@@ -32,7 +32,7 @@ describe("AddCommand", () => {
     const addCommand = new AddCommand({
       type,
       path,
-      componentName: "",
+      componentOrTagName: "",
     });
 
     addCommand.calcDiff(schema);
@@ -40,7 +40,7 @@ describe("AddCommand", () => {
     expect(getDiff(addCommand)).toEqual({
       path: newPath,
       value: {
-        name: undefined,
+        name: "",
         __uuid: 1,
       },
     });
@@ -53,7 +53,7 @@ describe("AddCommand", () => {
     const addCommand = new AddCommand({
       type: Operation.Inside,
       path: "children.0",
-      componentName: "",
+      componentOrTagName: "",
     });
 
     addCommand.calcDiff(schema);
@@ -64,7 +64,7 @@ describe("AddCommand", () => {
         {
           children: [
             {
-              name: undefined,
+              name: "",
               __uuid: 1,
             },
           ],

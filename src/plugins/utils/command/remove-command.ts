@@ -23,7 +23,10 @@ export class RemoveCommand extends BaseCommand<Child> {
 
     remove(schema, path);
 
-    return schema;
+    return {
+      schema,
+      currentPath: "",
+    };
   }
 
   undo(schema: SchemaData) {
@@ -31,7 +34,10 @@ export class RemoveCommand extends BaseCommand<Child> {
 
     add(schema, path, value);
 
-    return schema;
+    return {
+      schema,
+      currentPath: path,
+    };
   }
 }
 

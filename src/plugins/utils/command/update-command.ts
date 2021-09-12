@@ -32,7 +32,10 @@ export class UpdateCommand extends BaseCommand<UpdateCommandDiffValue> {
 
     set(schema, propPath, newValue);
 
-    return schema;
+    return {
+      schema,
+      currentPath: this.statData.path,
+    };
   }
 
   undo(schema: SchemaData) {
@@ -43,6 +46,9 @@ export class UpdateCommand extends BaseCommand<UpdateCommandDiffValue> {
 
     set(schema, propPath, oldValue);
 
-    return schema;
+    return {
+      schema,
+      currentPath: this.statData.path,
+    };
   }
 }

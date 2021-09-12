@@ -1,6 +1,5 @@
 import { Child, SchemaData } from "../../../core/parser/src/types/schema";
 import { BaseCommand } from "./base-command";
-import { registry } from "../../../pages/editor/utils/registry";
 import { AddCommandStatData } from "./types";
 import { get, set } from "../../../core/parser/src/utils/utils";
 import { getParentPathAndIndex } from "../move";
@@ -14,10 +13,8 @@ export class AddCommand extends BaseCommand<Child> {
   }
 
   calcDiff(schema: SchemaData) {
-    const { componentName, path, type } = this.statData;
+    const { componentOrTagName, path, type } = this.statData;
 
-    const renderDescriptor = registry.getPropsDescriptor(componentName)?.data;
-    const component = renderDescriptor?.component;
     const operatorTarget = get(schema, path) as SchemaData;
     const { parentPath, index } = getParentPathAndIndex(path);
 
@@ -50,7 +47,7 @@ export class AddCommand extends BaseCommand<Child> {
     this.diff = {
       path: newPath,
       value: {
-        name: component,
+        name: componentOrTagName,
         __uuid: new Date().getTime(),
       } as Child,
     };
@@ -61,7 +58,10 @@ export class AddCommand extends BaseCommand<Child> {
 
     add(schema, path, value);
 
-    return schema;
+    return {
+      schema,
+      currentPath: path,
+    };
   }
 
   undo(schema: SchemaData) {
@@ -69,7 +69,10 @@ export class AddCommand extends BaseCommand<Child> {
 
     remove(schema, path);
 
-    return schema;
+    return {
+      schema,
+      currentPath: "",
+    };
   }
 }
 

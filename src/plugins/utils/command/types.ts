@@ -1,16 +1,22 @@
 import { DropType } from "../../../pages/editor/types/node-tree";
 import { Operation } from "../../../pages/editor/block/types";
+import { Component, SchemaData } from "@/core/parser/src/types/schema";
 
 export type Diff<T extends unknown> = {
-  // real path after operation
+  // real changed path after operation
   // e.g: prop path, path after adding element
   path: string;
 
   value: T;
 };
 
+export type OperationResult = {
+  schema: SchemaData;
+  currentPath: string;
+};
+
 export type AddCommandStatData = {
-  componentName: string;
+  componentOrTagName: Component;
   path: string;
   type: Operation;
 };

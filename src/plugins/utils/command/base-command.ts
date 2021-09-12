@@ -1,5 +1,5 @@
 import { SchemaData } from "../../../core/parser/src/types/schema";
-import { Diff } from "./types";
+import { Diff, OperationResult } from "./types";
 
 export abstract class BaseCommand<T = unknown> {
   /**
@@ -15,7 +15,7 @@ export abstract class BaseCommand<T = unknown> {
    */
   abstract calcDiff(schema: SchemaData): void;
 
-  abstract do(schema: SchemaData): SchemaData;
+  abstract do(schema: SchemaData): OperationResult;
 
-  abstract undo(schema: SchemaData): SchemaData;
+  abstract undo(schema: SchemaData): OperationResult;
 }

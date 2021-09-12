@@ -32,7 +32,7 @@ export class MoveCommand extends BaseCommand<MoveCommandDiffValue> {
     };
   }
 
-  do(schema: SchemaData): SchemaData {
+  do(schema: SchemaData) {
     const {
       value: { from, to },
     } = this.diff;
@@ -61,10 +61,13 @@ export class MoveCommand extends BaseCommand<MoveCommandDiffValue> {
       }
     );
 
-    return schema;
+    return {
+      schema,
+      currentPath: to,
+    };
   }
 
-  undo(schema: SchemaData): SchemaData {
+  undo(schema: SchemaData) {
     const {
       value: { from, to },
     } = this.diff;
@@ -88,6 +91,9 @@ export class MoveCommand extends BaseCommand<MoveCommandDiffValue> {
       }
     );
 
-    return schema;
+    return {
+      schema,
+      currentPath: from,
+    };
   }
 }
