@@ -52,9 +52,9 @@ const emit = defineEmits({
 
 const handleInput = function () {
   emit("updateProps", {
-    path: (props as unknown as ComponentProp).name,
+    field: (props as unknown as ComponentProp).name,
     value: value.value,
-  });
+  } as UpdateParams);
 };
 </script>
 

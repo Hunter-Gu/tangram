@@ -1,0 +1,75 @@
+import { SchemaData } from "@/core/parser/src/types/schema";
+import { UpdateCommand } from "../update-command";
+import { getDiff } from "./utils";
+
+describe("UpdateCommand", () => {
+  it("calc diff by calcDiff()", () => {
+    const schema = {
+      children: [
+        {
+          props: {
+            value: "oldValue",
+          },
+        },
+      ],
+    } as unknown as SchemaData;
+    const updateCommand = new UpdateCommand({
+      path: "children.0",
+      field: "value",
+      value: "newValue",
+    });
+
+    updateCommand.calcDiff(schema);
+
+    expect(getDiff(updateCommand)).toEqual({
+      path: "children.0.props.value",
+      value: {
+        oldValue: "oldValue",
+        newValue: "newValue",
+      },
+    });
+  });
+
+  it("operate by do(), revert operation by call undo()", () => {
+    const schema = {
+      children: [
+        {
+          props: {
+            value: "oldValue",
+          },
+        },
+      ],
+    } as unknown as SchemaData;
+    const updateCommand = new UpdateCommand({
+      path: "children.0",
+      field: "value",
+      value: "newValue",
+    });
+
+    updateCommand.calcDiff(schema);
+
+    updateCommand.do(schema);
+
+    expect(schema).toEqual({
+      children: [
+        {
+          props: {
+            value: "newValue",
+          },
+        },
+      ],
+    });
+
+    updateCommand.undo(schema);
+
+    expect(schema).toEqual({
+      children: [
+        {
+          props: {
+            value: "oldValue",
+          },
+        },
+      ],
+    });
+  });
+});

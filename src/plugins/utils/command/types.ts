@@ -16,3 +16,14 @@ export type AddCommandStatData = {
 export type RemoveCommandStatData = {
   path: string;
 };
+
+export type UpdateCommandStatData = {
+  path: string;
+  field: string;
+  value: unknown;
+};
+
+export type UpdateCommandDiffValue<T = unknown> = {
+  oldValue: T;
+  newValue: T;
+};

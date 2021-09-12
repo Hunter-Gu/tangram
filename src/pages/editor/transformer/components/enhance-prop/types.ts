@@ -1,4 +1,3 @@
-export type UpdateParams = {
-  path: string;
-  value: unknown;
-};
+import { UpdateCommandStatData } from "../../../../../plugins/utils/command/types";
+
+export type UpdateParams = Omit<UpdateCommandStatData, "path">;
