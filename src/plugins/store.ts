@@ -1,18 +1,22 @@
-import { Child, Component, SchemaData } from "../core/parser/src/types/schema";
-import { createLogger } from "../utils/logger";
+import { Component, SchemaData } from "../core/parser/src/types/schema";
 import { createStore } from "vuex";
 import { registry } from "../pages/editor/utils/registry";
 import { PropsDescriptor } from "@/pages/editor/types/descriptor";
-import { get, set } from "../core/parser/src/utils/utils";
+import { get } from "../core/parser/src/utils/utils";
 import { DropType } from "../pages/editor/types/node-tree";
-import { getParentPathAndIndex, move } from "./utils/move";
 import { getDescriptorByRuntime } from "./utils/get-descriptor-by-runtime";
-import { Operation } from "../pages/editor/block/types";
-import { addNode } from "./utils/add-node";
-import { AddNodeParams } from "./utils/types";
 import { removeNode } from "./utils/remove-node";
+import { CommandManager } from "./utils/command/command-manager";
+import { AddCommand } from "./utils/command/add-command";
+import { AddCommandStatData } from "./utils/command/types";
+import { UpdateCommand } from "./utils/command/update-command";
+import { MoveCommand } from "./utils/command/move-command";
 
-const logger = createLogger("store");
+export const commandManager = new CommandManager({
+  name: "div",
+  __uuid: 0,
+  children: [],
+});
 
 export type State = {
   schema: SchemaData;
@@ -43,11 +47,7 @@ export enum Mutations {
 
 export const store = createStore<State>({
   state: {
-    schema: {
-      name: "div",
-      __uuid: 0,
-      children: [],
-    },
+    schema: commandManager.schemaData,
 
     // current selected component's props
     currentSelect: undefined,
@@ -62,53 +62,37 @@ export const store = createStore<State>({
   mutations: {
     [Mutations.ADD_ELEMENT](
       state,
-      {
-        path,
-        componentName,
-        type,
-      }: { path: string; componentName: string; type: Operation }
-    ) {
-      try {
-        const renderDescriptor =
-          registry.getPropsDescriptor(componentName)?.data;
-
-        const component = renderDescriptor?.component;
-        const operatorTarget = get(state.schema, path) as SchemaData;
-        const { parentPath, index } = getParentPathAndIndex(path);
-        const ancestors = get(state.schema, parentPath) as Child[];
-
-        if (!operatorTarget.children) {
-          operatorTarget.children = [];
-        }
-
-        const newPath = addNode({
-          target: operatorTarget as AddNodeParams["target"],
-          type,
-          path,
-          parentPath,
-          ancestors,
-          index,
-          component: component as Component,
-        });
-
-        store.commit(Mutations.SELECT, {
-          name: component?.name,
-          path: newPath,
-        });
-
-        // init props for instance
-        renderDescriptor?.descriptor.props.forEach((prop) => {
-          if ("defaultValue" in prop) {
-            store.commit(Mutations.UPDATE_ELEMENT_PROPS, {
-              path: prop.name,
-              value: prop.defaultValue,
-            });
-          }
-        });
-      } catch (e) {
-        // @ts-ignore
-        logger.error(e.message);
+      params: Omit<AddCommandStatData, "componentOrTagName"> & {
+        componentName: string;
       }
+    ) {
+      const renderDescriptor = registry.getPropsDescriptor(
+        params.componentName
+      )?.data;
+      const component = renderDescriptor?.component;
+
+      const addCommand = new AddCommand({
+        ...params,
+        componentOrTagName: component as unknown as Component,
+      });
+
+      const { schema, currentPath } = commandManager.do(addCommand);
+      state.schema = schema;
+
+      store.commit(Mutations.SELECT, {
+        name: component?.name,
+        path: currentPath,
+      });
+
+      // init props for instance
+      renderDescriptor?.descriptor.props.forEach((prop) => {
+        if ("defaultValue" in prop) {
+          store.commit(Mutations.UPDATE_ELEMENT_PROPS, {
+            field: prop.name,
+            value: prop.defaultValue,
+          });
+        }
+      });
     },
 
     [Mutations.SELECT](state, { name, path }) {
@@ -134,14 +118,14 @@ export const store = createStore<State>({
       removeNode.update(undefined, "");
     },
 
-    [Mutations.UPDATE_ELEMENT_PROPS](state, { path, value }) {
-      const currentSchemaDataNode = get(
-        state.schema,
-        state.currentPath
-      ) as SchemaData;
-      const props =
-        currentSchemaDataNode.props || (currentSchemaDataNode.props = {});
-      props[path] = value;
+    [Mutations.UPDATE_ELEMENT_PROPS](state, { field, value }) {
+      const updateCommand = new UpdateCommand({
+        path: state.currentPath,
+        field: field,
+        value,
+      });
+      const { schema } = commandManager.do(updateCommand);
+      state.schema = schema;
     },
 
     [Mutations.MOVE](
@@ -152,42 +136,14 @@ export const store = createStore<State>({
         return;
       }
 
-      const { parentPath: parentPathOfFrom, index: indexOfFrom } =
-        getParentPathAndIndex(from);
-      const { parentPath: parentPathOfTo, index: indexOfTo } =
-        getParentPathAndIndex(to);
+      const moveCommand = new MoveCommand({
+        type,
+        from,
+        to,
+      });
 
-      const getTarget = () => {
-        const isInsertMode = type === DropType.Inner;
-        const path = isInsertMode ? to + ".children" : parentPathOfTo;
-        let parent = get(state.schema, path) as Child[] | undefined;
-        const index = isInsertMode ? parent?.length || 0 : +indexOfTo;
-
-        if (!parent) {
-          set(state.schema, path, []);
-          parent = get(state.schema, path) as Child[];
-        }
-
-        return {
-          parent,
-          index,
-        };
-      };
-
-      const parent = get(state.schema, parentPathOfFrom) as Child[];
-      const { parent: targetParent, index: realIndex } = getTarget();
-
-      move(
-        {
-          array: parent,
-          index: +indexOfFrom,
-        },
-        {
-          array: targetParent,
-          index: realIndex,
-        }
-      );
-
+      const { schema } = commandManager.do(moveCommand);
+      state.schema = schema;
       store.commit(Mutations.CLEAR_SELECTS);
     },
   },

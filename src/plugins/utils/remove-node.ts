@@ -35,6 +35,7 @@ export class RemoveNode {
   }
 }
 
+// need to refactor
 export const removeNode = new RemoveNode();
 
 export function remove(schema: SchemaData, path: string) {

@@ -22,12 +22,18 @@ jest.mock("../../pages/editor/utils/registry", () => {
 });
 
 /* eslint-disable import/first */
-import { Mutations, State, store } from "../store";
+import { commandManager, Mutations, State, store } from "../store";
 import { DropType } from "../../pages/editor/types/node-tree";
 import { Operation } from "../../pages/editor/block/types";
 import { get } from "../../core/parser/src/utils/utils";
 import { removeNode } from "../utils/remove-node";
 /* eslint-enable */
+
+function initManager(state: State) {
+  // @ts-ignore
+  commandManager.data = state.schema;
+  store.replaceState(state);
+}
 
 describe("Mutations of Store", () => {
   it("SELECT mutation", () => {
@@ -40,10 +46,9 @@ describe("Mutations of Store", () => {
     });
     const state = {
       schema: {},
-    };
+    } as unknown as State;
+    initManager(state);
     const update = jest.spyOn(removeNode, "update");
-    // @ts-ignore
-    store.replaceState(state);
 
     store.commit(Mutations.SELECT, { path: "path" });
 
@@ -68,12 +73,11 @@ describe("Mutations of Store", () => {
         ],
       },
       currentPath: "children.0",
-    };
-    // @ts-ignore
-    store.replaceState(state);
+    } as unknown as State;
+    initManager(state);
 
     store.commit(Mutations.UPDATE_ELEMENT_PROPS, {
-      path: "name",
+      field: "name",
       value: "value",
     });
 
@@ -92,11 +96,9 @@ describe("Mutations of Store", () => {
   });
 
   it("CLEAR_SELECTS mutations", () => {
-    const state = {};
+    const state = {} as unknown as State;
     const update = jest.spyOn(removeNode, "update");
-
-    // @ts-ignore
-    store.replaceState(state);
+    initManager(state);
 
     store.commit(Mutations.CLEAR_SELECTS);
     expect(state).toEqual({
@@ -126,8 +128,7 @@ describe("Mutations of Store", () => {
         ],
       },
     } as unknown as State;
-    // @ts-ignore
-    store.replaceState(state);
+    initManager(state);
 
     store.commit(Mutations.ADD_ELEMENT, {
       path: addPath,
@@ -159,9 +160,8 @@ describe("Mutations of Store", () => {
           },
         ],
       },
-    };
-    // @ts-ignore
-    store.replaceState(state);
+    } as unknown as State;
+    initManager(state);
 
     store.commit(Mutations.MOVE, {
       from: "children.1",

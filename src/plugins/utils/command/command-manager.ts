@@ -19,7 +19,8 @@ export class CommandManager {
     return this.pointer === this.commandList.length - 1;
   }
 
-  public get hasNoPrevCommands() {
+  // we can also revert first command
+  public get hasNoPrevCommand() {
     return this.pointer === -1;
   }
 
@@ -64,14 +65,14 @@ export class CommandManager {
   }
 
   undo(): OperationResult {
-    if (this.hasNoPrevCommands) {
+    if (this.hasNoPrevCommand) {
       return {
         schema: this.schemaData,
         currentPath: "",
       };
     }
 
-    const command = this.commandList[--this.pointer];
+    const command = this.commandList[this.pointer--];
 
     const { schema, currentPath } = command.undo(this.schemaData);
 
