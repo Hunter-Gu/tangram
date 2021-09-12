@@ -19,3 +19,8 @@ export type AddNodeParams = {
   ancestors: Child[];
   index: number;
 };
+
+export type Node<T> = {
+  array: T[];
+  index: number;
+};

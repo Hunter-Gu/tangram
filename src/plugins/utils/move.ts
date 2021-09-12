@@ -1,9 +1,5 @@
 import { PathManager } from "./path-manager";
-
-export type Node<T> = {
-  array: T[];
-  index: number;
-};
+import { Node } from "./types";
 
 export function move<T>(from: Node<T>, to: Node<T>) {
   const node = from.array.splice(from.index, 1)[0];
