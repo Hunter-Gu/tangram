@@ -2,6 +2,11 @@ import { DropType } from "../../../pages/editor/types/node-tree";
 import { Operation } from "../../../pages/editor/block/types";
 import { Component, SchemaData } from "@/core/parser/src/types/schema";
 
+export interface Command<P, R> {
+  do: (params: P) => R;
+  undo: (params: P) => R;
+}
+
 export type Diff<T extends unknown> = {
   // real changed path after operation
   // e.g: prop path, path after adding element

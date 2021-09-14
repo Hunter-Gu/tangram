@@ -1,7 +1,9 @@
 import { SchemaData } from "../../../core/parser/src/types/schema";
-import { Diff, OperationResult } from "./types";
+import { Command, Diff, OperationResult } from "./types";
 
-export abstract class BaseCommand<T = unknown> {
+export abstract class BaseCommand<T = unknown>
+  implements Command<SchemaData, OperationResult>
+{
   /**
    * !!do() and undo() should get infos from diff!!
    */
