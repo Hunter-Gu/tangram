@@ -1,6 +1,7 @@
 import { SchemaData } from "../../../core/parser/src/types/schema";
 import { BaseCommand } from "./base-command";
-import { OperationResult } from "./types";
+import { MacroCommand } from "./macro-command";
+import { Command, OperationResult } from "./types";
 
 export enum Execution {
   ADD = "add",
@@ -13,7 +14,12 @@ export class CommandManager {
 
   private pointer = -1;
 
-  private commandList: BaseCommand<unknown>[] = [];
+  private macroModeStat = {
+    isMacroMode: false,
+    pointer: -1,
+  };
+
+  private commandList: Command<SchemaData, OperationResult>[] = [];
 
   public get isAtLastCommand() {
     return this.pointer === this.commandList.length - 1;
@@ -34,15 +40,27 @@ export class CommandManager {
     this.commandList = this.commandList.slice(-this.maxLength);
   }
 
+  private get macroCommandInMacroMode() {
+    return this.commandList.slice(-1)[0] as MacroCommand;
+  }
+
   add(command: BaseCommand) {
-    this.commandList.push(command);
+    if (this.macroModeStat.isMacroMode) {
+      this.macroCommandInMacroMode.add(command);
+    } else {
+      this.commandList.push(command);
+    }
     this.truncate();
   }
 
   do(command: BaseCommand) {
     command.calcDiff(this.schemaData);
     this.add(command);
-    return this.redo();
+    if (this.macroModeStat.isMacroMode) {
+      return this.doLatestCommandInMacroCommand();
+    } else {
+      return this.redo();
+    }
   }
 
   redo(): OperationResult {
@@ -55,13 +73,7 @@ export class CommandManager {
 
     const command = this.commandList[++this.pointer];
 
-    const { schema, currentPath } = command.do(this.schemaData);
-    this.data = schema;
-
-    return {
-      schema,
-      currentPath,
-    };
+    return this.execute(command);
   }
 
   undo(): OperationResult {
@@ -74,8 +86,34 @@ export class CommandManager {
 
     const command = this.commandList[this.pointer--];
 
-    const { schema, currentPath } = command.undo(this.schemaData);
+    return this.execute(command, false);
+  }
 
+  startMacro() {
+    if (this.macroModeStat.isMacroMode) {
+      return;
+    }
+    this.macroModeStat.isMacroMode = true;
+    this.commandList.push(new MacroCommand());
+  }
+
+  endMacro() {
+    this.macroModeStat.isMacroMode = false;
+    this.macroModeStat.pointer = -1;
+  }
+
+  private doLatestCommandInMacroCommand() {
+    const command = this.macroCommandInMacroMode.get(
+      ++this.macroModeStat.pointer
+    );
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return this.execute(command!);
+  }
+
+  private execute(command: Command<SchemaData, OperationResult>, isDo = true) {
+    const { schema, currentPath } = isDo
+      ? command.do(this.schemaData)
+      : command.undo(this.schemaData);
     this.data = schema;
 
     return {

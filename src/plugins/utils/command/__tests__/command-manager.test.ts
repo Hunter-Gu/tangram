@@ -2,6 +2,7 @@ import { SchemaData } from "../../../../core/parser/src/types/schema";
 import { AddCommand } from "../add-command";
 import { BaseCommand } from "../base-command";
 import { CommandManager } from "../command-manager";
+import { MacroCommand } from "../macro-command";
 import { AddCommandStatData } from "../types";
 
 const Utils = {
@@ -64,16 +65,16 @@ describe("CommandManager", () => {
     commandManager.add(new AddCommand({ path: "path2" } as AddCommandStatData));
     commandManager.add(new AddCommand({ path: "path3" } as AddCommandStatData));
 
-    const commandList = Utils.getCommandList(commandManager);
+    const commandList = Utils.getCommandList(commandManager) as AddCommand[];
     expect(commandList.length).toBe(2);
     expect(Utils.getStatData(commandList[0])).toEqual({ path: "path2" });
   });
 
   it("the do() will call command.calcDiff(), add the command to command list, call command.do()", () => {
     const calcDiff = jest.spyOn(AddCommand.prototype, "calcDiff");
-    // @ts-ignore
     const doFn = jest
       .spyOn(AddCommand.prototype, "do")
+      // @ts-ignore
       .mockImplementation((data: unknown) => data);
     const command = new AddCommand({ path: "path" } as AddCommandStatData);
 
@@ -81,7 +82,9 @@ describe("CommandManager", () => {
 
     expect(calcDiff).toBeCalledWith(schema);
     expect(doFn).toBeCalledWith(schema);
-    expect(Utils.getStatData(Utils.getCommandList(commandManager)[0])).toEqual({
+    expect(
+      Utils.getStatData(Utils.getCommandList(commandManager)[0] as AddCommand)
+    ).toEqual({
       path: "path",
     });
   });
@@ -122,5 +125,65 @@ describe("CommandManager", () => {
     expect(command2.do).toHaveBeenCalled();
     commandManager.redo();
     expect(command3.do).toHaveBeenCalled();
+  });
+
+  describe("macro mode", () => {
+    it("it will add commands to macro command list after starting macro mode, util macro mode is end", () => {
+      const command = { name: "command" } as unknown as BaseCommand;
+      const command1 = { name: "command1" } as unknown as BaseCommand;
+      const command2 = { name: "command2" } as unknown as BaseCommand;
+      const command3 = { name: "command3" } as unknown as BaseCommand;
+
+      commandManager.add(command);
+
+      commandManager.startMacro();
+
+      commandManager.add(command1);
+      commandManager.add(command2);
+      commandManager.add(command3);
+
+      commandManager.endMacro();
+
+      const macro = new MacroCommand();
+
+      macro.add(command1);
+      macro.add(command2);
+      macro.add(command3);
+
+      expect(Utils.getCommandList(commandManager)).toEqual([command, macro]);
+    });
+
+    it("in macro mode, it will execute the command and add it to macro command list", () => {
+      const command = {
+        calcDiff: jest.fn(),
+        do: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+        undo: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+      } as unknown as BaseCommand;
+      const command1 = {
+        calcDiff: jest.fn(),
+        do: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+        undo: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+      } as unknown as BaseCommand;
+      const command2 = {
+        calcDiff: jest.fn(),
+        do: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+        undo: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+      } as unknown as BaseCommand;
+      const macro = new MacroCommand();
+      macro.add(command1);
+      macro.add(command2);
+
+      commandManager.do(command);
+      commandManager.startMacro();
+      commandManager.do(command1);
+      commandManager.do(command2);
+      commandManager.endMacro();
+
+      expect(command.do).toHaveBeenCalled();
+      expect(command1.do).toHaveBeenCalled();
+      expect(command2.do).toHaveBeenCalled();
+
+      expect(Utils.getCommandList(commandManager)).toEqual([command, macro]);
+    });
   });
 });
