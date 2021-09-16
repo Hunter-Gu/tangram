@@ -3,6 +3,8 @@ import { Operation } from "../../../pages/editor/block/types";
 import { Component, SchemaData } from "@/core/parser/src/types/schema";
 
 export interface Command<P, R> {
+  // check if current command can be replaced by other command(parameter of method canReplaceBy())
+  canReplaceBy?: (command?: Command<P, R>) => boolean;
   do: (params: P) => R;
   undo: (params: P) => R;
 }
