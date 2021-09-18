@@ -100,6 +100,8 @@ describe("UpdateCommand", () => {
     updateCommand2.calcDiff(updatedSchema);
 
     expect(updateCommand1.canReplaceBy(updateCommand2)).toBe(true);
+
+    expect(updateCommand1.replaceBy(updateCommand2)).toBe(true);
     expect(getDiff(updateCommand2).value.oldValue).toBe(
       getDiff(updateCommand1).value.oldValue
     );

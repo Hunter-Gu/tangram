@@ -20,18 +20,28 @@ export class UpdateCommand extends BaseCommand<UpdateCommandDiffValue> {
     } = command.diff;
     const {
       path: nowPropPath,
-      value: { newValue: nowNewValue, oldValue: nowOldValue },
+      value: { newValue: nowNewValue },
     } = this.diff;
 
     const canReplace =
       commandPropPath === nowPropPath &&
       (commandOldValue === nowNewValue || commandNewValue === nowNewValue);
 
-    if (canReplace) {
-      command.diff.value.oldValue = nowOldValue;
+    return canReplace;
+  }
+
+  replaceBy(command: BaseCommand<unknown>) {
+    if (!this.canReplaceBy(command)) {
+      return false;
     }
 
-    return canReplace;
+    const {
+      value: { oldValue: nowOldValue },
+    } = this.diff;
+
+    (command as UpdateCommand).diff.value.oldValue = nowOldValue;
+
+    return true;
   }
 
   calcDiff(schema: SchemaData): void {
