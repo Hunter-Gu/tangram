@@ -44,11 +44,36 @@ export class CommandManager {
     return this.commandList.slice(-1)[0] as MacroCommand;
   }
 
+  private macroCommandAddAndTryZip(command: BaseCommand) {
+    const lastCommand = this.macroCommandInMacroMode.get(
+      this.macroModeStat.pointer
+    ) as Command<unknown, unknown> | undefined;
+
+    if (lastCommand?.replaceBy?.(command as Command<unknown, unknown>)) {
+      this.macroModeStat.pointer--;
+      this.macroCommandInMacroMode.pop();
+    }
+
+    this.macroCommandInMacroMode.add(command);
+  }
+
+  private addAndTryZip(command: BaseCommand) {
+    const lastCommand = this.commandList[this.pointer] as
+      | Command<unknown, unknown>
+      | undefined;
+
+    if (lastCommand?.replaceBy?.(command as Command<unknown, unknown>)) {
+      this.pointer--;
+      this.commandList.pop();
+    }
+    this.commandList.push(command);
+  }
+
   add(command: BaseCommand) {
     if (this.macroModeStat.isMacroMode) {
-      this.macroCommandInMacroMode.add(command);
+      this.macroCommandAddAndTryZip(command);
     } else {
-      this.commandList.push(command);
+      this.addAndTryZip(command);
     }
     this.truncate();
   }

@@ -3,24 +3,30 @@ import { AddCommand } from "../add-command";
 import { BaseCommand } from "../base-command";
 import { CommandManager } from "../command-manager";
 import { MacroCommand } from "../macro-command";
-import { AddCommandStatData } from "../types";
+import { MoveCommand } from "../move-command";
+import {
+  AddCommandStatData,
+  MoveCommandStatData,
+  UpdateCommandStatData,
+} from "../types";
+import { UpdateCommand } from "../update-command";
 
 const Utils = {
   getCommandList(commandManager: CommandManager) {
-    // @ts-ignore
-    return commandManager.commandList;
+    return commandManager["commandList"];
   },
   setMaxLength(commandManager: CommandManager, num: number) {
-    // @ts-ignore
-    commandManager.maxLength = num;
+    commandManager["maxLength"] = num;
   },
   setPointer(commandManager: CommandManager, num: number) {
-    // @ts-ignore
-    commandManager.pointer = num;
+    commandManager["pointer"] = num;
+  },
+  getPointer(commandManger: CommandManager) {
+    return commandManger["pointer"];
   },
   getStatData(command: BaseCommand) {
     // @ts-ignore
-    return command.statData;
+    return command["statData"];
   },
 };
 
@@ -44,14 +50,14 @@ describe("CommandManager", () => {
     commandManager.add(new AddCommand({} as AddCommandStatData));
     expect(Utils.getCommandList(commandManager).length).toBe(1);
 
-    commandManager.add(new AddCommand({} as AddCommandStatData));
+    commandManager.add(new MoveCommand({} as MoveCommandStatData));
     expect(Utils.getCommandList(commandManager).length).toBe(2);
   });
 
   it("hasNoPrevCommand() will return true if private prop pointer is -1", () => {
     commandManager.add(new AddCommand({} as AddCommandStatData));
-    commandManager.add(new AddCommand({} as AddCommandStatData));
-    commandManager.add(new AddCommand({} as AddCommandStatData));
+    commandManager.add(new UpdateCommand({} as UpdateCommandStatData));
+    commandManager.add(new MoveCommand({} as MoveCommandStatData));
 
     Utils.setPointer(commandManager, -1);
 
@@ -62,8 +68,10 @@ describe("CommandManager", () => {
     Utils.setMaxLength(commandManager, 2);
 
     commandManager.add(new AddCommand({ path: "path1" } as AddCommandStatData));
-    commandManager.add(new AddCommand({ path: "path2" } as AddCommandStatData));
-    commandManager.add(new AddCommand({ path: "path3" } as AddCommandStatData));
+    commandManager.add(
+      new UpdateCommand({ path: "path2" } as UpdateCommandStatData)
+    );
+    commandManager.add(new MoveCommand({} as MoveCommandStatData));
 
     const commandList = Utils.getCommandList(commandManager) as AddCommand[];
     expect(commandList.length).toBe(2);
@@ -91,16 +99,19 @@ describe("CommandManager", () => {
 
   it("it can execute redo and undo operation by redo() and undo()", () => {
     const command1 = {
+      replaceBy: jest.fn(),
       calcDiff: jest.fn(),
       do: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
       undo: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
     } as unknown as BaseCommand;
     const command2 = {
+      replaceBy: jest.fn(),
       calcDiff: jest.fn(),
       do: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
       undo: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
     } as unknown as BaseCommand;
     const command3 = {
+      replaceBy: jest.fn(),
       calcDiff: jest.fn(),
       do: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
       undo: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
@@ -155,16 +166,19 @@ describe("CommandManager", () => {
 
     it("in macro mode, it will execute the command and add it to macro command list", () => {
       const command = {
+        replaceBy: jest.fn(),
         calcDiff: jest.fn(),
         do: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
         undo: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
       } as unknown as BaseCommand;
       const command1 = {
+        replaceBy: jest.fn(),
         calcDiff: jest.fn(),
         do: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
         undo: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
       } as unknown as BaseCommand;
       const command2 = {
+        replaceBy: jest.fn(),
         calcDiff: jest.fn(),
         do: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
         undo: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
@@ -182,6 +196,61 @@ describe("CommandManager", () => {
       expect(command.do).toHaveBeenCalled();
       expect(command1.do).toHaveBeenCalled();
       expect(command2.do).toHaveBeenCalled();
+
+      expect(Utils.getCommandList(commandManager)).toEqual([command, macro]);
+    });
+  });
+
+  describe("zip command", () => {
+    it("should try to zip command when add new command not in macro mode", () => {
+      const command1 = {
+        replaceBy: jest.fn().mockReturnValue(true),
+        calcDiff: jest.fn().mockReturnValue(true),
+        do: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+        undo: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+      } as unknown as BaseCommand;
+      const command2 = {
+        replaceBy: jest.fn().mockReturnValue(true),
+        calcDiff: jest.fn().mockReturnValue(true),
+        do: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+        undo: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+      } as unknown as BaseCommand;
+
+      commandManager.do(command1);
+      commandManager.do(command2);
+
+      expect(Utils.getPointer(commandManager)).toBe(0);
+
+      expect(Utils.getCommandList(commandManager).length).toBe(1);
+    });
+
+    it("should try to zip command when add new command in macro mode", () => {
+      const command = {
+        replaceBy: jest.fn(),
+        calcDiff: jest.fn(),
+        do: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+        undo: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+      } as unknown as BaseCommand;
+      const command1 = {
+        replaceBy: jest.fn().mockReturnValue(true),
+        calcDiff: jest.fn().mockReturnValue(true),
+        do: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+        undo: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+      } as unknown as BaseCommand;
+      const command2 = {
+        replaceBy: jest.fn().mockReturnValue(true),
+        calcDiff: jest.fn().mockReturnValue(true),
+        do: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+        undo: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+      } as unknown as BaseCommand;
+      const macro = new MacroCommand();
+      macro.add(command2);
+
+      commandManager.do(command);
+      commandManager.startMacro();
+      commandManager.do(command1);
+      commandManager.do(command2);
+      commandManager.endMacro();
 
       expect(Utils.getCommandList(commandManager)).toEqual([command, macro]);
     });
