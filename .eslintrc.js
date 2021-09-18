@@ -28,4 +28,12 @@ module.exports = {
     "@typescript-eslint/no-non-null-assertion": ["error"],
     "@typescript-eslint/no-unused-vars": ["error"],
   },
+  overrides: [
+    {
+      files: ["**/__tests__/*"],
+      rules: {
+        "dot-notation": "off",
+      },
+    },
+  ],
 };
