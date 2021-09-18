@@ -31,15 +31,17 @@ const Utils = {
 };
 
 let commandManager: CommandManager;
-const schema = {
-  children: [
-    {
-      name: "target",
-    },
-  ],
-} as SchemaData;
+let schema: SchemaData;
 
 beforeEach(() => {
+  jest.restoreAllMocks();
+  schema = {
+    children: [
+      {
+        name: "target",
+      },
+    ],
+  } as SchemaData;
   commandManager = new CommandManager(schema);
 });
 
@@ -136,6 +138,32 @@ describe("CommandManager", () => {
     expect(command2.do).toHaveBeenCalled();
     commandManager.redo();
     expect(command3.do).toHaveBeenCalled();
+  });
+
+  it("should clear next commands when execute a command by do() if the pointer is not point to the last command", () => {
+    const command1 = new AddCommand({
+      path: "children.0",
+    } as AddCommandStatData);
+    const command2 = new AddCommand({
+      path: "children.0",
+    } as AddCommandStatData);
+    const command3 = new AddCommand({
+      path: "children.0",
+    } as AddCommandStatData);
+    const command4 = new AddCommand({
+      path: "children.0",
+    } as AddCommandStatData);
+
+    commandManager.do(command1);
+    commandManager.do(command2);
+    commandManager.do(command3);
+
+    commandManager.undo();
+    commandManager.undo();
+
+    commandManager.do(command4);
+
+    expect(Utils.getCommandList(commandManager).length).toBe(2);
   });
 
   describe("macro mode", () => {

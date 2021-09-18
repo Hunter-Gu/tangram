@@ -80,6 +80,16 @@ export class CommandManager {
 
   do(command: BaseCommand) {
     command.calcDiff(this.schemaData);
+
+    // macro command don't support undo to one of it's specified command
+    if (
+      !this.macroModeStat.isMacroMode &&
+      this.commandList.length &&
+      this.pointer !== this.commandList.length - 1
+    ) {
+      this.commandList = this.commandList.slice(0, this.pointer + 1);
+    }
+
     this.add(command);
     if (this.macroModeStat.isMacroMode) {
       return this.doLatestCommandInMacroCommand();
