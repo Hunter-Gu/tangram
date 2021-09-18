@@ -9,6 +9,10 @@ export class MacroCommand implements Command<SchemaData, OperationResult> {
     return this.commandList[index] as BaseCommand<unknown> | undefined;
   }
 
+  pop() {
+    return this.commandList.pop();
+  }
+
   add(command: BaseCommand) {
     this.commandList.push(command);
   }

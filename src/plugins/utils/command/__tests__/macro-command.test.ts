@@ -21,6 +21,23 @@ describe("MacroCommand", () => {
     expect(getCommandList(macro).length).toBe(3);
   });
 
+  it("pop command by pop()", () => {
+    const macro = new MacroCommand();
+
+    expect(getCommandList(macro).length).toBe(0);
+
+    const command1 = new AddCommand({ path: "path1" } as AddCommandStatData);
+    const command2 = new AddCommand({ path: "path2" } as AddCommandStatData);
+
+    macro.add(command1);
+    macro.add(command2);
+    macro.add(new AddCommand({ path: "path3" } as AddCommandStatData));
+
+    macro.pop();
+
+    expect(getCommandList(macro)).toEqual([command1, command2]);
+  });
+
   it("get command at position index in commandList by get()", () => {
     const macro = new MacroCommand();
 
