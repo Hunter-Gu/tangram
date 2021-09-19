@@ -30,12 +30,15 @@ import { removeNode } from "../utils/remove-node";
 /* eslint-enable */
 
 function initManager(state: State) {
-  // @ts-ignore
-  commandManager.data = state.schema;
+  commandManager["data"] = state.schema;
   store.replaceState(state);
 }
 
 describe("Mutations of Store", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("SELECT mutation", () => {
     jest.mock("../../pages/editor/utils/registry", () => {
       return {
@@ -109,42 +112,90 @@ describe("Mutations of Store", () => {
     expect(update).toBeCalledWith(undefined, "");
   });
 
-  it.each`
-    addPath         | currentPath                | type
-    ${"children.0"} | ${"children.0.children.0"} | ${""}
-    ${"children.0"} | ${"children.0.children.0"} | ${Operation.Inside}
-    ${"children.0"} | ${"children.0"}            | ${Operation.Top}
-    ${"children.0"} | ${"children.1"}            | ${Operation.Bottom}
-  `("ADD_ELEMENT mutation", ({ addPath, currentPath, type }) => {
-    window.Date.prototype.getTime = jest.fn().mockReturnValue(1);
-    const state = {
-      schema: {
-        children: [
-          {
-            props: {
-              name: "value",
-            },
+  describe("ADD_ELEMENT", () => {
+    it.each`
+      addPath         | currentPath                | type
+      ${"children.0"} | ${"children.0.children.0"} | ${""}
+      ${"children.0"} | ${"children.0.children.0"} | ${Operation.Inside}
+      ${"children.0"} | ${"children.0"}            | ${Operation.Top}
+      ${"children.0"} | ${"children.1"}            | ${Operation.Bottom}
+    `(
+      "when commit ADD_ELEMENT mutation, and all execute commands will be collected as a macro command",
+      ({ addPath, currentPath, type }) => {
+        window.Date.prototype.getTime = jest.fn().mockReturnValue(1);
+        const state = {
+          schema: {
+            children: [
+              {
+                props: {
+                  name: "value",
+                },
+              },
+            ],
           },
-        ],
-      },
-    } as unknown as State;
-    initManager(state);
+        } as unknown as State;
+        initManager(state);
 
-    store.commit(Mutations.ADD_ELEMENT, {
-      path: addPath,
-      componentName: "",
-      type,
-    });
+        store.commit(Mutations.ADD_ELEMENT, {
+          path: addPath,
+          componentName: "",
+          type,
+        });
 
-    expect(state.currentPath).toBe(currentPath);
-    expect(state.currentSelect).toBe("currentSelect");
-    expect(state.selectPaths).toEqual([currentPath]);
+        expect(state.currentPath).toBe(currentPath);
+        expect(state.currentSelect).toBe("currentSelect");
+        expect(state.selectPaths).toEqual([currentPath]);
 
-    expect(get(state.schema, currentPath)).toEqual({
-      name: {
-        name: "component",
-      },
-      __uuid: 1,
+        expect(get(state.schema, currentPath)).toEqual({
+          name: {
+            name: "component",
+          },
+          __uuid: 1,
+        });
+      }
+    );
+
+    it("when ADD_ELEMENT mutation, should call startMacro() before execute addCommand, and call endMacro() after execute updateCommand", () => {
+      const state = {
+        schema: {
+          children: [
+            {
+              props: {
+                name: "value",
+              },
+            },
+          ],
+        },
+      } as unknown as State;
+      initManager(state);
+      const order: string[] = [];
+
+      jest
+        .spyOn(commandManager, "startMacro")
+        .mockImplementation(() => order.push("startMacro"));
+      jest
+        .spyOn(commandManager, "endMacro")
+        .mockImplementation(() => order.push("endMacro"));
+      const doFn = commandManager.do;
+      jest.spyOn(commandManager, "do").mockImplementation(() => {
+        order.push("do");
+        return {
+          schema: state.schema,
+          currentPath: "children.0",
+        };
+      });
+
+      store.commit(Mutations.ADD_ELEMENT, {
+        path: "children.0",
+        componentName: "",
+      });
+
+      expect(order.length > 2).toBeTruthy();
+      expect(order[0]).toBe("startMacro");
+      expect(order[order.length - 1]).toBe("endMacro");
+
+      // don't know why jest.clearAllMocks() don't remove this mock implementation
+      commandManager.do = doFn;
     });
   });
 

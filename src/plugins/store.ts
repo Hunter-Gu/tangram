@@ -76,6 +76,8 @@ export const store = createStore<State>({
         componentOrTagName: component as unknown as Component,
       });
 
+      commandManager.startMacro();
+
       const { schema, currentPath } = commandManager.do(addCommand);
       state.schema = schema;
 
@@ -93,6 +95,8 @@ export const store = createStore<State>({
           });
         }
       });
+
+      commandManager.endMacro();
     },
 
     [Mutations.SELECT](state, { name, path }) {
