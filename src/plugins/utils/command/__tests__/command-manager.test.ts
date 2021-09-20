@@ -192,6 +192,15 @@ describe("CommandManager", () => {
       expect(Utils.getCommandList(commandManager)).toEqual([command, macro]);
     });
 
+    it("should point to next position when call endMacro()", () => {
+      expect(Utils.getPointer(commandManager)).toBe(-1);
+
+      commandManager.startMacro();
+      commandManager.endMacro();
+
+      expect(Utils.getPointer(commandManager)).toBe(0);
+    });
+
     it("in macro mode, it will execute the command and add it to macro command list", () => {
       const command = {
         replaceBy: jest.fn(),

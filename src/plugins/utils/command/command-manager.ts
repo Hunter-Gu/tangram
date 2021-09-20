@@ -133,8 +133,12 @@ export class CommandManager {
   }
 
   endMacro() {
+    if (!this.macroModeStat.isMacroMode) {
+      return;
+    }
     this.macroModeStat.isMacroMode = false;
     this.macroModeStat.pointer = -1;
+    ++this.pointer;
   }
 
   private doLatestCommandInMacroCommand() {
