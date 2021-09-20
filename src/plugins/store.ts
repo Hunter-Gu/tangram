@@ -43,6 +43,12 @@ export enum Mutations {
 
   // eslint-disable-next-line no-unused-vars
   MOVE = "move",
+
+  // eslint-disable-next-line no-unused-vars
+  REDO = "redo",
+
+  // eslint-disable-next-line no-unused-vars
+  UNDO = "undo",
 }
 
 export const store = createStore<State>({
@@ -149,6 +155,18 @@ export const store = createStore<State>({
       const { schema } = commandManager.do(moveCommand);
       state.schema = schema;
       store.commit(Mutations.CLEAR_SELECTS);
+    },
+
+    [Mutations.REDO](state) {
+      const { schema, currentPath } = commandManager.redo();
+      state.schema = schema;
+      state.currentPath = currentPath;
+    },
+
+    [Mutations.UNDO](state) {
+      const { schema, currentPath } = commandManager.undo();
+      state.schema = schema;
+      state.currentPath = currentPath;
     },
   },
 });

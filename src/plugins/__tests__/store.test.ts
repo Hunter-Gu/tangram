@@ -27,6 +27,7 @@ import { DropType } from "../../pages/editor/types/node-tree";
 import { Operation } from "../../pages/editor/block/types";
 import { get } from "../../core/parser/src/utils/utils";
 import { removeNode } from "../utils/remove-node";
+import { SchemaData } from "../../core/parser/src/types/schema";
 /* eslint-enable */
 
 function initManager(state: State) {
@@ -283,5 +284,35 @@ describe("Mutations of Store", () => {
       currentPath: ``,
       currentSelect: undefined,
     });
+  });
+
+  it("should call commandManger.redo() and update schema and currentSelectPath when commit REDO", () => {
+    const redo = jest.spyOn(commandManager, "redo").mockReturnValue({
+      currentPath: "currentPath",
+      schema: {
+        name: "schema",
+      } as SchemaData,
+    });
+
+    store.commit(Mutations.REDO);
+
+    expect(redo).toBeCalled();
+    expect(store.state.schema).toEqual({ name: "schema" });
+    expect(store.state.currentPath).toBe("currentPath");
+  });
+
+  it("should call commandManger.undo() and update schema and currentSelectPath when commit UNDO", () => {
+    const undo = jest.spyOn(commandManager, "undo").mockReturnValue({
+      currentPath: "currentPath",
+      schema: {
+        name: "schema",
+      } as SchemaData,
+    });
+
+    store.commit(Mutations.UNDO);
+
+    expect(undo).toBeCalled();
+    expect(store.state.schema).toEqual({ name: "schema" });
+    expect(store.state.currentPath).toBe("currentPath");
   });
 });
