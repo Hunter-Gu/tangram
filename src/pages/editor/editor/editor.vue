@@ -11,6 +11,8 @@
       >
         <Stage :schema="props.schema" />
       </el-main>
+
+      <operation-bar />
     </el-container>
 
     <el-aside class="sidebar">
@@ -49,6 +51,7 @@ import { getAll } from "./registery/registry";
 import Stage from "../stage";
 import { SchemaData } from "../../../core/parser/src/types/schema";
 import { PropsDescriptor } from "../types/descriptor";
+import OperationBar from "../operation-bar";
 
 const props = defineProps({
   schema: {

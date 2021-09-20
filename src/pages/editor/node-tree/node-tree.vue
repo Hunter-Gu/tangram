@@ -42,7 +42,7 @@ const emit = defineEmits({
   /* eslint-enable */
 });
 
-const data = computed(() => normalize(props.schema))
+const data = computed(() => normalize(props.schema));
 const test = ref();
 
 function handleDrop(draggingNode: Node, dropNode: Node, type: DropType) {
