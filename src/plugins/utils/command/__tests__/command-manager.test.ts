@@ -140,7 +140,7 @@ describe("CommandManager", () => {
     expect(command3.do).toHaveBeenCalled();
   });
 
-  it("should clear next commands when execute a command by do() if the pointer is not point to the last command", () => {
+  it("in nor macro mode, should clear next commands when execute a command by do() if the pointer is not point to the last command", () => {
     const command1 = new AddCommand({
       path: "children.0",
     } as AddCommandStatData);
@@ -166,20 +166,74 @@ describe("CommandManager", () => {
     expect(Utils.getCommandList(commandManager).length).toBe(2);
   });
 
+  it("in macro mode, should clear next commands when execute a command by do() if the pointer is not point to the last command", () => {
+    const command1 = new AddCommand({
+      path: "children.0",
+    } as AddCommandStatData);
+    const command2 = new AddCommand({
+      path: "children.0",
+    } as AddCommandStatData);
+    const command3 = new AddCommand({
+      path: "children.0",
+    } as AddCommandStatData);
+    const command4 = new AddCommand({
+      path: "children.0",
+    } as AddCommandStatData);
+
+    commandManager.do(command1);
+
+    commandManager.startMacro();
+
+    commandManager.do(command2);
+    commandManager.do(command3);
+
+    commandManager.endMacro();
+
+    commandManager.undo();
+
+    commandManager.do(command4);
+
+    expect(Utils.getCommandList(commandManager).length).toBe(2);
+  });
+
   describe("macro mode", () => {
     it("it will add commands to macro command list after starting macro mode, util macro mode is end", () => {
-      const command = { name: "command" } as unknown as BaseCommand;
-      const command1 = { name: "command1" } as unknown as BaseCommand;
-      const command2 = { name: "command2" } as unknown as BaseCommand;
-      const command3 = { name: "command3" } as unknown as BaseCommand;
+      const command = {
+        name: "name",
+        replaceBy: jest.fn(),
+        calcDiff: jest.fn(),
+        do: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+        undo: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+      } as unknown as BaseCommand;
+      const command1 = {
+        name: "name1",
+        replaceBy: jest.fn(),
+        calcDiff: jest.fn(),
+        do: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+        undo: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+      } as unknown as BaseCommand;
+      const command2 = {
+        name: "name2",
+        replaceBy: jest.fn(),
+        calcDiff: jest.fn(),
+        do: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+        undo: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+      } as unknown as BaseCommand;
+      const command3 = {
+        name: "name3",
+        replaceBy: jest.fn(),
+        calcDiff: jest.fn(),
+        do: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+        undo: jest.fn().mockReturnValue({ schema: "schema", path: "path" }),
+      } as unknown as BaseCommand;
 
-      commandManager.add(command);
+      commandManager.do(command);
 
       commandManager.startMacro();
 
-      commandManager.add(command1);
-      commandManager.add(command2);
-      commandManager.add(command3);
+      commandManager.do(command1);
+      commandManager.do(command2);
+      commandManager.do(command3);
 
       commandManager.endMacro();
 

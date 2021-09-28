@@ -45,6 +45,10 @@ export class CommandManager {
   }
 
   private macroCommandAddAndTryZip(command: BaseCommand) {
+    if (this.macroModeStat.isMacroMode && this.macroModeStat.pointer === -1) {
+      this.commandList.push(new MacroCommand());
+    }
+
     const lastCommand = this.macroCommandInMacroMode.get(
       this.macroModeStat.pointer
     ) as Command<unknown, unknown> | undefined;
@@ -83,9 +87,10 @@ export class CommandManager {
 
     // macro command don't support undo to one of it's specified command
     if (
-      !this.macroModeStat.isMacroMode &&
-      this.commandList.length &&
-      this.pointer !== this.commandList.length - 1
+      (this.macroModeStat.isMacroMode && this.macroModeStat.pointer === -1) ||
+      (!this.macroModeStat.isMacroMode &&
+        this.commandList.length &&
+        this.pointer !== this.commandList.length - 1)
     ) {
       this.commandList = this.commandList.slice(0, this.pointer + 1);
     }
@@ -129,7 +134,6 @@ export class CommandManager {
       return;
     }
     this.macroModeStat.isMacroMode = true;
-    this.commandList.push(new MacroCommand());
   }
 
   endMacro() {
